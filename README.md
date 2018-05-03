@@ -16,13 +16,18 @@ Building the **uldaq** package requires C/C++ compilers, make tool, and the deve
      $ sudo apt-get install gcc g++ make
      $ sudo apt-get install libusb-1.0-0-dev
   ```
+  - Arch-based Linux distributions such as Manjaro, Antergos
+  
+  ```
+     $ sudo pacman -S gcc make
+     $ sudo pacman -S libusb
+  ```
   - Red Hat-based Linux distributions such as Fedora, CentOS
   
   ```
      $ sudo yum install gcc gcc-c++ make
      $ sudo yum install libusbx-devel
-  ```
-     
+  ``` 
   - OpenSUSE 
   
   ```
