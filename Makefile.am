@@ -46,6 +46,7 @@ if OS_LINUX
 install-data-hook:
 	udevadm control --reload-rules && \
 	test -f "/etc/redhat-release" && echo "/usr/local/lib" > /etc/ld.so.conf.d/uldaq.conf || echo "" && \
+	test -f "/etc/arch-release" && echo "/usr/local/lib" > /etc/ld.so.conf.d/uldaq.conf || echo "" && \
 	ldconfig
 endif
 
