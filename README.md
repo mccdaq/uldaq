@@ -1,14 +1,14 @@
 ## MCC Universal Library for Linux (uldaq)
 **Info:** Contains a library to access and control supported Measurement Computing [DAQ devices](https://www.mccdaq.com/PDFs/Manuals/Linux-hw.pdf) over the Linux platform. The Universal Library for Linux binary name is libuldaq.
 
-**Author:** Measurement Computing
+**Author:** [Measurement Computing Corp (MCC)](https://libusb.info)
 
 ## About
 The **uldaq** package contains programming libraries and components for developing applications using C/C++ on Linux Operating Systems. An API (Application Programming Interface) for interacting with the library in Python is available as an additional installation. This package was created and is supported by MCC. 
 
 ### Prerequisites:
 ---------------
-Building the **uldaq** package requires C/C++ compilers, make tool, and the development package for libusb. The following describes how these prerequisites can be installed on different Linux distributions.
+Building the **uldaq** package requires C/C++ compilers, make tool, and the development package for [libusb](https://libusb.info). The following describes how  these prerequisites can be installed on different Linux distributions.
   
   - Debian-based Linux distributions such as Ubuntu, Raspbian
   
