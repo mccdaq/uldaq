@@ -1,5 +1,5 @@
 ## MCC Universal Library for Linux (uldaq)
-**Info:** Contains a library to access and control supported Measurement Computing [DAQ devices](https://www.mccdaq.com/PDFs/Manuals/Linux-hw.pdf) over the Linux platform. The UL for Linux binary name is libuldaq.
+**Info:** Contains a library to access and control supported Measurement Computing [DAQ devices](https://www.mccdaq.com/PDFs/Manuals/Linux-hw.pdf) over the Linux platform. The Universal Library for Linux binary name is libuldaq.
 
 **Author:** Measurement Computing
 
@@ -120,7 +120,7 @@ int main(void)
 }
 ```
 ### Support/Feedback
-The **uldaq** package is supported by MCC. For support for uldaq, contact technical through [support page](https://www.mccdaq.com/support/support_form.aspx). Please include detailed steps on how to reproduce the problem in your request.
+The **uldaq** package is supported by MCC. For support for uldaq, contact technical support through MCC's [support page](https://www.mccdaq.com/support/support_form.aspx). Please include detailed steps on how to reproduce the problem in your request.
 
 ### Documentation
 Online help for the Universal Library for Linux is available for [C/C++](https://www.mccdaq.com/PDFs/Manuals/UL-Linux/c/index.html) and [Python](https://www.mccdaq.com/PDFs/Manuals/UL-Linux/python/index.html).
