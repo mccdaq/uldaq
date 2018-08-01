@@ -5,7 +5,7 @@ Computing [DAQ
 devices](https://www.mccdaq.com/PDFs/Manuals/Linux-hw.pdf) over the
 Linux platform. The Universal Library for Linux binary name is libuldaq.
 
-**Author:** [Measurement Computing Corp (MCC)](https://libusb.info)
+**Author:** [Measurement Computing Corp (MCC)](https://www.mccdaq.com)
 
 ## About
 
