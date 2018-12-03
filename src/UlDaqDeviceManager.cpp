@@ -9,7 +9,7 @@
 #include "DaqDeviceId.h"
 #include "DaqDeviceManager.h"
 #include "./usb/UsbDaqDevice.h"
-//#include "./hid/HidDaqDevice.h"
+#include "./hid/HidDaqDevice.h"
 #include "./usb/Usb1208fsPlus.h"
 #include "./usb/Usb1608fsPlus.h"
 #include "./usb/Usb20x.h"
@@ -20,7 +20,14 @@
 #include "./usb/Usb26xx.h"
 #include "./usb/UsbDio32hs.h"
 #include "./usb/UsbCtrx.h"
-//#include "./hid/UsbTc.h"
+#include "./hid/UsbDio96h.h"
+#include "./hid/UsbDio24.h"
+#include "./hid/UsbPdiso8.h"
+#include "./hid/UsbSsrxx.h"
+#include "./hid/UsbErbxx.h"
+#include "./hid/Usb3100.h"
+#include "./hid/UsbTemp.h"
+#include "./hid/UsbTempAi.h"
 
 #include <iostream>
 #include <cstring>
@@ -48,18 +55,18 @@ std::vector<DaqDeviceDescriptor> UlDaqDeviceManager::getDaqDeviceInventory(DaqDe
 
 	std::vector<DaqDeviceDescriptor> usbDaqDeviceList = UsbDaqDevice::findDaqDevices();
 
-	//std::vector<DaqDeviceDescriptor> hidDaqDeviceList = HidDaqDevice::findDaqDevices();
+	std::vector<DaqDeviceDescriptor> hidDaqDeviceList = HidDaqDevice::findDaqDevices();
 
 	for(unsigned int i = 0; i < usbDaqDeviceList.size(); i++)
 		daqDeviceList.push_back(usbDaqDeviceList[i]);
 
-	/*for(unsigned int i = 0; i < hidDaqDeviceList.size(); i++)
-		daqDeviceList.push_back(hidDaqDeviceList[i]);*/
+	for(unsigned int i = 0; i < hidDaqDeviceList.size(); i++)
+		daqDeviceList.push_back(hidDaqDeviceList[i]);
 
 	return daqDeviceList;
 }
 
-UlDaqDevice& UlDaqDeviceManager::createDaqDevice(DaqDeviceDescriptor daqDevDescriptor)
+UlDaqDevice& UlDaqDeviceManager::createDaqDevice(const DaqDeviceDescriptor& daqDevDescriptor)
 {
 	DaqDevice* daqDev = DaqDeviceManager::getDaqDevice(daqDevDescriptor); // Don't recreate a new DaqDevice object if it already exists for the specified descriptor
 
@@ -123,9 +130,53 @@ UlDaqDevice& UlDaqDeviceManager::createDaqDevice(DaqDeviceDescriptor daqDevDescr
 			daqDev = new UsbCtrx(daqDevDescriptor, "USB_CTR.bin");
 		break;
 
-		/*case DaqDeviceId::USB_TC:
-			daqDev = new UsbTc(daqDevDescriptor);
-		break;*/
+		case DaqDeviceId::USB_DIO96H:
+		case DaqDeviceId::USB_DIO96H_50:
+			daqDev = new UsbDio96h(daqDevDescriptor);
+		break;
+
+		case DaqDeviceId::USB_1024LS:
+		case DaqDeviceId::USB_1024HLS:
+		case DaqDeviceId::USB_DIO24:
+		case DaqDeviceId::USB_DIO24H:
+			daqDev = new UsbDio24(daqDevDescriptor);
+		break;
+
+		case DaqDeviceId::USB_PDISO8:
+		case DaqDeviceId::USB_PDISO8_40:
+			daqDev = new UsbPdiso8(daqDevDescriptor);
+		break;
+
+		case DaqDeviceId::USB_SSR24:
+		case DaqDeviceId::USB_SSR08:
+			daqDev = new UsbSsrxx(daqDevDescriptor);
+		break;
+
+		case DaqDeviceId::USB_ERB24:
+		case DaqDeviceId::USB_ERB08:
+			daqDev = new UsbErbxx(daqDevDescriptor);
+		break;
+
+		case DaqDeviceId::USB_3101:
+		case DaqDeviceId::USB_3102:
+		case DaqDeviceId::USB_3103:
+		case DaqDeviceId::USB_3104:
+		case DaqDeviceId::USB_3105:
+		case DaqDeviceId::USB_3106:
+		case DaqDeviceId::USB_3110:
+		case DaqDeviceId::USB_3112:
+		case DaqDeviceId::USB_3114:
+			daqDev = new Usb3100(daqDevDescriptor);
+		break;
+
+		case DaqDeviceId::USB_TEMP:
+		case DaqDeviceId::USB_TC:
+			daqDev = new UsbTemp(daqDevDescriptor);
+		break;
+		case DaqDeviceId::USB_TEMP_AI:
+		case DaqDeviceId::USB_TC_AI:
+			daqDev = new UsbTempAi(daqDevDescriptor);
+		break;
 		}
 
 		if(daqDev)

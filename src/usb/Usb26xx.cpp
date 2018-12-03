@@ -5,7 +5,6 @@
  */
 
 #include "Usb26xx.h"
-#include "./../DaqDeviceId.h"
 #include "./ai/AiUsb26xx.h"
 #include "./ao/AoUsb26xx.h"
 #include "./dio/DioUsb26xx.h"
@@ -15,7 +14,7 @@
 namespace ul
 {
 
-Usb26xx::Usb26xx(DaqDeviceDescriptor daqDeviceDescriptor, std::string fpgaFileName) : UsbFpgaDevice(daqDeviceDescriptor, fpgaFileName)
+Usb26xx::Usb26xx(const DaqDeviceDescriptor& daqDeviceDescriptor, std::string fpgaFileName) : UsbFpgaDevice(daqDeviceDescriptor, fpgaFileName)
 {
 	setCmdValue(CMD_STATUS_KEY, 0x40);
 	setCmdValue(CMD_FLASH_LED_KEY, 0x41);

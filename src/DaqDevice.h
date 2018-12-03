@@ -8,6 +8,7 @@
 #ifndef DAQDEVICE_H_
 #define DAQDEVICE_H_
 
+#include "DaqDeviceId.h"
 #include "DaqDeviceInfo.h"
 #include "DaqDeviceConfig.h"
 #include "interfaces/UlDaqDevice.h"
@@ -30,7 +31,7 @@ class DaqEventHandler;
 class UL_LOCAL DaqDevice: public UlDaqDevice
 {
 public:
-	DaqDevice(DaqDeviceDescriptor daqDeviceDescriptor);
+	DaqDevice(const DaqDeviceDescriptor& daqDeviceDescriptor);
 	virtual ~DaqDevice();
 
 	virtual void connect()= 0;
@@ -97,6 +98,8 @@ public:
 	void addMemRegion(MemRegion memRegionType, unsigned long long address, unsigned long long size, long long accessTypes);
 
 	virtual void setCalOutput (unsigned int index) const { };
+
+	unsigned short getRawFwVer() const  { return mRawFwVersion;}
 
 	// public interface functions
 	UlAiDevice& getAiDevice() const;

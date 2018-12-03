@@ -9,7 +9,6 @@
 #define USB_CTR_CTRUSBCTRX_H_
 
 #include "CtrUsbBase.h"
-#include "./../../DaqDeviceId.h"
 
 namespace ul
 {

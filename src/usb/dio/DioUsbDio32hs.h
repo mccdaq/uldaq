@@ -28,6 +28,9 @@ public:
 	virtual unsigned long long dIn(DigitalPortType portType);
 	virtual void dOut(DigitalPortType portType, unsigned long long data);
 
+	virtual void dInArray(DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[]);
+	virtual void dOutArray(DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[]);
+
 	virtual bool dBitIn(DigitalPortType portType, int bitNum);
 	virtual void dBitOut(DigitalPortType portType, int bitNum, bool bitValue);
 

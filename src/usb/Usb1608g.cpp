@@ -5,7 +5,6 @@
  */
 
 #include "Usb1608g.h"
-#include "./../DaqDeviceId.h"
 #include "./ai/AiUsb1608g.h"
 #include "./ao/AoUsb1608g.h"
 #include "./dio/DioUsb1608g.h"
@@ -15,7 +14,7 @@
 namespace ul
 {
 
-Usb1608g::Usb1608g(DaqDeviceDescriptor daqDeviceDescriptor, std::string fpgaFileName) : UsbFpgaDevice(daqDeviceDescriptor, fpgaFileName)
+Usb1608g::Usb1608g(const DaqDeviceDescriptor& daqDeviceDescriptor, std::string fpgaFileName) : UsbFpgaDevice(daqDeviceDescriptor, fpgaFileName)
 {
 	setCmdValue(CMD_STATUS_KEY, 0x40);
 	setCmdValue(CMD_FLASH_LED_KEY, 0x41);

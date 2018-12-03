@@ -41,6 +41,8 @@ public:
 
 	void setAOutFlags(long long flags);
 	long long getAOutFlags() const;
+	void setAOutArrayFlags(long long flags);
+	long long getAOutArrayFlags() const;
 	void setAOutScanFlags(long long flags);
 	long long getAOutScanFlags() const;
 
@@ -88,6 +90,7 @@ private:
 	int mSampleSize;
 
 	long long mAOutFlags;
+	long long mAOutArrayFlags;
 	long long mAOutScanFlags;
 };
 

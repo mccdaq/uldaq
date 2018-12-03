@@ -7,7 +7,8 @@ CIn CInScan CInScanWithEncoder\
 DaqInScan DaqInScanWithTrigger\
 DaqOutScan\
 DIn DBitIn DInScan DOut DBitOut DOutScan\
-TmrPulseOut
+TmrPulseOut\
+TIn
 
 AIn_SOURCES = AIn.c utility.h
 AInScan_SOURCES = AInScan.c
@@ -34,6 +35,7 @@ DBitOut_SOURCES = DBitOut.c
 DOutScan_LDADD = $(LDADD) -lm
 DOutScan_SOURCES = DOutScan.c
 TmrPulseOut_SOURCES = TmrPulseOut.c
+TIn_SOURCES = TIn.c
 
 
 

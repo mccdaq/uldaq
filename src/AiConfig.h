@@ -25,10 +25,10 @@ public:
 	virtual void setChanTcType(int channel, TcType tcType);
 	virtual TcType getChanTcType(int channel);
 
-	virtual void setChanTempUnit(int channel, TempUnit unit);
-	virtual TempUnit getChanTempUnit(int channel);
+	virtual void setScanChanTempUnit(int channel, TempUnit unit);
+	virtual TempUnit getScanChanTempUnit(int channel);
 
-	virtual void setTempUnit(TempUnit unit);
+	virtual void setScanTempUnit(TempUnit unit);
 	//virtual TempUnit getTempUnit();
 
 	virtual void setAutoZeroMode(AutoZeroMode mode);
@@ -54,6 +54,9 @@ public:
 
 	virtual unsigned long long getCalDate(); // returns number of seconds since unix epoch
 	virtual void getCalDateStr(char* calDate, unsigned int* maxStrLen);
+
+	virtual void getChanCoefsStr(int channel, char* coefs, unsigned int* maxStrLen);
+	virtual SensorConnectionType getChanSensorConnectionType(int channel);
 
 private:
 	AiDevice& mAiDevice;

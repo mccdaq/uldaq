@@ -91,7 +91,7 @@ double AiUsb1608fs_Plus::aIn(int channel, AiInputMode inputMode, Range range, AI
 double AiUsb1608fs_Plus::aInScan(int lowChan, int highChan, AiInputMode inputMode, Range range, int samplesPerChan, double rate, ScanOption options, AInScanFlag flags, double data[])
 {
 	int chanCount = queueEnabled() ? queueLength() :  highChan - lowChan + 1;
-	long long totalCount = samplesPerChan * chanCount;
+	long long totalCount = (long long) samplesPerChan * chanCount;
 
 	//If no i/o mode is specified and scan meets the requirements for burst i/o mode then enable burst i/o mode,
 	if(!(options & (SO_SINGLEIO | SO_BLOCKIO | SO_BURSTIO | SO_CONTINUOUS)) &&

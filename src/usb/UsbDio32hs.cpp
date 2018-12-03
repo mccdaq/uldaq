@@ -9,7 +9,7 @@
 
 namespace ul
 {
-UsbDio32hs::UsbDio32hs(DaqDeviceDescriptor daqDeviceDescriptor, std::string fpgaFileName) : UsbFpgaDevice(daqDeviceDescriptor, fpgaFileName)
+UsbDio32hs::UsbDio32hs(const DaqDeviceDescriptor& daqDeviceDescriptor, std::string fpgaFileName) : UsbFpgaDevice(daqDeviceDescriptor, fpgaFileName)
 {
 	setCmdValue(CMD_STATUS_KEY, 0x40);
 	setCmdValue(CMD_FLASH_LED_KEY, 0x41);

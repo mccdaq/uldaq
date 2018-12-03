@@ -11,7 +11,6 @@
 #include "../UsbDaqDevice.h"
 #include "../../DaqIDevice.h"
 #include "../UsbScanTransferIn.h"
-#include "./../../DaqDeviceId.h"
 
 namespace ul
 {

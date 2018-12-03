@@ -42,8 +42,8 @@ int main(void)
 	// set some variables that are used to acquire data
 	int lowChan = 0;
 	int highChan = 3;
-	AiInputMode inputMode = AI_SINGLE_ENDED;
-	Range range = BIP10VOLTS;
+	AiInputMode inputMode;
+	Range range;
 	int samplesPerChannel = 10000;
 	double rate = 1000;
 	ScanOption scanOptions = (ScanOption) (SO_DEFAULTIO | SO_CONTINUOUS);

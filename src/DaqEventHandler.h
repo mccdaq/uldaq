@@ -44,7 +44,7 @@ private:
 	static void* eventThread(void* arg);
 	void waitForEvent();
 
-	int getEventIndex(DaqEventType eventType);
+	unsigned int getEventIndex(DaqEventType eventType);
 
 	void addEnabledEvents(DaqEventType eventTypes, unsigned long long eventParameter, DaqEventCallback eventCalbackFunc, void* userData);
 	void getCurrentEventsAndData(DaqEvent* daqEvents, int& eventCount);

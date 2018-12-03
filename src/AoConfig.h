@@ -20,6 +20,9 @@ public:
 	AoConfig(AoDevice& aoDevice);
 	virtual ~AoConfig();
 
+	virtual void setSyncMode(AOutSyncMode mode);
+	virtual AOutSyncMode getSyncMode();
+
 private:
 	AoDevice& mAoDevice;
 };

@@ -10,7 +10,7 @@
 #include "./ul_internal.h"
 #include "./DaqDeviceManager.h"
 #include "./usb/UsbDaqDevice.h"
-//#include "./hid/HidDaqDevice.h"
+#include "./hid/HidDaqDevice.h"
 
 void __attribute__ ((constructor)) lib_load(void);
 void __attribute__ ((destructor)) lib_unload(void);
@@ -31,7 +31,7 @@ void lib_load(void)
 	ErrorMap::init();
 
 	UsbDaqDevice::usb_init();
-	//HidDaqDevice::hidapi_init();
+	HidDaqDevice::hidapi_init();
 
 	SuspendMonitor::init();
 }
@@ -41,7 +41,7 @@ void lib_unload(void)
 {
 	DaqDeviceManager::releaseDevices();
 
-	//HidDaqDevice::hidapi_exit();
+	HidDaqDevice::hidapi_exit();
 
 	UsbDaqDevice::usb_exit();
 

@@ -12,7 +12,7 @@
 
 namespace ul
 {
-UsbCtrx::UsbCtrx(DaqDeviceDescriptor daqDeviceDescriptor, std::string fpgaFileName) : UsbFpgaDevice(daqDeviceDescriptor, fpgaFileName)
+UsbCtrx::UsbCtrx(const DaqDeviceDescriptor& daqDeviceDescriptor, std::string fpgaFileName) : UsbFpgaDevice(daqDeviceDescriptor, fpgaFileName)
 {
 	setCmdValue(CMD_STATUS_KEY, 0x40);
 	setCmdValue(CMD_FLASH_LED_KEY, 0x41);

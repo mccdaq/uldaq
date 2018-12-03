@@ -34,6 +34,18 @@ void AoDevice::aOut(int channel, Range range, AOutFlag flags, double dataValue)
 	throw UlException(ERR_BAD_DEV_TYPE);
 }
 
+void AoDevice::aOutArray(int lowChan, int highChan, Range range[], AOutArrayFlag flags, double data[])
+{
+	check_AOutArray_Args(lowChan, highChan, range, flags, data);
+
+	int i;
+	for(int chan = lowChan; chan <= highChan; chan++)
+	{
+		i = chan - lowChan;
+		aOut(chan, range[i], (AOutFlag) flags, data[i]);
+	}
+}
+
 double AoDevice::aOutScan(int lowChan, int highChan, Range range, int samplesPerChan, double rate, ScanOption options, AOutScanFlag flags, double data[])
 {
 	throw UlException(ERR_BAD_DEV_TYPE);
@@ -274,6 +286,59 @@ void AoDevice::check_AOut_Args(int channel, Range range, AOutFlag flags, double 
 		throw UlException(ERR_NO_CONNECTION_ESTABLISHED);
 }
 
+void AoDevice::check_AOutArray_Args(int lowChan, int highChan, Range range[], AOutArrayFlag flags, double data[]) const
+{
+	int numOfScanChan = 0;
+	double maxDataValue;
+	bool scaled = true;
+
+	if(flags & NOSCALEDATA)
+		scaled = false;
+
+	if(getScanState() == SS_RUNNING)
+		throw UlException(ERR_ALREADY_ACTIVE);
+
+	if(lowChan < 0 || highChan < 0 || lowChan > mAoInfo.getNumChans() || highChan >= mAoInfo.getNumChans() || lowChan > highChan )
+		throw UlException(ERR_BAD_AO_CHAN);
+
+	if(data == NULL || range == NULL)
+		throw UlException(ERR_BAD_BUFFER);
+
+	if(~mAoInfo.getAOutArrayFlags() & flags)
+		throw UlException(ERR_BAD_FLAG);
+
+	numOfScanChan = highChan - lowChan + 1;
+
+	for(int i = 0; i < numOfScanChan; i++)
+	{
+		if(!mAoInfo.isRangeSupported(range[i]))
+			throw UlException(ERR_BAD_RANGE);
+
+		maxDataValue = getMaxOutputValue(range[i], scaled);
+
+		if (data[i] > maxDataValue)
+			throw UlException(ERR_BAD_DA_VAL);
+
+		if(flags & NOSCALEDATA)
+		{
+			if(data[0] < 0)
+				throw UlException(ERR_BAD_DA_VAL);
+		}
+		else
+		{
+			double offset = 0;
+			double scale = 0;
+			mDaqDevice.getEuScaling(range[i], scale, offset);
+
+			if(data[i] < offset)
+				throw UlException(ERR_BAD_DA_VAL);
+		}
+	}
+
+	if(!mDaqDevice.isConnected())
+		throw UlException(ERR_NO_CONNECTION_ESTABLISHED);
+}
+
 void AoDevice::check_AOutScan_Args(int lowChan, int highChan, Range range, int samplesPerChan, double rate, ScanOption options, AOutScanFlag flags, double data[]) const
 {
 	int numOfScanChan = 0;
@@ -339,6 +404,18 @@ void AoDevice::check_AOutSetTrigger_Args(TriggerType trigType, int trigChan,  do
 	}
 	else
 		throw UlException(ERR_BAD_DEV_TYPE);
+}
+
+
+//////////////////////          Configuration functions          /////////////////////////////////
+
+void AoDevice::setCfg_SyncMode(AOutSyncMode mode)
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+AOutSyncMode AoDevice::getCfg_SyncMode() const
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
 }
 
 

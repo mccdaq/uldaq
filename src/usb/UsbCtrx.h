@@ -15,7 +15,7 @@ namespace ul
 class UL_LOCAL UsbCtrx: public UsbFpgaDevice
 {
 public:
-	UsbCtrx(DaqDeviceDescriptor daqDeviceDescriptor, std::string fpgaFileName);
+	UsbCtrx(const DaqDeviceDescriptor& daqDeviceDescriptor, std::string fpgaFileName);
 	virtual ~UsbCtrx();
 
 	virtual void setupTrigger(FunctionType functionType, ScanOption options) const;

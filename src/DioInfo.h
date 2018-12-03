@@ -55,7 +55,7 @@ public:
 	bool supportsTrigger(DigitalDirection direction) const;
 
 	bool isPortSupported(DigitalPortType portType) const;
-	int getPortNum(DigitalPortType portType) const;
+	unsigned int getPortNum(DigitalPortType portType) const;
 
 private:
 	std::vector<DioPortInfo> mPortInfo;

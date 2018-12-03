@@ -32,7 +32,7 @@
 #define MAX_RANGE_COUNT  8
 #define MAX_STR_LENGTH 64
 #define MAX_SCAN_OPTIONS_LENGTH 256
-#define MAX_QUEUE_SIZE 8	// arbitrary limit for the size for the queue
+#define MAX_QUEUE_SIZE 32	// arbitrary limit for the size for the queue
 
 int main(void)
 {
@@ -46,8 +46,8 @@ int main(void)
 	// parameters are ignored since they are specified in queueArray
 	int lowChan = 0;
 	int highChan = 3;
-	AiInputMode inputMode = AI_SINGLE_ENDED;
-	Range range = BIP10VOLTS;
+	AiInputMode inputMode;
+	Range range;
 
 	// set some variables that are used to acquire data
 	int samplesPerChannel = 10000;
@@ -121,9 +121,6 @@ int main(void)
 		goto end;
 	}
 
-	// get the analog input ranges
-	err = getAiInfoRanges(daqDeviceHandle, inputMode, &numRanges, ranges);
-
 	// get the queue types
 	err = getAiInfoQueueTypes(daqDeviceHandle, &queueTypes);
 
@@ -133,9 +130,6 @@ int main(void)
 	if (highChan >= numberOfChannels)
 		highChan = numberOfChannels - 1;
 
-	if (highChan >= MAX_QUEUE_SIZE)
-		highChan = MAX_QUEUE_SIZE - 1;
-
 	chanCount = highChan - lowChan + 1;
 
 	// does the device support a queue
@@ -144,6 +138,9 @@ int main(void)
 		printf("\nThe specified DAQ device does not support a queue\n");
 		goto end;
 	}
+
+	// get the analog input ranges
+	err = getAiInfoRanges(daqDeviceHandle, inputMode, &numRanges, ranges);
 
 	// assign each channel in the queue an input mode (SE/DIFF) and a range ... if
 	// multiple ranges are supported, we will cycle through them and repeat ranges if the
@@ -198,6 +195,10 @@ int main(void)
 
 	// clear the display
 	ret = system("clear");
+
+	// the range argument of the ulAInScan function is ignored becasue the ragnes are set by the ulAInLoadQueue() function,
+	// however the range variable is initilized to an arbitrary range here to prevent compiler warnings
+	range = BIP10VOLTS;
 
 	// start the acquisition
 	//

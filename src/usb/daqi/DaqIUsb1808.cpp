@@ -66,36 +66,41 @@ double DaqIUsb1808::daqInScan(FunctionType functionType, DaqInChanDescriptor cha
 
 	AiUsb1808* aiDev = dynamic_cast<AiUsb1808*>(mDaqDevice.aiDevice());
 
-	int sampleSize = 4;
-	int aiResolution = aiDev->getAiInfo().getResolution();
-	int chanCount = numChans;
-	int stageSize = calcStageSize(epAddr, rate, chanCount,  samplesPerChan, sampleSize);
-
-	std::vector<CalCoef> calCoefs = getScanCalCoefs(chanDescriptors, numChans, flags);
-	std::vector<CustomScale> customScales = getCustomScales(chanDescriptors, numChans);
-
-	daqDev().setupTrigger(functionType, options);
-
-	loadScanConfigs(chanDescriptors, numChans);
-
-	daqDev().sendCmd(CMD_SCAN_CLEARFIFO);
-
-	setScanInfo(functionType, chanCount, samplesPerChan, sampleSize, aiResolution, options, flags, calCoefs, customScales, data);
-
-	setScanConfig(functionType, chanCount, samplesPerChan, rate, options, flags);
-
-	daqDev().scanTranserIn()->initilizeTransfers(this, epAddr, stageSize);
-
-	try
+	if(aiDev)
 	{
-		daqDev().sendCmd(CMD_IN_SCAN_START, 0, 0, (unsigned char*) &mScanConfig, sizeof(mScanConfig), 1000);
+		int sampleSize = 4;
+		int aiResolution = aiDev->getAiInfo().getResolution();
+		int chanCount = numChans;
+		int stageSize = calcStageSize(epAddr, rate, chanCount,  samplesPerChan, sampleSize);
 
-		setScanState(SS_RUNNING);
-	}
-	catch(UlException& e)
-	{
-		stopBackground();
-		throw e;
+		std::vector<CalCoef> calCoefs = getScanCalCoefs(chanDescriptors, numChans, flags);
+		std::vector<CustomScale> customScales = getCustomScales(chanDescriptors, numChans);
+
+		daqDev().setupTrigger(functionType, options);
+
+		loadScanConfigs(chanDescriptors, numChans);
+
+		daqDev().clearHalt(epAddr);
+
+		daqDev().sendCmd(CMD_SCAN_CLEARFIFO);
+
+		setScanInfo(functionType, chanCount, samplesPerChan, sampleSize, aiResolution, options, flags, calCoefs, customScales, data);
+
+		setScanConfig(functionType, chanCount, samplesPerChan, rate, options, flags);
+
+		daqDev().scanTranserIn()->initilizeTransfers(this, epAddr, stageSize);
+
+		try
+		{
+			daqDev().sendCmd(CMD_IN_SCAN_START, 0, 0, (unsigned char*) &mScanConfig, sizeof(mScanConfig), 1000);
+
+			setScanState(SS_RUNNING);
+		}
+		catch(UlException& e)
+		{
+			stopBackground();
+			throw e;
+		}
 	}
 
 	return actualScanRate();
@@ -216,7 +221,9 @@ void DaqIUsb1808::loadScanConfigs(DaqInChanDescriptor chanDescriptors[], int num
 	if(aiChanCount > 0)
 	{
 		const AiUsb1808* aiDev = dynamic_cast<AiUsb1808*>(mDaqDevice.aiDevice());
-		aiDev->loadAInConfigs(aichanDescs, aiChanCount);
+
+		if(aiDev)
+			aiDev->loadAInConfigs(aichanDescs, aiChanCount);
 	}
 
 	daqDev().sendCmd(CMD_IN_SCAN_CONFIG, 0, idx - 1, (unsigned char*) &scanQueue, sizeof(scanQueue));
@@ -234,21 +241,24 @@ std::vector<CalCoef> DaqIUsb1808::getScanCalCoefs(DaqInChanDescriptor chanDescri
 
 	const AiUsb1808* aiDev = dynamic_cast<AiUsb1808*>(mDaqDevice.aiDevice());
 
-	for(int idx = 0; idx < numChans; idx++)
+	if(aiDev)
 	{
-		if(chanDescriptors[idx].type == DAQI_ANALOG_SE || chanDescriptors[idx].type == DAQI_ANALOG_DIFF)
+		for(int idx = 0; idx < numChans; idx++)
 		{
-			inputMode = chanDescriptors[idx].type == DAQI_ANALOG_SE ? AI_SINGLE_ENDED : AI_DIFFERENTIAL;
+			if(chanDescriptors[idx].type == DAQI_ANALOG_SE || chanDescriptors[idx].type == DAQI_ANALOG_DIFF)
+			{
+				inputMode = chanDescriptors[idx].type == DAQI_ANALOG_SE ? AI_SINGLE_ENDED : AI_DIFFERENTIAL;
 
-			calCoef = aiDev->getChanCalCoef(chanDescriptors[idx].channel, inputMode, chanDescriptors[idx].range, flags);
-		}
-		else
-		{
-			calCoef.slope = 1;
-			calCoef.offset = 0;
-		}
+				calCoef = aiDev->getChanCalCoef(chanDescriptors[idx].channel, inputMode, chanDescriptors[idx].range, flags);
+			}
+			else
+			{
+				calCoef.slope = 1;
+				calCoef.offset = 0;
+			}
 
-		calCoefs.push_back(calCoef);
+			calCoefs.push_back(calCoef);
+		}
 	}
 
 	return calCoefs;
@@ -262,19 +272,22 @@ std::vector<CustomScale> DaqIUsb1808::getCustomScales(DaqInChanDescriptor chanDe
 
 	const AiUsb1808* aiDev = dynamic_cast<AiUsb1808*>(mDaqDevice.aiDevice());
 
-	for(int idx = 0; idx < numChans; idx++)
+	if(aiDev)
 	{
-		if(chanDescriptors[idx].type == DAQI_ANALOG_SE || chanDescriptors[idx].type == DAQI_ANALOG_DIFF)
+		for(int idx = 0; idx < numChans; idx++)
 		{
-			customScale = aiDev->getChanCustomScale(chanDescriptors[idx].channel);
-		}
-		else
-		{
-			customScale.slope = 1;
-			customScale.offset = 0;
-		}
+			if(chanDescriptors[idx].type == DAQI_ANALOG_SE || chanDescriptors[idx].type == DAQI_ANALOG_DIFF)
+			{
+				customScale = aiDev->getChanCustomScale(chanDescriptors[idx].channel);
+			}
+			else
+			{
+				customScale.slope = 1;
+				customScale.offset = 0;
+			}
 
-		customScales.push_back(customScale);
+			customScales.push_back(customScale);
+		}
 	}
 
 	return customScales;

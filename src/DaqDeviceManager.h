@@ -31,7 +31,7 @@ public:
 	static void releaseDevice(long long deviceNumber);
 	static void releaseDevices();
 	static DaqDevice* getActualDeviceHandle(long long deviceNumber);
-	static DaqDevice* getDaqDevice(DaqDeviceDescriptor daqDeviceDescriptor);
+	static DaqDevice* getDaqDevice(const DaqDeviceDescriptor& daqDeviceDescriptor);
 
 private:
 	static void addSupportedDaqDevice();

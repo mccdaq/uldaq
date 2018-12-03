@@ -34,6 +34,13 @@ Building the **uldaq** package requires C/C++ compilers, make tool, and the deve
      $ sudo zypper install gcc gcc-c++ make
      $ sudo zypper install libusb-devel
   ```
+  - MacOS (Version 10.11 or later recommended)
+  
+  ```
+     $ xcode-select --install
+     $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+     $ brew install libusb
+  ```
 
 ### Build Instructions
 ---------------------
@@ -42,18 +49,21 @@ Building the **uldaq** package requires C/C++ compilers, make tool, and the deve
 
 ```
   Linux
-     $ wget https://github.com/mccdaq/uldaq/releases/download/v1.0.0/libuldaq-1.0.0.tar.bz2
+     $ wget https://github.com/mccdaq/uldaq/releases/download/v1.1.0/libuldaq-1.1.0.tar.bz2
+
+  MacOS
+     $ curl -L -O https://github.com/mccdaq/uldaq/releases/download/v1.1.0/libuldaq-1.1.0.tar.bz2
 ``` 
 2. Extract the tar file:
  
 ```
-  $ tar -xvjf libuldaq-1.0.0.tar.bz2
+  $ tar -xvjf libuldaq-1.1.0.tar.bz2
 ```
   
 3. Run the following commands to build and install the library:
 
 ```
-  $ cd libuldaq-1.0.0
+  $ cd libuldaq-1.1.0
   $ ./configure && make
   $ sudo make install
 ```
@@ -120,7 +130,7 @@ int main(void)
 }
 ```
 ### Support/Feedback
-The **uldaq** package is supported by MCC. For support for uldaq, contact technical through [support page](https://www.mccdaq.com/support/support_form.aspx). Please include detailed steps on how to reproduce the problem in your request.
+The **uldaq** package is supported by MCC. For support for uldaq, contact technical support through [support page](https://www.mccdaq.com/support/support_form.aspx). Please include detailed steps on how to reproduce the problem in your request.
 
 ### Documentation
 Online help for the Universal Library for Linux is available for [C/C++](https://www.mccdaq.com/PDFs/Manuals/UL-Linux/c/index.html) and [Python](https://www.mccdaq.com/PDFs/Manuals/UL-Linux/python/index.html).

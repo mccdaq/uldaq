@@ -29,6 +29,9 @@ public:
 
 	virtual UlError getStatus(ScanStatus* status, TransferStatus* xferStatus) = 0;
 	virtual void stopBackground() = 0;
+
+	virtual void tIn(int channel, TempScale scale, TInFlag flags, double* data) = 0;
+	virtual void tInArray(int lowChan, int highChan, TempScale scale, TInArrayFlag flags, double data[]) = 0;
 };
 
 } /* namespace ul */

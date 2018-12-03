@@ -26,7 +26,7 @@ public:
 
 	void initilizeTransfers(IoDevice* ioDevice, int endpointAddress, int stageSize);
 	void initilizeOnDemandTransfer(IoDevice* ioDevice, int endpointAddress, int stageSize);
-	void stopTransfers();
+	void stopTransfers(bool delay = true);
 
 	inline XferState getXferState() const { return mXferState;}
 	inline UlError getXferError() const { return mXferError;}

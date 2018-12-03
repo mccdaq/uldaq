@@ -33,7 +33,7 @@ int main(void)
 	unsigned int numDevs = MAX_DEV_COUNT;
 
 	int channel = 0;
-	Range range = BIP10VOLTS;
+	Range range;
 	AOutFlag flags = AOUT_FF_DEFAULT;
 
 	int hasAO = 0;

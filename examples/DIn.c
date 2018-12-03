@@ -37,9 +37,11 @@ int main(void)
 	unsigned int numDevs = MAX_DEV_COUNT;
 
 	int hasDIO = 0;
-	DigitalPortType portType = AUXPORT;
+	DigitalPortType portType;
+	DigitalPortIoType portIoType;
 
 	char portTypeStr[MAX_STR_LENGTH];
+	char portIoTypeStr[MAX_STR_LENGTH];
 
 	unsigned long long data = 0;
 	UlError err = ERR_NO_ERROR;
@@ -90,15 +92,22 @@ int main(void)
 	if (err != ERR_NO_ERROR)
 		goto end;
 
-	// get the port types for the device (AUXPORT0, FIRSTPORTA, ...)
+	// get the first port type (AUXPORT0, FIRSTPORTA, ...)
 	err = getDioInfoFirstSupportedPortType(daqDeviceHandle, &portType, portTypeStr);
 
-	// configure the first port for input
-	err = ulDConfigPort(daqDeviceHandle, portType, DD_INPUT);
+	// get the I/O type for the fisrt port
+	err = getDioInfoFirstSupportedPortIoType(daqDeviceHandle, &portIoType, portIoTypeStr);
+
+	if(portIoType == DPIOT_IO || portIoType == DPIOT_BITIO)
+	{
+		// configure the first port for input
+		err = ulDConfigPort(daqDeviceHandle, portType, DD_INPUT);
+	}
 
 	printf("\n%s ready\n", devDescriptors[descriptorIndex].devString);
 	printf("    Function demonstrated: ulDIn()\n");
 	printf("    Port: %s\n", portTypeStr);
+	printf("    Port I/O type: %s\n", portIoTypeStr);
 	printf("\nHit ENTER to continue\n");
 
 	ret = scanf("%c", &c);

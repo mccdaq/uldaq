@@ -26,7 +26,7 @@ namespace ul
 pthread_mutex_t DaqDevice::mDeviceNumberMutex = PTHREAD_MUTEX_INITIALIZER;
 unsigned long long DaqDevice::mNextAvailableDeviceNumber = 1;
 
-DaqDevice::DaqDevice(DaqDeviceDescriptor daqDeviceDescriptor): mDaqDeviceDescriptor(daqDeviceDescriptor), mConnected(false),
+DaqDevice::DaqDevice(const DaqDeviceDescriptor& daqDeviceDescriptor): mDaqDeviceDescriptor(daqDeviceDescriptor), mConnected(false),
 		mAiDevice(NULL), mAoDevice(NULL), mDioDevice(NULL), mCtrDevice(NULL), mTmrDevice(NULL), mDaqIDevice(NULL), mDaqODevice(NULL)
 {
 	mEventHandler = new DaqEventHandler(*this);
@@ -477,7 +477,7 @@ IoDevice* DaqDevice::getIoDevice(FunctionType functionType) const
 
 TriggerConfig DaqDevice::getTriggerConfig(FunctionType functionType) const
 {
-	TriggerConfig trigCfg;
+	TriggerConfig trigCfg = {(TriggerType) 0, 0, 0, 0, 0};
 
 	if(functionType == FT_AI && mAiDevice)
 		trigCfg = mAiDevice->getTrigConfig();

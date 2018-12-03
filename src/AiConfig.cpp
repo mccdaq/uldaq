@@ -37,19 +37,19 @@ TcType AiConfig::getChanTcType(int channel)
 	return mAiDevice.getCfg_ChanTcType(channel);
 }
 
-void AiConfig::setChanTempUnit(int channel, TempUnit unit)
+void AiConfig::setScanChanTempUnit(int channel, TempUnit unit)
 {
-	mAiDevice.setCfg_ChanTempUnit(channel, unit);
+	mAiDevice.setCfg_ScanChanTempUnit(channel, unit);
 }
 
-TempUnit AiConfig::getChanTempUnit(int channel)
+TempUnit AiConfig::getScanChanTempUnit(int channel)
 {
-	return mAiDevice.getCfg_ChanTempUnit(channel);
+	return mAiDevice.getCfg_ScanChanTempUnit(channel);
 }
 
-void AiConfig::setTempUnit(TempUnit unit)
+void AiConfig::setScanTempUnit(TempUnit unit)
 {
-	mAiDevice.setCfg_TempUnit(unit);
+	mAiDevice.setCfg_ScanTempUnit(unit);
 }
 
 void AiConfig::setAutoZeroMode(AutoZeroMode mode)
@@ -129,6 +129,16 @@ unsigned long long AiConfig::getCalDate()
 void AiConfig::getCalDateStr(char* calDate, unsigned int* maxStrLen)
 {
 	return mAiDevice.getCfg_CalDateStr(calDate, maxStrLen);
+}
+
+void AiConfig::getChanCoefsStr(int channel, char* coefs, unsigned int* maxStrLen)
+{
+	return mAiDevice.getCfg_ChanCoefsStr(channel, coefs, maxStrLen);
+}
+
+SensorConnectionType AiConfig::getChanSensorConnectionType(int channel)
+{
+	return mAiDevice.getCfg_SensorConnectionType(channel);
 }
 
 } /* namespace ul */

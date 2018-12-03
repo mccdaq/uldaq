@@ -38,8 +38,8 @@ int main(void)
 	int lowChan = 0;
 	int highChan = 3;
 	int chan = 0;
-	AiInputMode inputMode = AI_DIFFERENTIAL;
-	Range range = BIP10VOLTS;
+	AiInputMode inputMode;
+	Range range;
 	AInFlag flags = AIN_FF_DEFAULT;
 
 	int hasAI = 0;

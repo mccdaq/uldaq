@@ -28,11 +28,16 @@ public:
 	virtual UlAoConfig& getAoConfig() { return *mAoConfig;}
 
 	virtual void aOut(int channel, Range range, AOutFlag flags, double dataValue);
+	virtual void aOutArray(int lowChan, int highChan, Range range[], AOutArrayFlag flags, double data[]);
 	virtual double aOutScan(int lowChan, int highChan, Range range, int samplesPerChan, double rate, ScanOption options, AOutScanFlag flags, double data[]);
 	virtual void setTrigger(TriggerType type, int trigChan, double level, double variance, unsigned int retriggerCount);
 
 	virtual UlError getStatus(ScanStatus* status, TransferStatus* xferStatus);
 	virtual void stopBackground();
+
+	//////////////////////          Configuration functions          /////////////////////////////////
+	virtual void setCfg_SyncMode(AOutSyncMode mode);
+	virtual AOutSyncMode getCfg_SyncMode() const;
 
 protected:
 	virtual void loadDacCoefficients() = 0;
@@ -49,6 +54,7 @@ protected:
 	double toEngUnits(unsigned int counts, Range range) const;
 
 	void check_AOut_Args(int channel, Range range, AOutFlag flags, double dataValue) const;
+	void check_AOutArray_Args(int lowChan, int highChan, Range range[], AOutArrayFlag flags, double data[]) const;
 	void check_AOutScan_Args(int lowChan, int highChan, Range range, int samplesPerChan, double rate, ScanOption options, AOutScanFlag flags, double data[]) const;
 	void check_AOutSetTrigger_Args(TriggerType trigType, int trigChan,  double level, double variance, unsigned int retriggerCount) const;
 

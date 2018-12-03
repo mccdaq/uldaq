@@ -10,7 +10,6 @@
 
 #include "../UsbDaqDevice.h"
 #include "../../DaqODevice.h"
-#include "./../../DaqDeviceId.h"
 #include "../UsbScanTransferOut.h"
 
 namespace ul

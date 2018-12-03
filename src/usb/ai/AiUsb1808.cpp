@@ -143,31 +143,36 @@ double AiUsb1808::aInScan(int lowChan, int highChan, AiInputMode inputMode, Rang
 {
 	check_AInScan_Args(lowChan, highChan, inputMode, range, samplesPerChan, rate, options, flags, data);
 
+	double actualRate = 0;
+
 	DaqIUsb1808* daqIDev = dynamic_cast<DaqIUsb1808*>(mDaqDevice.daqIDevice());
 
-	int numChans = (queueEnabled() ? queueLength() : highChan - lowChan + 1);
-
-	DaqInChanDescriptor* chanDescriptors = new DaqInChanDescriptor[numChans];
-
-	for(int i = 0; i < numChans; i++)
+	if(daqIDev)
 	{
-		if(queueEnabled())
+		int numChans = (queueEnabled() ? queueLength() : highChan - lowChan + 1);
+
+		DaqInChanDescriptor* chanDescriptors = new DaqInChanDescriptor[numChans];
+
+		for(int i = 0; i < numChans; i++)
 		{
-			chanDescriptors[i].channel = mAQueue[i].channel;
-			chanDescriptors[i].type = (mAQueue[i].inputMode == AI_DIFFERENTIAL) ? DAQI_ANALOG_DIFF : DAQI_ANALOG_SE;
-			chanDescriptors[i].range = mAQueue[i].range;
+			if(queueEnabled())
+			{
+				chanDescriptors[i].channel = mAQueue[i].channel;
+				chanDescriptors[i].type = (mAQueue[i].inputMode == AI_DIFFERENTIAL) ? DAQI_ANALOG_DIFF : DAQI_ANALOG_SE;
+				chanDescriptors[i].range = mAQueue[i].range;
+			}
+			else
+			{
+				chanDescriptors[i].channel = lowChan + i;
+				chanDescriptors[i].type = (inputMode == AI_DIFFERENTIAL) ? DAQI_ANALOG_DIFF : DAQI_ANALOG_SE;
+				chanDescriptors[i].range = range;
+			}
 		}
-		else
-		{
-			chanDescriptors[i].channel = lowChan + i;
-			chanDescriptors[i].type = (inputMode == AI_DIFFERENTIAL) ? DAQI_ANALOG_DIFF : DAQI_ANALOG_SE;
-			chanDescriptors[i].range = range;
-		}
+
+		actualRate =  daqIDev->daqInScan(FT_AI, chanDescriptors, numChans, samplesPerChan, rate, options, (DaqInScanFlag) flags, data);
+
+		delete [] chanDescriptors;
 	}
-
-	double actualRate =  daqIDev->daqInScan(FT_AI, chanDescriptors, numChans, samplesPerChan, rate, options, (DaqInScanFlag) flags, data);
-
-	delete [] chanDescriptors;
 
 	return actualRate;
 }

@@ -25,7 +25,6 @@ DioDevice::DioDevice(const DaqDevice& daqDevice) : IoDevice(daqDevice), UlDioDev
 
 	memset(&mDoTrigCfg, 0, sizeof(mDoTrigCfg));
 	mDoTrigCfg.type = TRIG_POS_EDGE;
-
 }
 
 DioDevice::~DioDevice()
@@ -56,6 +55,37 @@ unsigned long long DioDevice::dIn(DigitalPortType portType)
 void DioDevice::dOut(DigitalPortType portType, unsigned long long data)
 {
 	throw UlException(ERR_BAD_DEV_TYPE);
+}
+
+void DioDevice::dInArray(DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[])
+{
+	check_DInArray_Args(lowPort, highPort, data);
+
+	unsigned int lowPortNum = mDioInfo.getPortNum(lowPort);
+	unsigned int highPortNum = mDioInfo.getPortNum(highPort);
+
+	int i = 0;
+
+	for(unsigned int portNum = lowPortNum; portNum <=highPortNum; portNum++)
+	{
+		data[i] = dIn(mDioInfo.getPortType(portNum));
+		i++;
+	}
+}
+
+void DioDevice::dOutArray(DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[])
+{
+	check_DOutArray_Args(lowPort, highPort, data);
+
+	unsigned int lowPortNum = mDioInfo.getPortNum(lowPort);
+	unsigned int highPortNum = mDioInfo.getPortNum(highPort);
+
+	int i = 0;
+	for(unsigned int portNum = lowPortNum; portNum <= highPortNum; portNum++)
+	{
+		dOut(mDioInfo.getPortType(portNum), data[i]);
+		i++;
+	}
 }
 
 bool DioDevice::dBitIn(DigitalPortType portType, int bitNum)
@@ -181,7 +211,7 @@ void DioDevice::check_DConfigBit_Args(DigitalPortType portType, int bitNum, Digi
 	if(mDioInfo.isPortSupported(portType) == false)
 		throw UlException(ERR_BAD_PORT_TYPE);
 
-	int portNum = mDioInfo.getPortNum(portType);
+	unsigned int portNum = mDioInfo.getPortNum(portType);
 	int bitCount = mDioInfo.getNumBits(portNum);
 
 	if(bitCount <= bitNum)
@@ -196,7 +226,7 @@ void DioDevice::check_DIn_Args(DigitalPortType portType)
 	if(mDioInfo.isPortSupported(portType) == false)
 		throw UlException(ERR_BAD_PORT_TYPE);
 
-	int portNum = mDioInfo.getPortNum(portType);
+	unsigned int portNum = mDioInfo.getPortNum(portType);
 	DigitalPortIoType  ioType = mDioInfo.getPortIoType(portNum);
 
 	if(ioType == DPIOT_OUT)
@@ -211,13 +241,13 @@ void DioDevice::check_DOut_Args(DigitalPortType portType, unsigned long long dat
 	if(mDioInfo.isPortSupported(portType) == false)
 		throw UlException(ERR_BAD_PORT_TYPE);
 
-	int portNum = mDioInfo.getPortNum(portType);
-	int bitCount = mDioInfo.getNumBits(portNum);
+	unsigned int portNum = mDioInfo.getPortNum(portType);
+	unsigned int bitCount = mDioInfo.getNumBits(portNum);
 
 	DigitalPortIoType ioType = mDioInfo.getPortIoType(portNum);
 
 	if(ioType == DPIOT_IN)
-		throw UlException(ERR_WRONG_DIG_CONFIG);
+		throw UlException(ERR_BAD_DIG_OPERATION);
 	else if((ioType == DPIOT_IO || ioType == DPIOT_BITIO) && !mDisableCheckDirection)
 	{
 		if(mPortDirectionMask[portNum].any())
@@ -233,16 +263,84 @@ void DioDevice::check_DOut_Args(DigitalPortType portType, unsigned long long dat
 			throw UlException(ERR_NO_CONNECTION_ESTABLISHED);
 }
 
+void DioDevice::check_DInArray_Args(DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[])
+{
+	if(!mDioInfo.isPortSupported(lowPort) || !mDioInfo.isPortSupported(highPort))
+			throw UlException(ERR_BAD_PORT_TYPE);
+
+	unsigned int lowPortNum = mDioInfo.getPortNum(lowPort);
+	unsigned int highPortNum = mDioInfo.getPortNum(highPort);
+
+	if(lowPortNum > highPortNum )
+			throw UlException(ERR_BAD_PORT_TYPE);
+
+	for(unsigned int portNum = lowPortNum; portNum <=highPortNum; portNum++)
+	{
+		if(mDioInfo.getPortIoType(portNum) == DPIOT_OUT)
+				throw UlException(ERR_WRONG_DIG_CONFIG);
+	}
+
+	if(data == NULL)
+		throw UlException(ERR_BAD_BUFFER);
+
+	if(!mDaqDevice.isConnected())
+		throw UlException(ERR_NO_CONNECTION_ESTABLISHED);
+}
+
+void DioDevice::check_DOutArray_Args(DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[])
+{
+	if(!mDioInfo.isPortSupported(lowPort) || !mDioInfo.isPortSupported(highPort))
+			throw UlException(ERR_BAD_PORT_TYPE);
+
+	unsigned int lowPortNum = mDioInfo.getPortNum(lowPort);
+	unsigned int highPortNum = mDioInfo.getPortNum(highPort);
+
+	if(lowPortNum > highPortNum )
+		throw UlException(ERR_BAD_PORT_TYPE);
+
+	if(data == NULL)
+		throw UlException(ERR_BAD_BUFFER);
+
+	DigitalPortIoType ioType;
+	int bitCount;
+	unsigned long maxVal;
+	int i = 0;
+
+	for(unsigned int portNum = lowPortNum; portNum <=highPortNum; portNum++)
+	{
+		ioType = mDioInfo.getPortIoType(portNum);
+		bitCount = mDioInfo.getNumBits(portNum);
+
+		if(ioType == DPIOT_IN)
+			throw UlException(ERR_BAD_DIG_OPERATION);
+		else if((ioType == DPIOT_IO || ioType == DPIOT_BITIO) && !mDisableCheckDirection)
+		{
+			if(mPortDirectionMask[portNum].any())
+				throw UlException(ERR_WRONG_DIG_CONFIG);
+		}
+
+		maxVal = (1 << bitCount) - 1;
+
+		if(data[i] > maxVal)
+			throw UlException(ERR_BAD_PORT_VAL);
+
+		i++;
+	}
+
+	if(!mDaqDevice.isConnected())
+		throw UlException(ERR_NO_CONNECTION_ESTABLISHED);
+}
+
 
 void DioDevice::check_DBitIn_Args(DigitalPortType portType, int bitNum)
 {
 	if(mDioInfo.isPortSupported(portType) == false)
 		throw UlException(ERR_BAD_PORT_TYPE);
 
-	int portNum = mDioInfo.getPortNum(portType);
+	unsigned int portNum = mDioInfo.getPortNum(portType);
 	int bitCount = mDioInfo.getNumBits(portNum);
 
-	if(bitNum < 0 || bitNum >= bitCount)
+	if(bitNum >= bitCount)
 		throw UlException(ERR_BAD_BIT_NUM);
 
 	if(!mDaqDevice.isConnected())
@@ -254,16 +352,16 @@ void DioDevice::check_DBitOut_Args(DigitalPortType portType, int bitNum)
 	if(mDioInfo.isPortSupported(portType) == false)
 		throw UlException(ERR_BAD_PORT_TYPE);
 
-	int portNum = mDioInfo.getPortNum(portType);
+	unsigned int portNum = mDioInfo.getPortNum(portType);
 	int bitCount = mDioInfo.getNumBits(portNum);
 
-	if(bitNum < 0 || bitNum >= bitCount)
+	if(bitNum >= bitCount)
 		throw UlException(ERR_BAD_BIT_NUM);
 
 	DigitalPortIoType ioType = mDioInfo.getPortIoType(portNum);
 
 	if(ioType == DPIOT_IN)
-		throw UlException(ERR_WRONG_DIG_CONFIG);
+		throw UlException(ERR_BAD_DIG_OPERATION);
 	else if((ioType == DPIOT_IO || ioType == DPIOT_BITIO) && !mDisableCheckDirection)
 	{
 		if(mPortDirectionMask[portNum][bitNum])
@@ -279,8 +377,8 @@ void DioDevice::check_DInScan_Args(DigitalPortType lowPort, DigitalPortType high
 	if(!mDioInfo.isPortSupported(lowPort) || !mDioInfo.isPortSupported(highPort))
 		throw UlException(ERR_BAD_PORT_TYPE);
 
-	int lowPortNum = mDioInfo.getPortNum(lowPort);
-	int highPortNum = mDioInfo.getPortNum(highPort);
+	unsigned int lowPortNum = mDioInfo.getPortNum(lowPort);
+	unsigned int highPortNum = mDioInfo.getPortNum(highPort);
 
 	int numOfScanPorts = highPortNum - lowPortNum + 1;
 
@@ -296,7 +394,7 @@ void DioDevice::check_DInScan_Args(DigitalPortType lowPort, DigitalPortType high
 	if(lowPortNum > highPortNum )
 		throw UlException(ERR_BAD_PORT_TYPE);
 
-	for(int portNum = lowPortNum; portNum <=highPortNum; portNum++)
+	for(unsigned int portNum = lowPortNum; portNum <=highPortNum; portNum++)
 	{
 		if(mDioInfo.getPortIoType(portNum) == DPIOT_OUT)
 				throw UlException(ERR_WRONG_DIG_CONFIG);
@@ -334,8 +432,8 @@ void DioDevice::check_DOutScan_Args(DigitalPortType lowPort, DigitalPortType hig
 	if(!mDioInfo.isPortSupported(lowPort) || !mDioInfo.isPortSupported(highPort))
 		throw UlException(ERR_BAD_PORT_TYPE);
 
-	int lowPortNum = mDioInfo.getPortNum(lowPort);
-	int highPortNum = mDioInfo.getPortNum(highPort);
+	unsigned int lowPortNum = mDioInfo.getPortNum(lowPort);
+	unsigned int highPortNum = mDioInfo.getPortNum(highPort);
 
 	int numOfScanPorts = highPortNum - lowPortNum + 1;
 
@@ -352,12 +450,12 @@ void DioDevice::check_DOutScan_Args(DigitalPortType lowPort, DigitalPortType hig
 		throw UlException(ERR_BAD_PORT_TYPE);
 
 	DigitalPortIoType ioType;
-	for(int portNum = lowPortNum; portNum <=highPortNum; portNum++)
+	for(unsigned int portNum = lowPortNum; portNum <=highPortNum; portNum++)
 	{
 		ioType = mDioInfo.getPortIoType(portNum);
 
 		if(ioType == DPIOT_IN)
-			throw UlException(ERR_WRONG_DIG_CONFIG);
+			throw UlException(ERR_BAD_DIG_OPERATION);
 		else if((ioType == DPIOT_IO || ioType == DPIOT_BITIO) && !mDisableCheckDirection)
 		{
 			if(mPortDirectionMask[portNum].any())
@@ -417,14 +515,14 @@ void DioDevice::check_SetTrigger_Args(ScanDirection direction, TriggerType trigT
 
 std::bitset<32> DioDevice::getPortDirection(DigitalPortType portType) const
 {
-	int portNum = mDioInfo.getPortNum(portType);
+	unsigned int portNum = mDioInfo.getPortNum(portType);
 
 	return mPortDirectionMask[portNum];
 }
 
 void DioDevice::setPortDirection(DigitalPortType portType, DigitalDirection direction)
 {
-	int portNum = mDioInfo.getPortNum(portType);
+	unsigned int portNum = mDioInfo.getPortNum(portType);
 	unsigned int bitCount = mDioInfo.getNumBits(portNum);
 
 	if(direction == DD_OUTPUT)
@@ -438,7 +536,7 @@ void DioDevice::setPortDirection(DigitalPortType portType, DigitalDirection dire
 
 void DioDevice::setBitDirection(DigitalPortType portType, int bitNum, DigitalDirection direction)
 {
-	int portNum = mDioInfo.getPortNum(portType);
+	unsigned int portNum = mDioInfo.getPortNum(portType);
 
 	if(direction == DD_OUTPUT)
 		mPortDirectionMask[portNum].reset(bitNum);
@@ -512,14 +610,62 @@ unsigned long long DioDevice::getCfg_PortDirectionMask(unsigned int portNum) con
 		DigitalPortType portType = mDioInfo.getPortType(portNum);
 		std::bitset<32> bitsetMask = getPortDirection(portType);
 
-		int portNum = mDioInfo.getPortNum(portType);
-		int bitCount = mDioInfo.getNumBits(portNum);
+		unsigned int portNum = mDioInfo.getPortNum(portType);
+		unsigned int bitCount = mDioInfo.getNumBits(portNum);
 
 		unsigned long long bits = (1ULL << bitCount) - 1;
 		dirMask = bitsetMask.flip().to_ulong() & bits;
 	}
+	else
+		throw UlException(ERR_BAD_PORT_INDEX);
 
 	return dirMask;
+}
+
+void DioDevice::setCfg_PortInitialOutputVal(unsigned int portNum, unsigned long long val)
+{
+	DigitalPortType portType = mDioInfo.getPortType(portNum);
+
+	if(portType)
+	{
+		DigitalPortIoType portIoType =  mDioInfo.getPortIoType(portNum);
+
+		if(portIoType == DPIOT_IO || portIoType == DPIOT_BITIO)
+		{
+			bool currenState = mDisableCheckDirection;
+			mDisableCheckDirection = true;
+
+			try
+			{
+				dOut(portType, val);
+			}
+			catch(UlException& e)
+			{
+				throw UlException(e.getError());
+			}
+
+			mDisableCheckDirection = currenState;
+		}
+		else
+			throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+	}
+	else
+		throw UlException(ERR_BAD_PORT_INDEX);
+}
+
+void DioDevice::setCfg_PortIsoMask(unsigned int portNum, unsigned long long mask)
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+
+unsigned long long DioDevice::getCfg_PortIsoMask(unsigned int portNum)
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+
+unsigned long long DioDevice::getCfg_PortLogic(unsigned int portNum)
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
 }
 
 } /* namespace ul */

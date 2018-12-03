@@ -10,10 +10,13 @@
 
 #include "UsbDaqDevice.h"
 #include "../DaqDeviceManager.h"
-#include "../DaqDeviceId.h"
 #include "../utility/UlLock.h"
 #include "UsbScanTransferIn.h"
 #include "UsbScanTransferOut.h"
+
+#if LIBUSBX_API_VERSION < 0x01000102
+#error libusb version 1.0.16 or later is required to compile this package.
+#endif
 
 #define NO_PERMISSION_STR		"NO PERMISSION"
 
@@ -31,13 +34,14 @@ bool UsbDaqDevice::mTerminateUsbEventThread = false;
 pid_t UsbDaqDevice::mUsbEventHandlerThreadId = 0;
 int UsbDaqDevice::mUsbEventHandlerThreadNiceValue = 0;
 
-UsbDaqDevice::UsbDaqDevice(DaqDeviceDescriptor daqDeviceDescriptor) : DaqDevice(daqDeviceDescriptor)
+UsbDaqDevice::UsbDaqDevice(const DaqDeviceDescriptor& daqDeviceDescriptor) : DaqDevice(daqDeviceDescriptor)
 {
 	FnLog log("UsbDaqDevice::UsbDaqDevice");
 
 	mDevHandle = NULL;
 	mConnected = false;
 
+	mScanDoneMask = 0;
 	mOverrunBitMask = 0;
 	mUnderrunBitMask = 0;
 	memset(mScanRunningMask, 0, sizeof(mScanRunningMask));
@@ -48,6 +52,8 @@ UsbDaqDevice::UsbDaqDevice(DaqDeviceDescriptor daqDeviceDescriptor) : DaqDevice(
 
 	mScanTransferIn = new UsbScanTransferIn(*this);
 	mScanTransferOut = new UsbScanTransferOut(*this);
+
+	mMultiCmdMem = false;
 
 	setCmdValue(CMD_FLASH_LED_KEY, 0x40);
 	setCmdValue(CMD_RESET_KEY, 0x41);
@@ -140,8 +146,10 @@ std::vector<DaqDeviceDescriptor> UsbDaqDevice::findDaqDevices()
 					daqDevDescriptor.productId = desc.idProduct;
 					daqDevDescriptor.devInterface = USB_IFC;
 					std::string productName = DaqDeviceManager::getDeviceName(desc.idProduct);
-					strcpy(daqDevDescriptor.productName, productName.c_str());
-					strcpy(daqDevDescriptor.devString, productName.c_str());
+
+					strncpy(daqDevDescriptor.productName, productName.c_str(), sizeof(daqDevDescriptor.productName) - 1);
+					strncpy(daqDevDescriptor.devString, productName.c_str(), sizeof(daqDevDescriptor.devString) - 1);
+
 					readSerialNumber(dev, desc, daqDevDescriptor.uniqueId);
 
 					UL_LOG("-----------------------");
@@ -1009,20 +1017,25 @@ bool UsbDaqDevice::hasMultiCmdMem() const
 
 void UsbDaqDevice::clearFifo(unsigned char epAddr) const
 {
-	unsigned char* buffer = new unsigned char [getBulkEndpointMaxPacketSize(epAddr)];
+	int maxPacketSize = getBulkEndpointMaxPacketSize(epAddr);
 
-	int transferred = 0;
-	int ret = ERR_NO_ERROR;
-
-	do
+	if(maxPacketSize > 0)
 	{
-		ret =  syncBulkTransfer(epAddr, buffer, getBulkEndpointMaxPacketSize(epAddr), &transferred, 1);
+		unsigned char* buffer = new unsigned char [getBulkEndpointMaxPacketSize(epAddr)];
+
+		int transferred = 0;
+		int ret = ERR_NO_ERROR;
+
+		do
+		{
+			ret =  syncBulkTransfer(epAddr, buffer, getBulkEndpointMaxPacketSize(epAddr), &transferred, 1);
+		}
+		while(ret == ERR_NO_ERROR);
+
+		delete[] buffer;
 	}
-	while(ret == ERR_NO_ERROR);
-
-	delete[] buffer;
-
-
+	else
+		std::cout << "*** invalid endpoint" << std::endl;
 }
 
 int UsbDaqDevice::getBulkEndpointMaxPacketSize(int epAddr) const

@@ -23,6 +23,7 @@ public:
 	virtual UlAoConfig& getAoConfig() = 0;
 
 	virtual void aOut(int channel, Range range, AOutFlag flags, double dataValue) = 0;
+	virtual void aOutArray(int lowChan, int highChan, Range range[], AOutArrayFlag flags, double data[]) = 0;
 	virtual double aOutScan(int lowChan, int highChan, Range range, int samplesPerChan, double rate, ScanOption options, AOutScanFlag flags, double data[]) = 0;
 	virtual void setTrigger(TriggerType type, int trigChan,  double level, double variance, unsigned int retriggerCount) = 0;
 

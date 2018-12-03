@@ -44,14 +44,15 @@ int main(void)
 	// set some variables that are used to acquire data
 	int lowChan = 0;
 	int highChan = 3;
-	AiInputMode inputMode = AI_SINGLE_ENDED;
-	Range range = BIP10VOLTS;
+	AiInputMode inputMode;
+	Range range;
 	int samplesPerChannel = 10000;
 	double rate = 1000;
 	ScanOption scanOptions = (ScanOption) (SO_DEFAULTIO | SO_CONTINUOUS | SO_EXTTRIGGER);
 	AInScanFlag flags = AINSCAN_FF_DEFAULT;
 
 	int hasAI = 0;
+	int hasPacer = 0;
 	int numberOfChannels = 0;
 	TriggerType triggerType;
 	int index = 0;
@@ -101,6 +102,14 @@ int main(void)
 	if (!hasAI)
 	{
 		printf("\nThe specified DAQ device does not support analog input\n");
+		goto end;
+	}
+
+	// verify the specified device supports hardware pacing for analog input
+	err = getAiInfoHasPacer(daqDeviceHandle, &hasPacer);
+	if (!hasPacer)
+	{
+		printf("\nThe specified DAQ device does not support hardware paced analog input\n");
 		goto end;
 	}
 

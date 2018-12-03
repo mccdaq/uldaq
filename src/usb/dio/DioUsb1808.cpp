@@ -7,7 +7,6 @@
 #include "DioUsb1808.h"
 #include "../daqi/DaqIUsb1808.h"
 #include "../daqo/DaqOUsb1808.h"
-#include "./../../DaqDeviceId.h"
 
 namespace ul
 {
@@ -169,14 +168,19 @@ double DioUsb1808::dInScan(DigitalPortType lowPort, DigitalPortType highPort, in
 {
 	check_DInScan_Args(lowPort, highPort, samplesPerPort, rate, options, flags, data);
 
+	double actualRate = 0;
+
 	DaqIUsb1808* daqIDev = dynamic_cast<DaqIUsb1808*>(mDaqDevice.daqIDevice());
 
-	DaqInChanDescriptor chanDescriptors;
+	if(daqIDev)
+	{
+		DaqInChanDescriptor chanDescriptors;
 
-	chanDescriptors.channel = AUXPORT;
-	chanDescriptors.type = DAQI_DIGITAL;
+		chanDescriptors.channel = AUXPORT;
+		chanDescriptors.type = DAQI_DIGITAL;
 
-	double actualRate =  daqIDev->daqInScan(FT_DI, &chanDescriptors, 1, samplesPerPort, rate, options, (DaqInScanFlag) flags, data);
+		actualRate =  daqIDev->daqInScan(FT_DI, &chanDescriptors, 1, samplesPerPort, rate, options, (DaqInScanFlag) flags, data);
+	}
 
 	return actualRate;
 }
@@ -185,14 +189,19 @@ double DioUsb1808::dOutScan(DigitalPortType lowPort, DigitalPortType highPort, i
 {
 	check_DOutScan_Args(lowPort, highPort, samplesPerPort, rate, options, flags, data);
 
+	double actualRate = 0;
+
 	DaqOUsb1808* daqODev = dynamic_cast<DaqOUsb1808*>(mDaqDevice.daqODevice());
 
-	DaqOutChanDescriptor chanDescriptors;
+	if(daqODev)
+	{
+		DaqOutChanDescriptor chanDescriptors;
 
-	chanDescriptors.channel = AUXPORT;
-	chanDescriptors.type = DAQO_DIGITAL;
+		chanDescriptors.channel = AUXPORT;
+		chanDescriptors.type = DAQO_DIGITAL;
 
-	double actualRate =  daqODev->daqOutScan(FT_DO, &chanDescriptors, 1, samplesPerPort, rate, options, (DaqOutScanFlag) flags, data);
+		actualRate =  daqODev->daqOutScan(FT_DO, &chanDescriptors, 1, samplesPerPort, rate, options, (DaqOutScanFlag) flags, data);
+	}
 
 	return actualRate;
 }

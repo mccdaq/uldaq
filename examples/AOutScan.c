@@ -45,7 +45,7 @@ int main(void)
 
 	int lowChan = 0;
 	int highChan = 0;
-	Range range = BIP10VOLTS;
+	Range range;
 	const int samplesPerChannel = 1000;
 	double rate = 1000;
 	ScanOption scanOptions = (ScanOption) (SO_DEFAULTIO | SO_CONTINUOUS);

@@ -147,28 +147,33 @@ double CtrUsbCtrx::cInScan(int lowCtrNum, int highCtrNum, int samplesPerCounter,
 {
 	check_CInScan_Args(lowCtrNum, highCtrNum, samplesPerCounter, rate, options, flags, data);
 
+	double actualRate = 0;
+
 	DaqIUsbCtrx* daqIDev = dynamic_cast<DaqIUsbCtrx*>(mDaqDevice.daqIDevice());
 
-	int numCtrs = highCtrNum - lowCtrNum + 1;
-
-	DaqInChanDescriptor* chanDescriptors = new DaqInChanDescriptor[numCtrs];
-
-	DaqInChanType daqIChanType = DAQI_CTR16;
-
-	if(flags == CINSCAN_FF_CTR32_BIT)
-		daqIChanType = DAQI_CTR32;
-	else if(flags == CINSCAN_FF_CTR64_BIT)
-		daqIChanType = (DaqInChanType) DAQI_CTR64_INTERNAL;
-
-	for(int i = 0; i < numCtrs; i++)
+	if(daqIDev)
 	{
-		chanDescriptors[i].channel = lowCtrNum + i;
-		chanDescriptors[i].type = daqIChanType;
+		int numCtrs = highCtrNum - lowCtrNum + 1;
+
+		DaqInChanDescriptor* chanDescriptors = new DaqInChanDescriptor[numCtrs];
+
+		DaqInChanType daqIChanType = DAQI_CTR16;
+
+		if(flags == CINSCAN_FF_CTR32_BIT)
+			daqIChanType = DAQI_CTR32;
+		else if(flags == CINSCAN_FF_CTR64_BIT)
+			daqIChanType = (DaqInChanType) DAQI_CTR64_INTERNAL;
+
+		for(int i = 0; i < numCtrs; i++)
+		{
+			chanDescriptors[i].channel = lowCtrNum + i;
+			chanDescriptors[i].type = daqIChanType;
+		}
+
+		actualRate =  daqIDev->daqInScan(FT_CTR, chanDescriptors, numCtrs, samplesPerCounter, rate, options, (DaqInScanFlag) flags, data);
+
+		delete [] chanDescriptors;
 	}
-
-	double actualRate =  daqIDev->daqInScan(FT_CTR, chanDescriptors, numCtrs, samplesPerCounter, rate, options, (DaqInScanFlag) flags, data);
-
-	delete [] chanDescriptors;
 
 	return actualRate;
 }

@@ -113,6 +113,8 @@ double AiUsb20x::aInScan(int lowChan, int highChan, AiInputMode inputMode, Range
 	std::vector<CalCoef> calCoefs = getScanCalCoefs(lowChan, highChan, inputMode, range, flags);
 	std::vector<CustomScale> customScales = getCustomScales(lowChan, highChan);
 
+	daqDev().clearHalt(epAddr);
+
 	daqDev().sendCmd(CMD_AINSCAN_CLEAR_FIFO);
 
 	setScanInfo(FT_AI, chanCount, samplesPerChan, mAiInfo.getSampleSize(), mAiInfo.getResolution(), options, flags, calCoefs, customScales, data);

@@ -25,6 +25,7 @@ AoInfo::AoInfo()
 	mCalDateAddr = -1;
 	mSampleSize = 0;
 	mAOutFlags = 0;
+	mAOutArrayFlags = 0;
 	mAOutScanFlags = 0;
 	mTriggerTypes = TRIG_NONE;
 }
@@ -112,6 +113,16 @@ void AoInfo::setAOutFlags(long long flags)
 long long AoInfo::getAOutFlags() const
 {
 	return mAOutFlags;
+}
+
+void AoInfo::setAOutArrayFlags(long long flags)
+{
+	mAOutArrayFlags = flags;
+}
+
+long long AoInfo::getAOutArrayFlags() const
+{
+	return mAOutArrayFlags;
 }
 
 void AoInfo::setAOutScanFlags(long long flags)

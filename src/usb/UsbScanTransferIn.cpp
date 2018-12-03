@@ -11,7 +11,6 @@
 
 
 #include "UsbScanTransferIn.h"
-#include "../DaqDeviceId.h"
 #include "../utility/UlLock.h"
 
 #define STAGE_RATE 		0.010
@@ -215,11 +214,10 @@ void UsbScanTransferIn::stopTransfers()
 {
 	FnLog log("UsbScanTransferIn::stopTransfers");
 
-	UlLock lock(mStopXferMutex);
-
 	mResubmit = false;
-
 	usleep(1000);
+
+	UlLock lock(mStopXferMutex);
 
 	for(int i = 0; i < MAX_XFER_COUNT; i++)
 	{

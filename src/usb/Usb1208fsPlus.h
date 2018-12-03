@@ -15,7 +15,7 @@ namespace ul
 class UL_LOCAL Usb1208fs_Plus: public UsbDaqDevice
 {
 public:
-	Usb1208fs_Plus(DaqDeviceDescriptor daqDeviceDescriptor);
+	Usb1208fs_Plus(const DaqDeviceDescriptor& daqDeviceDescriptor);
 	virtual ~Usb1208fs_Plus();
 };
 

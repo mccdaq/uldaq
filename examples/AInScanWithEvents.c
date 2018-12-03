@@ -54,8 +54,8 @@ int main(void)
 	// set some variables that are used to acquire data
 	int lowChan = 0;
 	int highChan = 3;
-	AiInputMode inputMode = AI_SINGLE_ENDED;
-	Range range = BIP10VOLTS;
+	AiInputMode inputMode;
+	Range range;
 	int samplesPerChannel = 10000;
 	AInScanFlag flags = AINSCAN_FF_DEFAULT;
 	DaqEventType eventTypes = (DaqEventType) (DE_ON_DATA_AVAILABLE | DE_ON_INPUT_SCAN_ERROR | DE_ON_END_OF_INPUT_SCAN);

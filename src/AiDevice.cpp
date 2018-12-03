@@ -20,6 +20,7 @@ AiDevice::AiDevice(const DaqDevice& daqDevice) : IoDevice(daqDevice), UlAiDevice
 	mAiConfig = new AiConfig(*this);
 	mCalDate = 0;
 	mCalModeEnabled = false;
+	mScanTempChanSupported = false;
 }
 
 AiDevice::~AiDevice()
@@ -71,6 +72,15 @@ UlError AiDevice::getStatus(ScanStatus* status, TransferStatus* xferStatus)
 	throw UlException(ERR_BAD_DEV_TYPE);
 }
 void  AiDevice::stopBackground()
+{
+	throw UlException(ERR_BAD_DEV_TYPE);
+}
+
+void AiDevice::tIn(int channel, TempScale scale, TInFlag flags, double* data)
+{
+	throw UlException(ERR_BAD_DEV_TYPE);
+}
+void AiDevice::tInArray(int lowChan, int highChan, TempScale scale, TInArrayFlag flags, double data[])
 {
 	throw UlException(ERR_BAD_DEV_TYPE);
 }
@@ -151,7 +161,7 @@ void AiDevice::check_AInScan_Args(int lowChan, int highChan, AiInputMode inputMo
 	if(samplesPerChan < mMinScanSampleCount)
 		throw UlException(ERR_BAD_SAMPLE_COUNT);
 
-	long long totalCount = samplesPerChan * numOfScanChan;
+	long long totalCount = (long long) samplesPerChan * numOfScanChan;
 
 	if(options & SO_BURSTIO)
 	{
@@ -477,6 +487,58 @@ void AiDevice::initCustomScales()
 	}
 }
 
+void AiDevice::initTempUnits()
+{
+	for(int i = 0; i < mAiInfo.getNumChans(); i++)
+	{
+		mScanChanTempUnit.push_back(TU_CELSIUS);
+	}
+}
+
+void AiDevice::check_TIn_Args(int channel, TempScale scale, TInFlag flags) const
+{
+	if(channel < 0 || channel >= mAiInfo.getNumChans())
+	{
+		bool cjcChan = false;
+
+		if(channel > 0)
+		{
+			for(int i = 0; i < mAiInfo.getNumCjcChans(); i++)
+			{
+				if(channel == (0x80 + i))
+				{
+					cjcChan = true;
+					break;
+				}
+			}
+		}
+
+		if(!cjcChan)
+			throw UlException(ERR_BAD_AI_CHAN);
+	}
+
+	if(~mAiInfo.getTInFlags() & flags)
+		throw UlException(ERR_BAD_FLAG);
+
+	if(!mDaqDevice.isConnected())
+		throw UlException(ERR_NO_CONNECTION_ESTABLISHED);
+}
+
+void AiDevice::check_TInArray_Args(int lowChan, int highChan, TempScale scale, TInArrayFlag flags, double data[]) const
+{
+	if(lowChan < 0 || highChan < 0 || lowChan >= mAiInfo.getNumChans() || highChan >= mAiInfo.getNumChans() || lowChan > highChan )
+		throw UlException(ERR_BAD_AI_CHAN);
+
+	if(~mAiInfo.getTInArrayFlags() & flags)
+		throw UlException(ERR_BAD_FLAG);
+
+	if(data == NULL)
+		throw UlException(ERR_BAD_BUFFER);
+
+	if(!mDaqDevice.isConnected())
+		throw UlException(ERR_NO_CONNECTION_ESTABLISHED);
+}
+
 
 //////////////////////          Configuration functions          /////////////////////////////////
 
@@ -498,31 +560,40 @@ TcType AiDevice::getCfg_ChanTcType(int channel) const
 	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
 }
 
-void AiDevice::setCfg_TempUnit(TempUnit unit)
+void AiDevice::setCfg_ScanTempUnit(TempUnit unit)
 {
+	if(!mScanTempChanSupported)
+		throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+
 	if( unit < TU_CELSIUS || unit > TU_KELVIN)
 		throw UlException(ERR_BAD_UNIT);
 
-	for(unsigned int i = 0; i < mChanTempUnit.size(); i++)
-		mChanTempUnit[i] = unit;
+	for(unsigned int i = 0; i < mScanChanTempUnit.size(); i++)
+		mScanChanTempUnit[i] = unit;
 }
 
-void AiDevice::setCfg_ChanTempUnit(int channel, TempUnit unit)
+void AiDevice::setCfg_ScanChanTempUnit(int channel, TempUnit unit)
 {
-	if(channel < 0 || channel >= (int) mChanTempUnit.size())
+	if(!mScanTempChanSupported)
+		throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+
+	if(channel < 0 || channel >= (int) mScanChanTempUnit.size())
 		throw UlException(ERR_BAD_AI_CHAN);
 
 	if( unit < TU_CELSIUS || unit > TU_KELVIN)
 		throw UlException(ERR_BAD_UNIT);
 
-	mChanTempUnit[channel] = unit;
+	mScanChanTempUnit[channel] = unit;
 }
-TempUnit AiDevice::getCfg_ChanTempUnit(int channel) const
+TempUnit AiDevice::getCfg_ScanChanTempUnit(int channel) const
 {
-	if(channel < 0 || channel >= (int) mChanTempUnit.size())
+	if(!mScanTempChanSupported)
+		throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+
+	if(channel < 0 || channel >= (int) mScanChanTempUnit.size())
 			throw UlException(ERR_BAD_AI_CHAN);
 
-	return mChanTempUnit[channel];
+	return mScanChanTempUnit[channel];
 }
 
 void AiDevice::setCfg_AutoZeroMode(AutoZeroMode mode)
@@ -559,7 +630,7 @@ void AiDevice::setCfg_ChanCouplingMode(int channel, CouplingMode mode)
 }
 CouplingMode AiDevice::getCfg_ChanCouplingMode(int channel)
 {
-	return CM_DC;
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
 }
 
 void AiDevice::setCfg_ChanSensorSensitivity(int channel, double sensitivity)
@@ -636,8 +707,16 @@ void AiDevice::getCfg_CalDateStr(char* calDate, unsigned int* maxStrLen)
 
 		throw UlException(ERR_BAD_BUFFER_SIZE);
 	}
+}
 
+SensorConnectionType AiDevice::getCfg_SensorConnectionType(int channel) const
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
 
+void AiDevice::getCfg_ChanCoefsStr(int channel, char* coefsStr, unsigned int* len) const
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
 }
 
 

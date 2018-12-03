@@ -1,7 +1,6 @@
 /*
  * UlDaqDevice.h
  *
- *  Created on: Jul 29, 2015
  *     Author: Measurement Computing Corporation
  */
 

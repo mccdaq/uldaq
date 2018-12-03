@@ -15,7 +15,6 @@
 #include "../uldaq.h"
 #include "../DaqDevice.h"
 #include "../UlException.h"
-#include "../DaqDeviceId.h"
 #include "../utility/SuspendMonitor.h"
 
 namespace ul
@@ -35,7 +34,7 @@ public:
 	enum {MAX_CMD_READ_TRANSFER = 256, MAX_CMD_WRITE_TRANSFER = 256};
 
 public:
-	UsbDaqDevice(DaqDeviceDescriptor daqDeviceDescriptor);
+	UsbDaqDevice(const DaqDeviceDescriptor& daqDeviceDescriptor);
 	virtual ~UsbDaqDevice();
 
 	static std::vector<DaqDeviceDescriptor> findDaqDevices();

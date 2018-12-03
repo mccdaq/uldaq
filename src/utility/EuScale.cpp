@@ -176,6 +176,11 @@ void EuScale::getEuScaling(Range range, double &scale, double &offset)
 		scale = 0.005;
 		offset = 0.0;
 		break;
+
+	case MA0TO20:
+		scale = 20.0;
+		offset = 0.0;
+		break;
 	}
 }
 } /* namespace ul */

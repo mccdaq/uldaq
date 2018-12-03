@@ -7,6 +7,8 @@
 #ifndef INTERFACES_ULAOCONFIG_H_
 #define INTERFACES_ULAOCONFIG_H_
 
+#include "../uldaq.h"
+
 namespace ul
 {
 
@@ -14,6 +16,9 @@ class UlAoConfig
 {
 public:
 	virtual ~UlAoConfig() {};
+
+	virtual void setSyncMode(AOutSyncMode mode) = 0;
+	virtual AOutSyncMode getSyncMode() = 0;
 };
 
 } /* namespace ul */

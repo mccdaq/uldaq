@@ -95,8 +95,12 @@ ErrorMap::ErrorMap()
 	mErrMap.insert(std::pair<int, std::string>(ERR_MEM_ACCESS_DENIED, "Memory access denied"));  // 79
 	mErrMap.insert(std::pair<int, std::string>(ERR_DEV_UNAVAILABLE, "Device is not available at time of request"));  // 80
 	mErrMap.insert(std::pair<int, std::string>(ERR_BAD_RETRIG_TRIG_TYPE, "Re-trigger option is not supported for the specified trigger type"));  // 81
-
-
+	mErrMap.insert(std::pair<int, std::string>(ERR_BAD_DEV_VER, "This function cannot be used with this version of this device"));  // 82
+	mErrMap.insert(std::pair<int, std::string>(ERR_BAD_DIG_OPERATION, "This digital operation is not supported on the specified port"));  // 83
+	mErrMap.insert(std::pair<int, std::string>(ERR_BAD_PORT_INDEX, "Invalid digital port index specified"));  // 84
+	mErrMap.insert(std::pair<int, std::string>(ERR_OPEN_CONNECTION, "Temperature input has open connection"));  // 85
+	mErrMap.insert(std::pair<int, std::string>(ERR_DEV_NOT_READY, "Device is not ready to send data"));  // 86
+	mErrMap.insert(std::pair<int, std::string>(ERR_PACER_OVERRUN, "Pacer overrun, external clock rate too fast"));  // 87
 }
 
 std::string ErrorMap::getErrorMsg(int errNum)

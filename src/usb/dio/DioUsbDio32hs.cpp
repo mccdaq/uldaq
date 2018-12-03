@@ -132,6 +132,49 @@ void DioUsbDio32hs::dOut(DigitalPortType portType, unsigned long long data)
 	daqDev().sendCmd(CMD_DLATCH, 0, portNum, (unsigned char*) &portValue, sizeof(portValue));
 }
 
+void DioUsbDio32hs::dInArray(DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[])
+{
+	check_DInArray_Args(lowPort, highPort, data);
+
+	unsigned int lowPortNum = mDioInfo.getPortNum(lowPort);
+	unsigned int highPortNum = mDioInfo.getPortNum(highPort);
+
+	unsigned short portValue[2] = {0, 0};
+
+	daqDev().queryCmd(CMD_DPORT, 0, 0, (unsigned char*) &portValue, sizeof(portValue));
+
+	int i = 0;
+
+	for(unsigned int portNum = lowPortNum; portNum <=highPortNum; portNum++)
+	{
+		data[i] = Endian::le_ui16_to_cpu(portValue[portNum]);
+		i++;
+	}
+}
+
+void DioUsbDio32hs::dOutArray(DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[])
+{
+	check_DOutArray_Args(lowPort, highPort, data);
+
+	unsigned int lowPortNum = mDioInfo.getPortNum(lowPort);
+	unsigned int highPortNum = mDioInfo.getPortNum(highPort);
+
+	unsigned short portValue[2] = {0, 0};
+
+	int i = 0;
+	for(unsigned int portNum = lowPortNum; portNum <= highPortNum; portNum++)
+	{
+		portValue[portNum] = Endian::cpu_to_le_ui16(data[i]);
+		i++;
+	}
+
+	int ports = lowPortNum;
+	if (i > 1)
+		ports = 2;
+
+	daqDev().sendCmd(CMD_DLATCH, 0, ports, (unsigned char*) &portValue, sizeof(portValue));
+}
+
 unsigned long DioUsbDio32hs::readPortDirMask(unsigned int portNum) const
 {
 	unsigned short dirMask;

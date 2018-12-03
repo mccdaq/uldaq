@@ -301,15 +301,25 @@ bool DioInfo::isPortSupported(DigitalPortType portType) const
 {
 	bool supported = false;
 
-	if(getPortNum(portType) != -1)
-		supported = true;
+	DigitalPortType type;
+
+	for(unsigned int i = 0; i < getNumPorts(); i++)
+	{
+		type = getPortType(i);
+
+		if(type == portType)
+		{
+			supported = true;
+			break;
+		}
+	}
 
 	return supported;
 }
 
-int DioInfo::getPortNum(DigitalPortType portType) const
+unsigned int DioInfo::getPortNum(DigitalPortType portType) const
 {
-	int portIndex = -1;
+	unsigned int portIndex = 0;
 	DigitalPortType type;
 
 	for(unsigned int i = 0; i < getNumPorts(); i++)

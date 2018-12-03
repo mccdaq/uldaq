@@ -38,8 +38,8 @@ int main(void)
 	DaqDeviceHandle daqDeviceHandle = 0;
 	unsigned int numDevs = MAX_DEV_COUNT;
 
-	DigitalPortType lowPort = AUXPORT;
-	DigitalPortType highPort = AUXPORT;
+	DigitalPortType lowPort;
+	DigitalPortType highPort;
 	int samplesPerPort = 1000;
 	double rate = 100;
 	ScanOption scanOptions = (ScanOption) (SO_DEFAULTIO | SO_CONTINUOUS);
@@ -52,7 +52,7 @@ int main(void)
 	char portTypeStr[MAX_STR_LENGTH];
 	char scanOptionsStr[MAX_SCAN_OPTIONS_LENGTH];
 
-	DigitalPortType portType = AUXPORT;
+	DigitalPortType portType;
 
 	int chanCount = 1;
 	unsigned long long* buffer;

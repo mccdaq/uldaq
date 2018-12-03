@@ -39,8 +39,8 @@ int main(void)
 
 	int hasDIO = 0;
 	int bitsPerPort = 0;
-	DigitalPortType portType = AUXPORT;
-	DigitalPortIoType portIoType = DPIOT_IN;
+	DigitalPortType portType;
+	DigitalPortIoType portIoType;
 
 	int maxPortValue = 0;
 
@@ -99,11 +99,11 @@ int main(void)
 	if (err != ERR_NO_ERROR)
 		goto end;
 
-	// get the port types for the device (AUXPORT0, FIRSTPORTA, ...)
+	// get the first port type (AUXPORT0, FIRSTPORTA, ...)
 	err = getDioInfoFirstSupportedPortType(daqDeviceHandle, &portType, portTypeStr);
 
-	// get the port IO type
-	err = getDioInfoPortIoType(daqDeviceHandle, &portIoType, portIoTypeStr);
+	// get the I/O type for the fisrt port
+	err = getDioInfoFirstSupportedPortIoType(daqDeviceHandle, &portIoType, portIoTypeStr);
 
 	// get the number of bits for the first port (port index = 0)
 	err = getDioInfoNumberOfBitsForFirstPort(daqDeviceHandle, &bitsPerPort);
@@ -120,7 +120,7 @@ int main(void)
 				break;
 		}
 	}
-	else
+	else if (portIoType == DPIOT_IO)
 	{
 		// configure the entire port for output
 		err = ulDConfigPort(daqDeviceHandle, portType, DD_OUTPUT);
@@ -140,7 +140,7 @@ int main(void)
 
 	ret = system("clear");
 
-	while(err == ERR_NO_ERROR && err == ERR_NO_ERROR)
+	while(err == ERR_NO_ERROR)
 	{
 		// reset the cursor to the top of the display and
 		// show the termination message
@@ -166,8 +166,11 @@ int main(void)
 		usleep(100000);
 	}
 
-	// before leaving, configure the entire port for input
-	err = ulDConfigPort(daqDeviceHandle, portType, DD_INPUT);
+	if(portIoType == DPIOT_IO || portIoType == DPIOT_BITIO)
+	{
+		// before leaving, configure the entire port for input
+		err = ulDConfigPort(daqDeviceHandle, portType, DD_INPUT);
+	}
 
 	// disconnect from the DAQ device
 	ulDisconnectDaqDevice(daqDeviceHandle);

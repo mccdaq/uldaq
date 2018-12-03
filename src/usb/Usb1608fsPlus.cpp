@@ -13,7 +13,7 @@
 
 namespace ul
 {
-Usb1608fs_Plus::Usb1608fs_Plus(DaqDeviceDescriptor daqDeviceDescriptor) : UsbDaqDevice(daqDeviceDescriptor)
+Usb1608fs_Plus::Usb1608fs_Plus(const DaqDeviceDescriptor& daqDeviceDescriptor) : UsbDaqDevice(daqDeviceDescriptor)
 {
 	FnLog log("Usb1608fs_Plus::Usb1608fs_Plus");
 

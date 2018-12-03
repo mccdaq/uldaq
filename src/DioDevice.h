@@ -32,6 +32,8 @@ public:
 	virtual void dConfigBit(DigitalPortType portType, int bitNum, DigitalDirection direction);
 	virtual unsigned long long dIn(DigitalPortType portType);
 	virtual void dOut(DigitalPortType portType, unsigned long long data);
+	virtual void dInArray(DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[]);
+	virtual void dOutArray(DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[]);
 	virtual bool dBitIn(DigitalPortType portType, int bitNum);
 	virtual void dBitOut(DigitalPortType portType, int bitNum, bool bitValue);
 
@@ -59,8 +61,14 @@ public:
 	virtual UlError dOutGetStatus(ScanStatus* status, TransferStatus* xferStatus);
 	virtual void dInStopBackground();
 	virtual void dOutStopBackground();
+
 	//////////////////////          Configuration functions          /////////////////////////////////
 	virtual unsigned long long getCfg_PortDirectionMask(unsigned int portNum) const;
+	virtual void setCfg_PortInitialOutputVal(unsigned int portNum, unsigned long long val);
+	virtual void setCfg_PortIsoMask(unsigned int portNum, unsigned long long mask);
+	virtual unsigned long long getCfg_PortIsoMask(unsigned int portNum);
+	virtual unsigned long long getCfg_PortLogic(unsigned int portNum);
+
 
 protected:
 	void initPortsDirectionMask();
@@ -70,6 +78,8 @@ protected:
 	void check_DConfigBit_Args(DigitalPortType portType, int bitNum, DigitalDirection direction);
 	void check_DIn_Args(DigitalPortType portType);
 	void check_DOut_Args(DigitalPortType portType, unsigned long long data);
+	void check_DInArray_Args(DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[]);
+	void check_DOutArray_Args(DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[]);
 	void check_DBitIn_Args(DigitalPortType portType, int bitNum);
 	void check_DBitOut_Args(DigitalPortType portType, int bitNum);
 	void check_DInScan_Args(DigitalPortType lowPort, DigitalPortType highPort, int samplesPerPort, double rate, ScanOption options, DInScanFlag flags, unsigned long long data[]) const;

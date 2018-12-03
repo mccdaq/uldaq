@@ -87,6 +87,8 @@ double DaqIUsbCtrx::daqInScan(FunctionType functionType, DaqInChanDescriptor cha
 
 	loadScanConfigs(chanDescriptors, numChans);
 
+	daqDev().clearHalt(epAddr);
+
 	daqDev().sendCmd(CMD_SCAN_CLEARFIFO);
 
 	setScanInfo(functionType, chanCount, samplesPerChan, sampleSize, analogResolution, options, flags, calCoefs, customScales, data);

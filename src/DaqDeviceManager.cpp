@@ -6,7 +6,6 @@
  */
 
 #include "DaqDeviceManager.h"
-#include "DaqDeviceId.h"
 #include "./utility/FnLog.h"
 
 #include <algorithm>
@@ -57,7 +56,31 @@ void DaqDeviceManager::addSupportedDaqDevice()
 	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_CTR08, "USB-CTR08"));
 
 	// HID devices
-	//mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_TC, "USB-TC"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_DIO96H, "USB-DIO96H"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_DIO96H_50, "USB-DIO96H/50"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_1024LS, "USB-1024LS"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_1024HLS, "USB-1024HLS"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_DIO24, "USB-DIO24/37"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_DIO24H, "USB-DIO24H/37"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_PDISO8, "USB-PDISO8"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_PDISO8_40, "USB-PDISO8/40"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_SSR24, "USB-SSR24"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_SSR08, "USB-SSR08"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_ERB24, "USB-ERB24"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_ERB08, "USB-ERB08"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_3101, "USB-3101"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_3102, "USB-3102"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_3103, "USB-3103"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_3104, "USB-3104"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_3105, "USB-3105"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_3106, "USB-3106"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_3110, "USB-3110"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_3112, "USB-3112"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_3114, "USB-3114"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_TEMP, "USB-TEMP"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_TC, "USB-TC"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_TEMP_AI, "USB-TEMP_AI"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_TC_AI, "USB-TC_AI"));
 }
 
 bool DaqDeviceManager::isDaqDeviceSupported(int productId)
@@ -132,7 +155,7 @@ DaqDevice* DaqDeviceManager::getActualDeviceHandle(long long deviceNumber)
 	return daqDevice;
 }
 
-DaqDevice* DaqDeviceManager::getDaqDevice(DaqDeviceDescriptor daqDeviceDescriptor)
+DaqDevice* DaqDeviceManager::getDaqDevice(const DaqDeviceDescriptor& daqDeviceDescriptor)
 {
 
 	DaqDevice *daqDevice = NULL;

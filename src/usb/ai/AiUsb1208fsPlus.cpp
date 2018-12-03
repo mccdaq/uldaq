@@ -172,7 +172,7 @@ void AiUsb1208fs_Plus::aInConfig(int lowChan, int highChan, AiInputMode inputMod
 
 AiUsb1208fs_Plus::TAINSCAN_CFG AiUsb1208fs_Plus::scanConfig(int lowChan, int highChan, AiInputMode inputMode, unsigned int scanCount, double rate, ScanOption options)
 {
-	TAINSCAN_CFG scanCfg;
+	TAINSCAN_CFG scanCfg = {0, 0, 0 ,0 ,0} ;
 
 	int chanCount = queueEnabled() ? queueLength() : highChan - lowChan  + 1;
 

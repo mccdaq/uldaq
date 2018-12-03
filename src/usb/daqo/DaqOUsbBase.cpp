@@ -130,7 +130,7 @@ int DaqOUsbBase::calcStageSize(int epAddr, double rate, int chanCount, int sampl
 	else
 	{
 		double aggRate =  chanCount * rate * sampleSize; // bytes per second
-		long long bufferBytesCount = sampleCount * sampleSize;
+		long long bufferBytesCount = (long long) sampleCount * sampleSize;
 		double stageRate = daqDev().scanTranserOut()->getStageRate();
 		stageSize = (int)(aggRate * stageRate);
 

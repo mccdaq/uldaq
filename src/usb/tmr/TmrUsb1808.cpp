@@ -138,6 +138,8 @@ void TmrUsb1808::tmrPulseOutStop(int timerNum)
 
 void TmrUsb1808::tmrPulseOutStatus(int timerNum, TmrStatus* status)
 {
+	check_TmrOutStatus_Args(timerNum);
+
 	unsigned char state = 0;
 
 	// Note: this command currently does not read the counter state correctly. FW/FPGA change required

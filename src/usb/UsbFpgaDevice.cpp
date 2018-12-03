@@ -14,7 +14,6 @@
 
 
 #include "UsbFpgaDevice.h"
-#include "../DaqDeviceId.h"
 #include "../utility/UlLock.h"
 
 #define FPGA_FILES_PATH		"/etc/uldaq/fpga/"
@@ -22,7 +21,7 @@
 namespace ul
 {
 
-UsbFpgaDevice::UsbFpgaDevice(DaqDeviceDescriptor daqDeviceDescriptor, std::string fpgaFileName) : UsbDaqDevice(daqDeviceDescriptor)
+UsbFpgaDevice::UsbFpgaDevice(const DaqDeviceDescriptor& daqDeviceDescriptor, std::string fpgaFileName) : UsbDaqDevice(daqDeviceDescriptor)
 {
 	mFpgaFileName = fpgaFileName;
 }
@@ -123,57 +122,61 @@ void UsbFpgaDevice::loadFpga() const
 		size = fpgaFileStream.tellg();
 		unsigned char* fpgaImage = new unsigned char[size];
 
-		fpgaFileStream.seekg (0, std::ios::beg);
-		fpgaFileStream.read ((char*)fpgaImage, size);
-		fpgaFileStream.close();
-
-		// enter config mode
-		unsigned char unlockCode = 0xAD;
-
-		try
-		{
-			unsigned long num_bytes = sizeof(unlockCode);
-			UsbDaqDevice::sendCmd(CMD_FPGA_CFG, 0, 0, &unlockCode, num_bytes);
-
-			// transfer data
-
-			int remaining = size;
-			unsigned char* ptr = fpgaImage;
-			do
-			{
-				if(remaining > 64)
-					num_bytes = 64;
-				else
-					num_bytes = remaining;
-
-				UsbDaqDevice::sendCmd(CMD_FPGA_DATA, 0, 0, ptr, num_bytes);
-
-				ptr += num_bytes;
-				remaining -= num_bytes;
-
-			} while (remaining > 0);
-
-			if(isSpartanFpga())
-			{
-				unsigned char dummyData[2] = {0 , 0};
-
-				UsbDaqDevice::sendCmd(CMD_FPGA_DATA, 0, 0, dummyData, sizeof(dummyData));
-			}
-		}
-		catch(UlException& e)
-		{
-			error = e.getError();
-		}
-		catch(...)
-		{
-			error = ERR_UNHANDLED_EXCEPTION;
-		}
-
 		if(fpgaImage)
+		{
+			fpgaFileStream.seekg (0, std::ios::beg);
+			fpgaFileStream.read ((char*)fpgaImage, size);
+			fpgaFileStream.close();
+
+			// enter config mode
+			unsigned char unlockCode = 0xAD;
+
+			try
+			{
+				unsigned long num_bytes = sizeof(unlockCode);
+				UsbDaqDevice::sendCmd(CMD_FPGA_CFG, 0, 0, &unlockCode, num_bytes);
+
+				// transfer data
+
+				int remaining = size;
+				unsigned char* ptr = fpgaImage;
+				do
+				{
+					if(remaining > 64)
+						num_bytes = 64;
+					else
+						num_bytes = remaining;
+
+					UsbDaqDevice::sendCmd(CMD_FPGA_DATA, 0, 0, ptr, num_bytes);
+
+					ptr += num_bytes;
+					remaining -= num_bytes;
+
+				} while (remaining > 0);
+
+				if(isSpartanFpga())
+				{
+					unsigned char dummyData[2] = {0 , 0};
+
+					UsbDaqDevice::sendCmd(CMD_FPGA_DATA, 0, 0, dummyData, sizeof(dummyData));
+				}
+			}
+			catch(UlException& e)
+			{
+				error = e.getError();
+			}
+			catch(...)
+			{
+				error = ERR_UNHANDLED_EXCEPTION;
+			}
+
 			delete[] fpgaImage;
 
-		if(error)
-			throw UlException(error);
+			if(error)
+				throw UlException(error);
+		}
+		else
+			std::cout << "**** insufficient memory to load the fpga image" << std::endl;
 	}
 	else
 	{

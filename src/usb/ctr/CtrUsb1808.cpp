@@ -119,21 +119,26 @@ double CtrUsb1808::cInScan(int lowCtrNum, int highCtrNum, int samplesPerCounter,
 {
 	check_CInScan_Args(lowCtrNum, highCtrNum, samplesPerCounter, rate, options, flags, data);
 
+	double actualRate = 0;
+
 	DaqIUsb1808* daqIDev = dynamic_cast<DaqIUsb1808*>(mDaqDevice.daqIDevice());
 
-	int numCtrs = highCtrNum - lowCtrNum + 1;
-
-	DaqInChanDescriptor* chanDescriptors = new DaqInChanDescriptor[numCtrs];
-
-	for(int i = 0; i < numCtrs; i++)
+	if(daqIDev)
 	{
-		chanDescriptors[i].channel = lowCtrNum + i;
-		chanDescriptors[i].type = DAQI_CTR32;
+		int numCtrs = highCtrNum - lowCtrNum + 1;
+
+		DaqInChanDescriptor* chanDescriptors = new DaqInChanDescriptor[numCtrs];
+
+		for(int i = 0; i < numCtrs; i++)
+		{
+			chanDescriptors[i].channel = lowCtrNum + i;
+			chanDescriptors[i].type = DAQI_CTR32;
+		}
+
+		actualRate =  daqIDev->daqInScan(FT_CTR, chanDescriptors, numCtrs, samplesPerCounter, rate, options, (DaqInScanFlag) flags, data);
+
+		delete [] chanDescriptors;
 	}
-
-	double actualRate =  daqIDev->daqInScan(FT_CTR, chanDescriptors, numCtrs, samplesPerCounter, rate, options, (DaqInScanFlag) flags, data);
-
-	delete [] chanDescriptors;
 
 	return actualRate;
 }

@@ -32,6 +32,9 @@ public:
 	virtual UlError getStatus(ScanStatus* status, TransferStatus* xferStatus);
 	virtual void stopBackground();
 
+	virtual void tIn(int channel, TempScale scale, TInFlag flags, double* data);
+	virtual void tInArray(int lowChan, int highChan, TempScale scale, TInArrayFlag flags, double data[]);
+
 	double convertTempUnit(double tempC, TempUnit unit);
 
 	//////////////////////          Configuration functions          /////////////////////////////////
@@ -41,11 +44,11 @@ public:
 	virtual void setCfg_ChanTcType(int channel, TcType tcType);
 	virtual TcType getCfg_ChanTcType(int channel) const;
 
-	virtual void setCfg_TempUnit(TempUnit unit);
+	virtual void setCfg_ScanTempUnit(TempUnit unit);
 	//virtual TempUnit getCfg_TempUnit() const;
 
-	virtual void setCfg_ChanTempUnit(int channel, TempUnit unit);
-	virtual TempUnit getCfg_ChanTempUnit(int channel) const;
+	virtual void setCfg_ScanChanTempUnit(int channel, TempUnit unit);
+	virtual TempUnit getCfg_ScanChanTempUnit(int channel) const;
 
 	virtual void setCfg_AutoZeroMode(AutoZeroMode mode);
 	virtual AutoZeroMode getCfg_AutoZeroMode() const;
@@ -70,6 +73,10 @@ public:
 	virtual unsigned long long getCfg_CalDate();
 	virtual void getCfg_CalDateStr(char* calDate, unsigned int* maxStrLen);
 
+	virtual SensorConnectionType getCfg_SensorConnectionType(int channel) const;
+	virtual void getCfg_ChanCoefsStr(int channel, char* coefsStr, unsigned int* len) const;
+
+
 protected:
 	virtual void loadAdcCoefficients() = 0;
 	virtual int getCalCoefIndex(int channel, AiInputMode inputMode, Range range) const = 0;
@@ -80,10 +87,12 @@ protected:
 	bool queueEnabled() const;
 	int queueLength() const;
 
-	void check_AIn_Args(int channel, AiInputMode inputMode, Range range, AInFlag flags) const;
-	void check_AInScan_Args(int lowChan, int highChan, AiInputMode inputMode, Range range, int samplesPerChan, double rate, ScanOption options, AInScanFlag flags, double data[]) const;
-	void check_AInLoadQueue_Args(const AiQueueElement queue[], unsigned int numElements) const;
-	void check_AInSetTrigger_Args(TriggerType trigtype, int trigChan,  double level, double variance, unsigned int retriggerCount) const;
+	virtual void check_AIn_Args(int channel, AiInputMode inputMode, Range range, AInFlag flags) const;
+	virtual void check_AInScan_Args(int lowChan, int highChan, AiInputMode inputMode, Range range, int samplesPerChan, double rate, ScanOption options, AInScanFlag flags, double data[]) const;
+	virtual void check_AInLoadQueue_Args(const AiQueueElement queue[], unsigned int numElements) const;
+	virtual void check_AInSetTrigger_Args(TriggerType trigtype, int trigChan,  double level, double variance, unsigned int retriggerCount) const;
+	virtual void check_TIn_Args(int channel, TempScale scale, TInFlag flags) const;
+	virtual void check_TInArray_Args(int lowChan, int highChan, TempScale scale, TInArrayFlag flags, double data[]) const;
 
 	bool isValidChanQueue(const AiQueueElement queue[], unsigned int numElements) const;
 	bool isValidGainQueue(const AiQueueElement queue[], unsigned int numElements) const;
@@ -91,6 +100,8 @@ protected:
 
 	void initCustomScales();
 	std::vector<CustomScale> getCustomScales(int lowChan, int highChan) const;
+
+	void initTempUnits();
 
 	void enableCalMode(bool enable) { mCalModeEnabled = enable;}
 	bool calModeEnabled() const { return mCalModeEnabled;}
@@ -104,7 +115,8 @@ protected:
 	std::vector<CustomScale> mCustomScales;
 	std::vector<AiQueueElement> mAQueue;
 
-	std::vector<TempUnit> mChanTempUnit;
+	bool mScanTempChanSupported;
+	std::vector<TempUnit> mScanChanTempUnit;
 
 	unsigned long long mCalDate; // cal date in sec
 

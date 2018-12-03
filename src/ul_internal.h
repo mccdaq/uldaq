@@ -22,7 +22,7 @@
 namespace ul
 {
 
-#define UL_VERSION		"0.01"
+#define UL_VERSION		"0.02"
 
 #ifdef DEBUG
 	//#define TRACE

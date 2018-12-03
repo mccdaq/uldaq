@@ -16,7 +16,7 @@ namespace ul
 class UL_LOCAL UsbFpgaDevice: public UsbDaqDevice
 {
 public:
-	UsbFpgaDevice(DaqDeviceDescriptor daqDeviceDescriptor, std::string fpgaFileName);
+	UsbFpgaDevice(const DaqDeviceDescriptor& daqDeviceDescriptor, std::string fpgaFileName);
 	virtual ~UsbFpgaDevice();
 
 	virtual int sendCmd(uint8_t request, uint16_t wValue, uint16_t wIndex, unsigned char *buff, uint16_t buffLen, unsigned int timeout = 1000) const;

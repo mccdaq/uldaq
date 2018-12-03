@@ -7,7 +7,6 @@
 #include "AoUsb1808.h"
 #include "./../daqo/DaqOUsb1808.h"
 #include "./../../DaqODevice.h"
-#include "./../../DaqDeviceId.h"
 
 namespace ul
 {
@@ -16,6 +15,7 @@ AoUsb1808::AoUsb1808(const UsbDaqDevice& daqDevice, int numChans) : AoUsbBase(da
 	double minRate = daqDev().getClockFreq() / UINT_MAX;
 
 	mAoInfo.setAOutFlags(AOUT_FF_NOSCALEDATA | AOUT_FF_NOCALIBRATEDATA);
+	mAoInfo.setAOutArrayFlags(AOUTARRAY_FF_NOSCALEDATA | AOUTARRAY_FF_NOCALIBRATEDATA);
 	mAoInfo.setAOutScanFlags(AOUTSCAN_FF_NOSCALEDATA | AOUTSCAN_FF_NOCALIBRATEDATA);
 
 	mAoInfo.setScanOptions(SO_DEFAULTIO | SO_CONTINUOUS | SO_EXTTRIGGER | SO_EXTCLOCK | SO_SINGLEIO | SO_BLOCKIO | SO_RETRIGGER);
@@ -79,22 +79,27 @@ double AoUsb1808::aOutScan(int lowChan, int highChan, Range range, int samplesPe
 {
 	check_AOutScan_Args(lowChan, highChan, range, samplesPerChan, rate, options, flags, data);
 
+	double actualRate = 0;
+
 	DaqOUsb1808* daqODev = dynamic_cast<DaqOUsb1808*>(mDaqDevice.daqODevice());
 
-	int numChans = highChan - lowChan + 1;
-
-	DaqOutChanDescriptor* chanDescriptors = new DaqOutChanDescriptor[numChans];
-
-	for(int i = 0; i < numChans; i++)
+	if(daqODev)
 	{
-		chanDescriptors[i].type = DAQO_ANALOG;
-		chanDescriptors[i].channel = lowChan + i;
-		chanDescriptors[i].range = range;
+		int numChans = highChan - lowChan + 1;
+
+		DaqOutChanDescriptor* chanDescriptors = new DaqOutChanDescriptor[numChans];
+
+		for(int i = 0; i < numChans; i++)
+		{
+			chanDescriptors[i].type = DAQO_ANALOG;
+			chanDescriptors[i].channel = lowChan + i;
+			chanDescriptors[i].range = range;
+		}
+
+		actualRate =  daqODev->daqOutScan(FT_AO, chanDescriptors, numChans, samplesPerChan, rate, options, (DaqOutScanFlag) flags, data);
+
+		delete [] chanDescriptors;
 	}
-
-	double actualRate =  daqODev->daqOutScan(FT_AO, chanDescriptors, numChans, samplesPerChan, rate, options, (DaqOutScanFlag) flags, data);
-
-	delete [] chanDescriptors;
 
 	return actualRate;
 }

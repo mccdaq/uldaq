@@ -23,7 +23,7 @@ public:
 	virtual ~UlDaqDeviceManager();
 
 	static std::vector<DaqDeviceDescriptor> getDaqDeviceInventory(DaqDeviceInterface InterfaceType);
-	static UlDaqDevice& createDaqDevice(DaqDeviceDescriptor daqDevDescriptor);
+	static UlDaqDevice& createDaqDevice(const DaqDeviceDescriptor& daqDevDescriptor);
 	static void releaseDaqDevice(UlDaqDevice& daqDevice);
 };
 

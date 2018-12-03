@@ -7,7 +7,6 @@
 
 #include "DioUsbCtrx.h"
 #include "../daqi/DaqIUsbCtrx.h"
-#include "./../../DaqDeviceId.h"
 
 namespace ul
 {
@@ -40,14 +39,19 @@ double DioUsbCtrx::dInScan(DigitalPortType lowPort, DigitalPortType highPort, in
 {
 	check_DInScan_Args(lowPort, highPort, samplesPerPort, rate, options, flags, data);
 
+	double actualRate = 0;
+
 	DaqIUsbCtrx* daqIDev = dynamic_cast<DaqIUsbCtrx*>(mDaqDevice.daqIDevice());
 
-	DaqInChanDescriptor chanDescriptors;
+	if(daqIDev)
+	{
+		DaqInChanDescriptor chanDescriptors;
 
-	chanDescriptors.channel = AUXPORT;
-	chanDescriptors.type = DAQI_DIGITAL;
+		chanDescriptors.channel = AUXPORT;
+		chanDescriptors.type = DAQI_DIGITAL;
 
-	double actualRate =  daqIDev->daqInScan(FT_DI, &chanDescriptors, 1, samplesPerPort, rate, options, (DaqInScanFlag) flags, data);
+		actualRate =  daqIDev->daqInScan(FT_DI, &chanDescriptors, 1, samplesPerPort, rate, options, (DaqInScanFlag) flags, data);
+	}
 
 	return actualRate;
 }

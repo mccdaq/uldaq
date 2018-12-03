@@ -49,6 +49,8 @@ double UsbDInScan::dInScan(DigitalPortType lowPort, DigitalPortType highPort, in
 
 	daqDev().setupTrigger(FT_DI, options);
 
+	daqDev().clearHalt(epAddr);
+
 	daqDev().sendCmd(CMD_DIN_SCAN_CLEARFIFO);
 
 	setScanInfo(FT_DI, portCount, samplesPerPort, sampleSize, resolution, options, flags, calCoefs, customScales, data);
@@ -262,7 +264,7 @@ int UsbDInScan::calcStageSize(int epAddr, double rate, int chanCount, int sample
 	else
 	{
 		double aggRate =  chanCount * rate * sampleSize; // bytes per second
-		long long bufferBytesCount = sampleCount * sampleSize;
+		long long bufferBytesCount = (long long) sampleCount * sampleSize;
 		double stageRate = daqDev().scanTranserIn()->getStageRate();
 		stageSize = (int)(aggRate * stageRate);
 

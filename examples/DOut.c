@@ -36,9 +36,11 @@ int main(void)
 
 	int hasDIO = 0;
 	int bitsPerPort = 0;
-	DigitalPortType portType = AUXPORT;
+	DigitalPortType portType;
+	DigitalPortIoType portIoType;
 
 	char portTypeStr[MAX_STR_LENGTH];
+	char portIoTypeStr[MAX_STR_LENGTH];
 
 	unsigned long long maxPortValue = 0;
 
@@ -93,14 +95,20 @@ int main(void)
 	if (err != ERR_NO_ERROR)
 		goto end;
 
-	// get the port types for the device (AUXPORT0, FIRSTPORTA, ...)
+	// get the first port type (AUXPORT0, FIRSTPORTA, ...)
 	err = getDioInfoFirstSupportedPortType(daqDeviceHandle, &portType, portTypeStr);
+
+	// get the I/O type for the fisrt port
+	err = getDioInfoFirstSupportedPortIoType(daqDeviceHandle, &portIoType, portIoTypeStr);
 
 	// get the number of bits for the first port
 	err = getDioInfoNumberOfBitsForFirstPort(daqDeviceHandle, &bitsPerPort);
 
-	// configure the first port for output
-	err = ulDConfigPort(daqDeviceHandle, portType, DD_OUTPUT);
+	if(portIoType == DPIOT_IO || portIoType == DPIOT_BITIO)
+	{
+		// configure the first port for output
+		err = ulDConfigPort(daqDeviceHandle, portType, DD_OUTPUT);
+	}
 
 	// calculate the max value for the port
 	maxPortValue = (unsigned long long) pow(2.0, (double)bitsPerPort) - 1;
@@ -108,6 +116,7 @@ int main(void)
 	printf("\n%s ready\n", devDescriptors[descriptorIndex].devString);
 	printf("    Function demonstrated: ulDOut()\n");
 	printf("    Port: %s\n", portTypeStr);
+	printf("    Port I/O type: %s\n", portIoTypeStr);
 	printf("\nHit ENTER to continue\n");
 
 	ret = scanf("%c", &c);
@@ -142,8 +151,11 @@ int main(void)
 		usleep(100000);
 	}
 
-	// before leaving, configure the entire first port for input
-	err = ulDConfigPort(daqDeviceHandle, portType, DD_INPUT);
+	if(portIoType == DPIOT_IO || portIoType == DPIOT_BITIO)
+	{
+		// before leaving, configure the entire port for input
+		err = ulDConfigPort(daqDeviceHandle, portType, DD_INPUT);
+	}
 
 	// disconnect from the DAQ device
 	ulDisconnectDaqDevice(daqDeviceHandle);

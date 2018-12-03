@@ -66,37 +66,40 @@ double DaqOUsb1808::daqOutScan(FunctionType functionType, DaqOutChanDescriptor c
 
 	AoUsb1808* aoDev = dynamic_cast<AoUsb1808*>(mDaqDevice.aoDevice());
 
-	int sampleSize = 2;
-	int aoBitness = aoDev->getAoInfo().getResolution();
-	int chanCount = numChans;
-	int stageSize = calcStageSize(epAddr, rate, chanCount,  samplesPerChan, sampleSize);
-
-	std::vector<CalCoef> calCoefs = getScanCalCoefs(chanDescriptors, numChans, flags);
-
-	daqDev().setupTrigger(functionType, options);
-
-	loadScanConfigs(chanDescriptors, numChans);
-
-	daqDev().sendCmd(CMD_SCAN_CLEARFIFO);
-
-	setChanDescriptors(chanDescriptors, chanCount);
-
-	setScanInfo(functionType, chanCount, samplesPerChan, sampleSize, aoBitness, options, flags, calCoefs, data);
-
-	setScanConfig(functionType, chanCount, samplesPerChan, rate, options, flags);
-
-	daqDev().scanTranserOut()->initilizeTransfers(this, epAddr, stageSize);
-
-	try
+	if(aoDev)
 	{
-		daqDev().sendCmd(CMD_OUT_SCAN_START, 0, 0, (unsigned char*) &mScanConfig, sizeof(mScanConfig), 1000);
+		int sampleSize = 2;
+		int aoBitness = aoDev->getAoInfo().getResolution();
+		int chanCount = numChans;
+		int stageSize = calcStageSize(epAddr, rate, chanCount,  samplesPerChan, sampleSize);
 
-		setScanState(SS_RUNNING);
-	}
-	catch(UlException& e)
-	{
-		stopBackground();
-		throw e;
+		std::vector<CalCoef> calCoefs = getScanCalCoefs(chanDescriptors, numChans, flags);
+
+		daqDev().setupTrigger(functionType, options);
+
+		loadScanConfigs(chanDescriptors, numChans);
+
+		daqDev().sendCmd(CMD_SCAN_CLEARFIFO);
+
+		setChanDescriptors(chanDescriptors, chanCount);
+
+		setScanInfo(functionType, chanCount, samplesPerChan, sampleSize, aoBitness, options, flags, calCoefs, data);
+
+		setScanConfig(functionType, chanCount, samplesPerChan, rate, options, flags);
+
+		daqDev().scanTranserOut()->initilizeTransfers(this, epAddr, stageSize);
+
+		try
+		{
+			daqDev().sendCmd(CMD_OUT_SCAN_START, 0, 0, (unsigned char*) &mScanConfig, sizeof(mScanConfig), 1000);
+
+			setScanState(SS_RUNNING);
+		}
+		catch(UlException& e)
+		{
+			stopBackground();
+			throw e;
+		}
 	}
 
 	return actualScanRate();
@@ -205,19 +208,22 @@ std::vector<CalCoef> DaqOUsb1808::getScanCalCoefs(DaqOutChanDescriptor chanDescr
 
 	const AoUsb1808* aoDev = dynamic_cast<AoUsb1808*>(mDaqDevice.aoDevice());
 
-	for(int idx = 0; idx < numChans; idx++)
+	if(aoDev)
 	{
-		if(chanDescriptors[idx].type == DAQO_ANALOG)
+		for(int idx = 0; idx < numChans; idx++)
 		{
-			calCoef = aoDev->getChanCalCoef(chanDescriptors[idx].channel, flags);
-		}
-		else
-		{
-			calCoef.slope = 1;
-			calCoef.offset = 0;
-		}
+			if(chanDescriptors[idx].type == DAQO_ANALOG)
+			{
+				calCoef = aoDev->getChanCalCoef(chanDescriptors[idx].channel, flags);
+			}
+			else
+			{
+				calCoef.slope = 1;
+				calCoef.offset = 0;
+			}
 
-		calCoefs.push_back(calCoef);
+			calCoefs.push_back(calCoef);
+		}
 	}
 
 	return calCoefs;

@@ -5,7 +5,6 @@
  */
 
 #include "Usb20x.h"
-#include "./../DaqDeviceId.h"
 #include "./ai/AiUsb20x.h"
 #include "./ao/AoUsb20x.h"
 #include "./dio/DioUsb1608g.h"
@@ -14,7 +13,7 @@
 namespace ul
 {
 
-Usb20x::Usb20x(DaqDeviceDescriptor daqDeviceDescriptor) : UsbDaqDevice(daqDeviceDescriptor)
+Usb20x::Usb20x(const DaqDeviceDescriptor& daqDeviceDescriptor) : UsbDaqDevice(daqDeviceDescriptor)
 {
 	setCmdValue(CMD_FLASH_LED_KEY, 0x41);
 	setCmdValue(CMD_RESET_KEY, 0x42);

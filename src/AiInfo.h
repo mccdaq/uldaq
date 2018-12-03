@@ -54,6 +54,10 @@ public:
 	long long getAInFlags() const;
 	void setAInScanFlags(long long flags);
 	long long getAInScanFlags() const;
+	void setTInFlags(long long flags);
+	long long getTInFlags() const;
+	void setTInArrayFlags(long long flags);
+	long long getTInArrayFlags() const;
 
 	void addInputMode(AiInputMode mode);
 	std::vector<AiInputMode> getInputModes() const;
@@ -93,6 +97,9 @@ public:
 	bool isInputModeSupported(AiInputMode inputMode) const;
 	bool isRangeSupported(AiInputMode inputMode, Range range) const;
 
+	void setNumCjcChans(int numChans);
+	int getNumCjcChans() const;
+
 private:
 	std::vector<AiChanInfo> mAiChanInfo;
 	std::vector<Range> mSERanges;
@@ -125,6 +132,11 @@ private:
 
 	long long mAInFlags;
 	long long mAInScanFlags;
+	long long mTInFlags;
+	long long mTInArrayFlags;
+
+	int mNumCjcChans;
+
 };
 
 } /* namespace ul */

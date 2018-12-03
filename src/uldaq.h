@@ -338,7 +338,25 @@ typedef enum
 	ERR_DEV_UNAVAILABLE				= 80,
 
 	/** Re-trigger option is not supported for the specified trigger type */
-	ERR_BAD_RETRIG_TRIG_TYPE		= 81
+	ERR_BAD_RETRIG_TRIG_TYPE		= 81,
+
+	/** This function cannot be used with this version of the device */
+	ERR_BAD_DEV_VER 				= 82,
+
+	/** This digital operation is not supported on the specified port */
+	ERR_BAD_DIG_OPERATION			= 83,
+
+	/** Invalid digital port index specified */
+	ERR_BAD_PORT_INDEX				= 84,
+
+	/** Temperature input has open connection */
+	ERR_OPEN_CONNECTION				= 85,
+
+	/** Device is not ready to send data */
+	ERR_DEV_NOT_READY				= 86,
+
+	/** Pacer overrun, external clock rate too fast. */
+	ERR_PACER_OVERRUN				= 87
 
 } UlError;
 
@@ -409,6 +427,22 @@ typedef enum
 	/** Type N */
 	TC_N				= 8
 }TcType;
+
+/** Sensor connection types */
+typedef enum
+{
+	/** 2-wire with a single sensor per differential channel pair **/
+	SCT_2_WIRE_1	= 1,
+
+	/** 2-wire with two sensors per differential channel pair **/
+	SCT_2_WIRE_2	= 2,
+
+	/** 3-wire with a single sensor per differential channel pair **/
+	SCT_3_WIRE		= 3,
+
+	/** 4-wire with a single sensor per differential channel pair **/
+	SCT_4_WIRE		= 4
+}SensorConnectionType;
 
 /** Used with many analog input and output functions, as well as a return value for the \p infoValue argument
  * to ulAIGetInfo() when used with ::AI_INFO_DIFF_RANGE or ::AI_INFO_SE_RANGE, <br> and the \p infoValue argument
@@ -539,7 +573,10 @@ typedef enum
 	UNIPT01VOLTS    = 1020,
 
 	/** 0 to +.005 Volts */
-	UNIPT005VOLTS   = 1021
+	UNIPT005VOLTS   = 1021,
+
+	/** 0 to 20 Milliamps */
+	MA0TO20 = 2000
 }Range;
 
 /** Temperature units */
@@ -961,6 +998,7 @@ typedef enum
 #ifndef doxy_skip
 #define NOSCALEDATA 		1 << 0
 #define NOCALIBRATEDATA 	1 << 1
+#define SIMULTANEOUS		1 << 2
 #define NOCLEAR				1 << 3
 #endif /*doxy_skip */
 
@@ -1040,6 +1078,20 @@ typedef enum
 	AOUTSCAN_FF_NOCALIBRATEDATA 		= NOCALIBRATEDATA 	
 }AOutScanFlag;
 
+/** Use as the \p flags argument value for ulTIn() to set the properties of data returned; reserved for future use. */
+typedef enum
+{
+	/** Placeholder value. Standard functionality. */
+	TIN_FF_DEFAULT = 0,
+}TInFlag;
+
+/** Use as the \p flags argument value for ulTInArray() to set the properties of data returned; reserved for future use. */
+typedef enum
+{
+	/** Placeholder value. Standard functionality. */
+	TINARRAY_FF_DEFAULT = 0,
+}TInArrayFlag;
+
 /** Use as the \p flags argument value for ulAOut() to set the properties of data supplied to the function. */
 typedef enum
 {
@@ -1053,10 +1105,36 @@ typedef enum
 	AOUT_FF_NOCALIBRATEDATA 		= NOCALIBRATEDATA 	
 }AOutFlag;
 
+/** Use as the \p flags argument value for ulAOutArray() to set the properties of data supplied to the function. */
+typedef enum
+{
+	/** Scaled data is supplied and calibration factors are applied to output. */
+	AOUTARRAY_FF_DEFAULT	= 0,
+
+	/** Data is supplied in native format (usually, values ranging from 0 to 2<sup>resolution</sup> - 1). */
+	AOUTARRAY_FF_NOSCALEDATA 			= NOSCALEDATA,
+
+	/** Data is output without calibration factors applied. */
+	AOUTARRAY_FF_NOCALIBRATEDATA 		= NOCALIBRATEDATA ,
+
+	/** All of the specified channels will be updated simultaneously. */
+	AOUTARRAY_FF_SIMULTANEOUS			= SIMULTANEOUS
+}AOutArrayFlag;
+
+/** Use with #AoConfigItem to set configuration options at runtime. */
+typedef enum
+{
+	/** Receive the D/A Load signal from an external source */
+	AOSM_SLAVE	= 0,
+
+	/** Output the internal D/A Load signal */
+	AOSM_MASTER	= 1
+}AOutSyncMode;
+
 /** Use as the \p flags argument value for ulCInScan() to set counter properties. */
 typedef enum
 {
-	/** Default counter behavior. */
+	/** Default counter behavior */
 	CINSCAN_FF_DEFAULT 			= 0,
 
 	/** Sets up the counter as a 16-bit counter channel */
@@ -1069,13 +1147,16 @@ typedef enum
 	CINSCAN_FF_CTR64_BIT 		= 1 << 2,
 
 	/** Does not clear the counter to 0 at the start of each scan. */
-	CINSCAN_FF_NOCLEAR			= NOCLEAR   
+	CINSCAN_FF_NOCLEAR			= NOCLEAR,
+
+	/** Sets up the counter as a 48-bit counter channel */
+	CINSCAN_FF_CTR48_BIT 		= 1 << 4
 }CInScanFlag;
 
 /** Use as the \p flags argument value for ulDInScan() to set the properties of data returned. */
 typedef enum
 {
-	/** Standard scan properties; placeholder for future values */
+	/** Standard scan properties. Placeholder for future values */
 	DINSCAN_FF_DEFAULT 			= 0,
 }DInScanFlag;
 
@@ -1708,7 +1789,6 @@ typedef enum
 	AI_INFO_MAX_BURST_THROUGHPUT = 1004
 }AiInfoItemDbl;
 
-#ifndef doxy_skip
 /** Use with ulAISetConfig() and ulAIGetConfig() to configure the AI subsystem. */
 typedef enum
 {
@@ -1718,21 +1798,20 @@ typedef enum
 	/** The thermocouple type of the specified channel. Set with #TcType. */
 	AI_CFG_CHAN_TC_TYPE = 2,
 
-	/** The temperature unit of the specified channel. Set with #TempUnit. */
-	AI_CFG_CHAN_TEMP_UNIT = 3,
+#ifndef doxy_skip
+	/** The temperature unit of the specified analog input scan channel. Set with #TempUnit. */
+	AI_CFG_SCAN_CHAN_TEMP_UNIT = 3,
 
-	/** The temperature unit. Set with #TempUnit. */
-	AI_CFG_TEMP_UNIT = 4,
+	/** The analog input scan temperature unit. Set with #TempUnit. */
+	AI_CFG_SCAN_TEMP_UNIT = 4,
 	
-	#ifndef doxy_skip
 	/** The timing mode. Set with #AdcTimingMode. */
 	AI_CFG_ADC_TIMING_MODE = 5,
-	#endif /* doxy_skip */
+#endif /* doxy_skip */
 
-	#ifndef doxy_skip
+#ifndef doxy_skip
 	/** The auto zero mode. Set with #AutoZeroMode. */
 	AI_CFG_AUTO_ZERO_MODE = 6,
-	#endif /* doxy_skip */
 
 	/** The date when the device was calibrated last in UNIX Epoch time. */
 	AI_CFG_CAL_DATE = 7,
@@ -1741,9 +1820,14 @@ typedef enum
 	AI_CFG_CHAN_IEPE_MODE = 8,
 
 	/** The coupling mode for the specified device. Set with #CouplingMode. */
-	AI_CFG_CHAN_COUPLING_MODE = 9
+	AI_CFG_CHAN_COUPLING_MODE = 9,
+#endif /* doxy_skip */
+
+	/** The connection type of the sensor connected to the specified channel. */
+	AI_CFG_CHAN_SENSOR_CONNECTION_TYPE = 10
 }AiConfigItem;
 
+#ifndef doxy_skip
 /** Use with ulAISetConfigDbl() and ulAIGetConfigDbl() to configure the AI subsystem. */
 typedef enum
 {
@@ -1754,15 +1838,19 @@ typedef enum
 	AI_CFG_CHAN_OFFSET = 1001,
 
 	/** The sensitivity of the sensor connected to the specified channel. */
-	AI_CFG_CHAN_SENSOR_SENSIVITY = 1002
+	AI_CFG_CHAN_SENSOR_SENSITIVITY = 1002
 }AiConfigItemDbl;
 
-/** Calibration date */
+#endif /* doxy_skip */
+
 typedef enum
 {
-	AI_CFG_CAL_DATE_STR = 2000
+	/** Calibration date */
+	AI_CFG_CAL_DATE_STR = 2000,
+
+	/** The channel coefficients used for the configured sensor. */
+	AI_CFG_CHAN_COEFS_STR = 2001
 }AiConfigItemStr;
-#endif /* doxy_skip */
 
 /** Use with ulAOGetInfo() to obtain information about the analog output subsystem for the specified device
  * as an \p infoItem argument value. */
@@ -1807,6 +1895,13 @@ typedef enum
 	/** Returns the maximum throughput in samples per second to the \p infoValue argument. Index is ignored. */
 	AO_INFO_MAX_THROUGHPUT = 1002
 }AoInfoItemDbl;
+
+/** Use with ulAOSetConfig() and ulAOGetConfig() to configure the AO subsystem. */
+typedef enum
+{
+	/** The sync mode. Set with #AOutSyncMode. */
+	AO_CFG_SYNC_MODE = 1
+}AoConfigItem;
 
 /** Use with ulDIOGetInfo() to obtain information about the DIO subsystem for the specified device as an \p infoItem argument value. */
 typedef enum
@@ -1869,7 +1964,7 @@ typedef enum
 	DIO_INFO_MAX_THROUGHPUT = 1002
 }DioInfoItemDbl;
 
-/** Use with ulDIOGetConfig() as a \p configItem argument value to get the current configuration
+/** Use with ulDIOGetConfig() and/or ulDIOSetConfig() as a \p configItem argument value to get the current configuration
  * of the specified digital port on the specified device.
  */
 typedef enum
@@ -1880,6 +1975,19 @@ typedef enum
 	 * bits 0 and 1 are output, and any other bits in the port are input.
 	 */
 	DIO_CFG_PORT_DIRECTION_MASK = 1,
+
+	/** Writes a value to the specified port number. This allows writing a value when the port is in
+	 * input mode so that when the port is switched to output mode, the state of the bits is known.
+	 */
+	DIO_CFG_PORT_INITIAL_OUTPUT_VAL = 2,
+
+	/** Returns or writes the low-pass filter setting. A 0 indicates that the filter is disabled for
+	 * the corresponding bit.
+	 */
+	DIO_CFG_PORT_ISO_FILTER_MASK = 3,
+
+	/** Returns the port logic. A 0 indicates non-invert mode, and a non-zero value indicates output inverted. */
+	DIO_CFG_PORT_LOGIC = 4
 }DioConfigItem;
 
 /** Use with ulCtrGetInfo() to obtain information about the counter subsystem for the specified device
@@ -2196,7 +2304,7 @@ UlError ulAInScanWait(DaqDeviceHandle daqDeviceHandle, WaitType waitType, long l
 UlError ulAInLoadQueue(DaqDeviceHandle daqDeviceHandle, AiQueueElement queue[], unsigned int numElements);
 
 /**
- * Configures the trigger parameters that will be used when #ulAInScan() is called with the ::SO_RETRIGGER or ::SO_EXTTRIGGER ScanOption
+ * Configures the trigger parameters that will be used when #ulAInScan() is called with the ::SO_RETRIGGER or ::SO_EXTTRIGGER ScanOption.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param type type of trigger
  * @param trigChan the trigger channel; ignored if \p type is set to ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE, ::TRIG_HIGH, ::TRIG_LOW, ::GATE_HIGH,
@@ -2210,6 +2318,30 @@ UlError ulAInLoadQueue(DaqDeviceHandle daqDeviceHandle, AiQueueElement queue[], 
  * @return The UL error code.
  */
 UlError ulAInSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int trigChan, double level, double variance, unsigned int retriggerSampleCount);
+
+/**
+ * Returns a temperature value read from an A/D channel.
+ * @param daqDeviceHandle the handle to the DAQ device
+ * @param channel A/D channel number
+ * @param scale temperature unit
+ * @param flags reserved for future use
+ * @param data temperature value; if an ::ERR_OPEN_CONNECTION error occurs, the value returned will be -9999.
+ * @return The UL error code.
+ */
+UlError ulTIn(DaqDeviceHandle daqDeviceHandle, int channel, TempScale scale, TInFlag flags, double* data);
+
+/**
+ * Scans a range of A/D temperature channels, and stores the samples in an array.
+ * @param daqDeviceHandle the handle to the DAQ device
+ * @param lowChan first A/D channel in the scan
+ * @param highChan last A/D channel in the scan
+ * @param scale temperature unit
+ * @param flags reserved for future use
+ * @param data[] a pointer to an array that stores the data; if an ::ERR_OPEN_CONNECTION error occurs,
+ * the value will be -9999 in the array element associated with the channel causing the error.
+ * @return The UL error code.
+ */
+UlError ulTInArray(DaqDeviceHandle daqDeviceHandle, int lowChan, int highChan, TempScale scale, TInArrayFlag flags, double data[]);
 
 /** @}*/ 
 
@@ -2229,6 +2361,18 @@ UlError ulAInSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int t
  * @return The UL error code.
  */
 UlError ulAOut(DaqDeviceHandle daqDeviceHandle, int channel, Range range, AOutFlag flags, double data);
+
+/**
+ * Writes values to a range of D/A channels.
+ * @param daqDeviceHandle the handle to the DAQ device
+ * @param lowChan first D/A channel
+ * @param highChan last D/A channel
+ * @param range D/A ranges
+ * @param flags bit mask that specifies whether to scale and/or calibrate the data
+ * @param data[] a pointer to an array that stores the data
+ * @return The UL error code.
+ */
+UlError ulAOutArray(DaqDeviceHandle daqDeviceHandle,  int lowChan, int highChan, Range range[], AOutArrayFlag flags, double data[]);
 
 /**
  * Writes values to a range of D/A channels.
@@ -2332,6 +2476,26 @@ UlError ulDIn(DaqDeviceHandle daqDeviceHandle, DigitalPortType portType, unsigne
  * @return The UL error code.
  */
 UlError ulDOut(DaqDeviceHandle daqDeviceHandle, DigitalPortType portType, unsigned long long data);
+
+/**
+ * Reads the specified digital ports, and Returns the data in an array.
+ * @param daqDeviceHandle the handle to the DAQ device
+ * @param lowPort the first port in the scan
+ * @param highPort the last port in the scan
+ * @param data input data array
+ * @return The UL error code.
+ */
+UlError ulDInArray(DaqDeviceHandle daqDeviceHandle, DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[]);
+
+/**
+ * Sets the values of the specified digital ports.
+ * @param daqDeviceHandle the handle to the DAQ device
+ * @param lowPort the first port in the scan
+ * @param highPort the last port in the scan
+ * @param data output data array
+ * @return The UL error code.
+ */
+UlError ulDOutArray(DaqDeviceHandle daqDeviceHandle, DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[]);
 
 /**
  * Returns the value of a digital bit.
@@ -2843,7 +3007,7 @@ UlError ulGetInfoStr(UlInfoItemStr infoItem, unsigned int index, char* infoStr, 
  * Use with UlConfigItem to change device configuration options at runtime.
  * @param configItem the type of information to write to the device
  * @param index either ignored or an index into the \p configValue
- * @param configValue the specified configuration value is returned to this variable
+ * @param configValue the value to set the specified configuration item to
  * @return The UL error code.
  * */
 UlError ulSetConfig(UlConfigItem configItem, unsigned int index, long long configValue);
@@ -2870,7 +3034,7 @@ UlError ulGetConfig(UlConfigItem configItem, unsigned int index, long long* conf
 UlError ulDevGetInfo(DaqDeviceHandle daqDeviceHandle, DevInfoItem infoItem, unsigned int index, long long* infoValue);
 
 /**
- * Use with #DevConfigItemStr to retrieve configuration information as a null-terminated string.
+ * Use with #DevConfigItemStr to retrieve the current configuration as a null-terminated string.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param configItem the configuration item to retrieve from the device
  * @param index specifies the version type to return as an index into \p configItem (::DevVersionType)
@@ -2915,7 +3079,7 @@ UlError ulAIGetInfoDbl(DaqDeviceHandle daqDeviceHandle, AiInfoItemDbl infoItem, 
  * @param daqDeviceHandle the handle to the DAQ device
  * @param configItem the configuration item to set
  * @param index either ignored or an index into the \p configValue
- * @param configValue the specified configuration value is returned to this variable
+ * @param configValue the value to set the specified configuration item to
  * @return The UL error code.
  */
 UlError ulAISetConfig(DaqDeviceHandle daqDeviceHandle, AiConfigItem configItem, unsigned int index, long long configValue);
@@ -2937,7 +3101,7 @@ UlError ulAIGetConfig(DaqDeviceHandle daqDeviceHandle, AiConfigItem configItem, 
  * @param daqDeviceHandle the handle to the DAQ device
  * @param configItem the configuration item to set
  * @param index either ignored or an index into the \p configValue
- * @param configValue the specified configuration value is returned to this variable
+ * @param configValue the value to set the specified configuration item to
  * @return The UL error code.
  */
 UlError ulAISetConfigDbl(DaqDeviceHandle daqDeviceHandle, AiConfigItemDbl configItem, unsigned int index, double configValue);
@@ -2953,6 +3117,8 @@ UlError ulAISetConfigDbl(DaqDeviceHandle daqDeviceHandle, AiConfigItemDbl config
  */
 UlError ulAIGetConfigDbl(DaqDeviceHandle daqDeviceHandle, AiConfigItemDbl configItem, unsigned int index, double* configValue);
 
+#endif /* doxy_skip */
+
 /**
  * \ingroup AnalogInput
  * Use with #DevConfigItemStr to retrieve configuration information as a null-terminated string.
@@ -2964,7 +3130,6 @@ UlError ulAIGetConfigDbl(DaqDeviceHandle daqDeviceHandle, AiConfigItemDbl config
  * @return The UL error code.
  */
 UlError ulAIGetConfigStr(DaqDeviceHandle daqDeviceHandle, AiConfigItemStr configItem, unsigned int index, char* configStr, unsigned int* maxConfigLen);
-#endif /* doxy_skip */
 
 /** 
  * \ingroup AnalogOutput
@@ -2987,6 +3152,28 @@ UlError ulAOGetInfo(DaqDeviceHandle daqDeviceHandle, AoInfoItem infoItem, unsign
  * @return The UL error code.
  */
 UlError ulAOGetInfoDbl(DaqDeviceHandle daqDeviceHandle, AoInfoItemDbl infoItem, unsigned int index, double* infoValue);
+
+/**
+ * \ingroup AnalogOutput
+ * Use with #AoConfigItem to set configuration options at runtime.
+ * @param daqDeviceHandle the handle to the DAQ device
+ * @param configItem the configuration item to set
+ * @param index either ignored or an index into the \p configValue
+ * @param configValue the value to set the specified configuration item to
+ * @return The UL error code.
+ */
+UlError ulAOSetConfig(DaqDeviceHandle daqDeviceHandle, AoConfigItem configItem, unsigned int index, long long configValue);
+
+/**
+ * \ingroup AnalogOutput
+ * Use with #AoConfigItem to retrieve configuration options set for a device.
+ * @param daqDeviceHandle the handle to the DAQ device
+ * @param configItem the configuration item to retrieve
+ * @param index either ignored or an index into the \p configValue
+ * @param configValue the specified configuration value is returned to this variable
+ * @return The UL error code.
+ */
+UlError ulAOGetConfig(DaqDeviceHandle daqDeviceHandle, AoConfigItem configItem, unsigned int index, long long* configValue);
 
 /**
  * \ingroup DigitalIO
@@ -3014,6 +3201,17 @@ UlError ulDIOGetInfoDbl(DaqDeviceHandle daqDeviceHandle, DioInfoItemDbl infoItem
 /**
  * \ingroup DigitalIO
  * Use with #DioConfigItem to retrieve information about the DIO subsystem.
+ * @param daqDeviceHandle the handle to the DAQ device
+ * @param configItem the configuration item to retrieve
+ * @param index the port index
+ * @param configValue the value to set the specified configuration item to
+ * @return The UL error code.
+ */
+UlError ulDIOSetConfig(DaqDeviceHandle daqDeviceHandle, DioConfigItem configItem, unsigned int index, long long configValue);
+
+/**
+ * \ingroup DigitalIO
+ * Use with #DioConfigItem to retrieve the current configuration about the DIO subsystem.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param configItem the configuration item to retrieve
  * @param index the port index
@@ -3121,6 +3319,16 @@ UlError ulDaqOGetInfoDbl(DaqDeviceHandle daqDeviceHandle, DaqOInfoItemDbl infoIt
 
 UlError ulMemGetInfo(DaqDeviceHandle daqDeviceHandle, MemRegion memRegion, MemDescriptor* memDescriptor);
 
+#ifndef doxy_skip
+/**
+ * Create a device object within the Universal Library for the DAQ device specified by the descriptor. This function intended to be
+ * used by languages that don't have capability to pass structures by value. i.e LabVIEW, VB, ...
+ * @param daqDevDescriptor DaqDeviceDescriptor struct containing fields that describe the device
+ * @return The device handle.
+ */
+DaqDeviceHandle ulCreateDaqDevicePtr(DaqDeviceDescriptor* daqDevDescriptor);
+
+#endif /* doxy_skip */
 
 /** \mainpage
  * <h1>Introduction</h1>
@@ -3211,6 +3419,7 @@ ulDBitIn().</td></tr>
 ulDInScanStop().</td></tr>
 <tr><td>DOut</td><td>Configures a port for output and writes a specified value. Demonstrates the use of ulDConfigPort() and ulDOut().</td></tr>
 <tr><td>DOutScan</td><td>Configures the port direction and outputs digital data. Demonstrates the use of ulDConfigPort(), ulDOutScan(), and ulDOutScanStop().</td></tr>
+<tr><td>TIn</td><td>Reads a temperature input channel. Demonstrates the use of ulTIn().</td></tr>
 <tr><td>TmrPulseOut</td><td>Generates an output pulse at a specified duty cycle and frequency. Demonstrates the use of ulTmrPulseOutStart() and ulTmrPulseOutStop().</td></tr>
 </table>
 <br>

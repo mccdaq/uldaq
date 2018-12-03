@@ -14,6 +14,7 @@ AoUsb1208fs_Plus::AoUsb1208fs_Plus(const UsbDaqDevice& daqDevice, int numChans) 
 	double minRate = daqDev().getClockFreq() / UINT_MAX;
 
 	mAoInfo.setAOutFlags(AOUT_FF_NOSCALEDATA | AOUT_FF_NOCALIBRATEDATA);
+	mAoInfo.setAOutArrayFlags(AOUTARRAY_FF_NOSCALEDATA | AOUTARRAY_FF_NOCALIBRATEDATA);
 	mAoInfo.setAOutScanFlags(AOUTSCAN_FF_NOSCALEDATA | AOUTSCAN_FF_NOCALIBRATEDATA);
 
 	mAoInfo.setScanOptions(SO_DEFAULTIO | SO_CONTINUOUS | SO_SINGLEIO |SO_BLOCKIO);

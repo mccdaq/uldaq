@@ -37,6 +37,9 @@ AiInfo::AiInfo()
 	mChanQueueLimitations = (AiChanQueueLimitation) 0;
 	mTriggerTypes = TRIG_NONE;
 	mTypes = (AiChanType) 0;
+	mTInFlags = 0;
+	mTInArrayFlags = 0;
+	mNumCjcChans = 0;
 }
 
 AiInfo::~AiInfo()
@@ -210,9 +213,38 @@ long long AiInfo::getAInScanFlags() const
 	return mAInScanFlags;
 }
 
+void AiInfo::setTInFlags(long long flags)
+{
+	mTInFlags = flags;
+}
+
+long long AiInfo::getTInFlags() const
+{
+	return mTInFlags;
+}
+
+void AiInfo::setTInArrayFlags(long long flags)
+{
+	mTInArrayFlags = flags;
+}
+
+long long AiInfo::getTInArrayFlags() const
+{
+	return mTInArrayFlags;
+}
+
+void AiInfo::setNumCjcChans(int numChans)
+{
+	mNumCjcChans = numChans;
+}
+
+int AiInfo::getNumCjcChans() const
+{
+	return mNumCjcChans;
+}
+
 void AiInfo::addRange(AiInputMode mode, Range range)
 {
-
 	if(mode == AI_SINGLE_ENDED)
 	{
 		mSERanges.push_back(range);

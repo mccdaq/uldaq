@@ -49,6 +49,7 @@ UlError ulGetDaqDeviceInventory(DaqDeviceInterface interfaceTypes, DaqDeviceDesc
 	return err;
 }
 
+// coverity[pass_by_value]
 DaqDeviceHandle ulCreateDaqDevice(DaqDeviceDescriptor daqDevDescriptor)
 {
 	int __attribute__((unused)) error = ERR_NO_ERROR;
@@ -68,6 +69,33 @@ DaqDeviceHandle ulCreateDaqDevice(DaqDeviceDescriptor daqDevDescriptor)
 	catch(...)
 	{
 		error = ERR_UNHANDLED_EXCEPTION;
+	}
+
+	return virtualHandle;
+}
+
+DaqDeviceHandle ulCreateDaqDevicePtr(DaqDeviceDescriptor* daqDevDescriptor)
+{
+	int __attribute__((unused)) error = ERR_NO_ERROR;
+
+	DaqDeviceHandle virtualHandle = 0;
+
+	if(daqDevDescriptor)
+	{
+		try
+		{
+			DaqDevice& daqDev = (DaqDevice&) UlDaqDeviceManager::createDaqDevice(*daqDevDescriptor);
+
+			virtualHandle =  daqDev.getDeviceNumber();
+		}
+		catch(UlException& e)
+		{
+			error = e.getError();
+		}
+		catch(...)
+		{
+			error = ERR_UNHANDLED_EXCEPTION;
+		}
 	}
 
 	return virtualHandle;
@@ -475,6 +503,81 @@ UlError ulAInSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int t
 	return error;
 }
 
+UlError ulTIn(DaqDeviceHandle daqDeviceHandle, int channel, TempScale scale, TInFlag flags, double* data)
+{
+	FnLog log("ulTIn()");
+
+	UlError error = ERR_NO_ERROR;
+
+	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
+
+	if(pDaqDevice)
+	{
+		try
+		{
+			AiDevice* aiDev = pDaqDevice->aiDevice();
+
+			if(aiDev)
+			{
+				if(data)
+					aiDev->tIn(channel, scale, flags, data);
+				else
+					error = ERR_BAD_ARG;
+			}
+			else
+				error = ERR_BAD_DEV_TYPE;
+		}
+		catch(UlException& e)
+		{
+			error = e.getError();
+		}
+		catch(...)
+		{
+			error = ERR_UNHANDLED_EXCEPTION;
+		}
+	}
+	else
+		error = ERR_BAD_DEV_HANDLE;
+
+	return error;
+}
+
+UlError ulTInArray(DaqDeviceHandle daqDeviceHandle, int lowChan, int highChan, TempScale scale, TInArrayFlag flags, double data[])
+{
+	FnLog log("ulTInArray()");
+
+	UlError error = ERR_NO_ERROR;
+
+	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
+
+	if(pDaqDevice)
+	{
+		try
+		{
+			AiDevice* aiDev = pDaqDevice->aiDevice();
+
+			if(aiDev)
+			{
+				aiDev->tInArray(lowChan, highChan, scale, flags, data);
+			}
+			else
+				error = ERR_BAD_DEV_TYPE;
+		}
+		catch(UlException& e)
+		{
+			error = e.getError();
+		}
+		catch(...)
+		{
+			error = ERR_UNHANDLED_EXCEPTION;
+		}
+	}
+	else
+		error = ERR_BAD_DEV_HANDLE;
+
+	return error;
+}
+
 UlError ulAOut(DaqDeviceHandle daqDeviceHandle, int channel, Range range, AOutFlag flags, double data)
 {
 	FnLog log("ulAOut()");
@@ -491,6 +594,42 @@ UlError ulAOut(DaqDeviceHandle daqDeviceHandle, int channel, Range range, AOutFl
 
 			if(aoDev)
 				aoDev->aOut(channel, range, flags, data);
+			else
+				error = ERR_BAD_DEV_TYPE;
+		}
+		catch(UlException& e)
+		{
+			error = e.getError();
+		}
+		catch(...)
+		{
+			error = ERR_UNHANDLED_EXCEPTION;
+		}
+	}
+	else
+		error = ERR_BAD_DEV_HANDLE;
+
+	return error;
+}
+
+UlError ulAOutArray(DaqDeviceHandle daqDeviceHandle, int lowChan, int highChan, Range range[], AOutArrayFlag flags, double data[])
+{
+	FnLog log("ulAOutArray()");
+
+	UlError error = ERR_NO_ERROR;
+
+	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
+
+	if(pDaqDevice)
+	{
+		try
+		{
+			AoDevice* aoDev = pDaqDevice->aoDevice();
+
+			if(aoDev)
+			{
+				aoDev->aOutArray(lowChan, highChan, range, flags, data);
+			}
 			else
 				error = ERR_BAD_DEV_TYPE;
 		}
@@ -807,6 +946,79 @@ UlError ulDOut(DaqDeviceHandle daqDeviceHandle, DigitalPortType portType, unsign
 
 			if(dioDev)
 				dioDev->dOut(portType, data);
+			else
+				error = ERR_BAD_DEV_TYPE;
+		}
+		catch(UlException& e)
+		{
+			error = e.getError();
+		}
+		catch(...)
+		{
+			error = ERR_UNHANDLED_EXCEPTION;
+		}
+	}
+	else
+		error = ERR_BAD_DEV_HANDLE;
+
+	return error;
+}
+
+UlError ulDInArray(DaqDeviceHandle daqDeviceHandle, DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[])
+{
+	FnLog log("ulDInArray()");
+
+	UlError error = ERR_NO_ERROR;
+
+	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
+
+	if(pDaqDevice)
+	{
+		try
+		{
+			DioDevice* dioDev = pDaqDevice->dioDevice();
+
+			if(dioDev)
+			{
+				if(data)
+					dioDev->dInArray(lowPort, highPort, data);
+				else
+					error = ERR_BAD_ARG;
+			}
+			else
+				error = ERR_BAD_DEV_TYPE;
+		}
+		catch(UlException& e)
+		{
+			error = e.getError();
+		}
+		catch(...)
+		{
+			error = ERR_UNHANDLED_EXCEPTION;
+		}
+	}
+	else
+		error = ERR_BAD_DEV_HANDLE;
+
+	return error;
+}
+
+UlError ulDOutArray(DaqDeviceHandle daqDeviceHandle, DigitalPortType lowPort, DigitalPortType highPort, unsigned long long data[])
+{
+	FnLog log("ulDOutArray()");
+
+	UlError error = ERR_NO_ERROR;
+
+	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
+
+	if(pDaqDevice)
+	{
+		try
+		{
+			DioDevice* dioDev = pDaqDevice->dioDevice();
+
+			if(dioDev)
+				dioDev->dOutArray(lowPort, highPort, data);
 			else
 				error = ERR_BAD_DEV_TYPE;
 		}
@@ -2260,18 +2472,22 @@ UlError ulGetInfoStr(UlInfoItemStr infoItem, unsigned int index, char* infoStr, 
 		case UL_INFO_VER_STR:
 
 			if(infoStr)
+			{
 				infoStr[0] = '\0';
 
-			if(strlen(UL_VERSION) < *maxConfigLen)
-			{
-				memcpy(infoStr, UL_VERSION, strlen(UL_VERSION) + 1);
-				*maxConfigLen = strlen(UL_VERSION) + 1;
+				if(strlen(UL_VERSION) < *maxConfigLen)
+				{
+					memcpy(infoStr, UL_VERSION, strlen(UL_VERSION) + 1);
+					*maxConfigLen = strlen(UL_VERSION) + 1;
+				}
+				else
+				{
+					*maxConfigLen = strlen(UL_VERSION) + 1;
+					error = ERR_BAD_BUFFER_SIZE;
+				}
 			}
 			else
-			{
-				*maxConfigLen = strlen(UL_VERSION) + 1;
-				error = ERR_BAD_BUFFER_SIZE;
-			}
+				error = ERR_BAD_BUFFER;
 
 			break;
 
@@ -2398,7 +2614,7 @@ UlError ulDevGetInfo(DaqDeviceHandle daqDeviceHandle, DevInfoItem infoItem, unsi
 					break;
 
 				default:
-					error = ERR_BAD_CONFIG_ITEM;
+					error = ERR_BAD_INFO_ITEM;
 				}
 			}
 			catch(UlException& e)
@@ -2484,11 +2700,11 @@ UlError ulAISetConfig(DaqDeviceHandle daqDeviceHandle, AiConfigItem configItem, 
 				case AI_CFG_CHAN_TC_TYPE:
 					aiConfig.setChanTcType(index, (TcType) configValue);
 					break;
-				case AI_CFG_CHAN_TEMP_UNIT:
-					aiConfig.setChanTempUnit(index, (TempUnit) configValue);
+				case AI_CFG_SCAN_CHAN_TEMP_UNIT:
+					aiConfig.setScanChanTempUnit(index, (TempUnit) configValue);
 					break;
-				case AI_CFG_TEMP_UNIT:
-					aiConfig.setTempUnit((TempUnit) configValue);
+				case AI_CFG_SCAN_TEMP_UNIT:
+					aiConfig.setScanTempUnit((TempUnit) configValue);
 					break;
 				case AI_CFG_ADC_TIMING_MODE:
 					aiConfig.setAdcTimingMode((AdcTimingMode) configValue);
@@ -2554,8 +2770,8 @@ UlError ulAIGetConfig(DaqDeviceHandle daqDeviceHandle, AiConfigItem configItem, 
 					case AI_CFG_CHAN_TC_TYPE:
 						*configValue = aiConfig.getChanTcType(index);
 						break;
-					case AI_CFG_CHAN_TEMP_UNIT:
-						*configValue = aiConfig.getChanTempUnit(index);
+					case AI_CFG_SCAN_CHAN_TEMP_UNIT:
+						*configValue = aiConfig.getScanChanTempUnit(index);
 						break;
 					case AI_CFG_ADC_TIMING_MODE:
 						*configValue = aiConfig.getAdcTimingMode();
@@ -2571,6 +2787,9 @@ UlError ulAIGetConfig(DaqDeviceHandle daqDeviceHandle, AiConfigItem configItem, 
 						break;
 					case AI_CFG_CHAN_COUPLING_MODE:
 						*configValue = aiConfig.getChanCouplingMode(index);
+						break;
+					case AI_CFG_CHAN_SENSOR_CONNECTION_TYPE:
+						*configValue = aiConfig.getChanSensorConnectionType(index);
 						break;
 
 					default:
@@ -2625,7 +2844,7 @@ UlError ulAISetConfigDbl(DaqDeviceHandle daqDeviceHandle, AiConfigItemDbl config
 				case AI_CFG_CHAN_OFFSET:
 					aiConfig.setChanOffset(index, configValue);
 					break;
-				case AI_CFG_CHAN_SENSOR_SENSIVITY:
+				case AI_CFG_CHAN_SENSOR_SENSITIVITY:
 					aiConfig.setChanSensorSensitivity(index, configValue);
 					break;
 				default:
@@ -2679,7 +2898,7 @@ UlError ulAIGetConfigDbl(DaqDeviceHandle daqDeviceHandle, AiConfigItemDbl config
 					case AI_CFG_CHAN_OFFSET:
 						*configValue = aiConfig.getChanOffset(index);
 						break;
-					case AI_CFG_CHAN_SENSOR_SENSIVITY:
+					case AI_CFG_CHAN_SENSOR_SENSITIVITY:
 						*configValue = aiConfig.getChanSensorSensitivity(index);
 						break;
 
@@ -2732,6 +2951,9 @@ UlError ulAIGetConfigStr(DaqDeviceHandle daqDeviceHandle, AiConfigItemStr config
 				{
 				case AI_CFG_CAL_DATE_STR:
 					aiConfig.getCalDateStr(configStr, maxConfigLen);
+					break;
+				case AI_CFG_CHAN_COEFS_STR:
+					aiConfig.getChanCoefsStr(index, configStr, maxConfigLen);
 					break;
 
 				default:
@@ -2895,6 +3117,105 @@ UlError ulAIGetInfoDbl(DaqDeviceHandle daqDeviceHandle, AiInfoItemDbl infoItem, 
 					default:
 						error = ERR_BAD_INFO_ITEM;
 					}
+				}
+				else
+					error = ERR_BAD_DEV_TYPE;
+			}
+			catch(UlException& e)
+			{
+				error = e.getError();
+			}
+			catch(...)
+			{
+				error = ERR_UNHANDLED_EXCEPTION;
+			}
+		}
+		else
+			error = ERR_BAD_ARG;
+	}
+	else
+		error = ERR_BAD_DEV_HANDLE;
+
+	return error;
+}
+
+
+UlError ulAOSetConfig(DaqDeviceHandle daqDeviceHandle, AoConfigItem configItem, unsigned int index, long long configValue)
+{
+	FnLog log("ulAOSetConfig()");
+
+	UlError error = ERR_NO_ERROR;
+
+	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
+
+	if(pDaqDevice)
+	{
+		try
+		{
+			AoDevice* aoDev = pDaqDevice->aoDevice();
+
+			if(aoDev)
+			{
+				UlAoConfig& aoConfig = aoDev->getAoConfig();
+
+				switch(configItem)
+				{
+				case AO_CFG_SYNC_MODE:
+					aoConfig.setSyncMode((AOutSyncMode) configValue);
+					break;
+				default:
+					error = ERR_BAD_CONFIG_ITEM;
+				}
+
+			}
+			else
+				error = ERR_BAD_DEV_TYPE;
+		}
+		catch(UlException& e)
+		{
+			error = e.getError();
+		}
+		catch(...)
+		{
+			error = ERR_UNHANDLED_EXCEPTION;
+		}
+	}
+	else
+		error = ERR_BAD_DEV_HANDLE;
+
+	return error;
+}
+
+
+UlError ulAOGetConfig(DaqDeviceHandle daqDeviceHandle, AoConfigItem configItem, unsigned int index, long long* configValue)
+{
+	FnLog log("ulAOGetConfig()");
+
+	UlError error = ERR_NO_ERROR;
+
+	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
+
+	if(pDaqDevice)
+	{
+		if(configValue)
+		{
+			try
+			{
+				AoDevice* aoDev = pDaqDevice->aoDevice();
+
+				if(aoDev)
+				{
+					UlAoConfig& aoConfig = aoDev->getAoConfig();
+
+					switch(configItem)
+					{
+					case AO_CFG_SYNC_MODE:
+						*configValue = aoConfig.getSyncMode();
+						break;
+					default:
+						error = ERR_BAD_CONFIG_ITEM;
+					}
+
 				}
 				else
 					error = ERR_BAD_DEV_TYPE;
@@ -3200,6 +3521,13 @@ UlError ulDIOGetConfig(DaqDeviceHandle daqDeviceHandle, DioConfigItem configItem
 					case DIO_CFG_PORT_DIRECTION_MASK:
 						*configValue = dioConfig.getPortDirectionMask(index);
 					break;
+					case DIO_CFG_PORT_ISO_FILTER_MASK:
+						*configValue = dioConfig.getPortIsoMask(index);
+						break;
+					case DIO_CFG_PORT_LOGIC:
+						*configValue = dioConfig.getPortLogic(index);
+						break;
+
 					default:
 						error = ERR_BAD_CONFIG_ITEM;
 					}
@@ -3219,6 +3547,56 @@ UlError ulDIOGetConfig(DaqDeviceHandle daqDeviceHandle, DioConfigItem configItem
 		}
 		else
 			error = ERR_BAD_ARG;
+	}
+	else
+		error = ERR_BAD_DEV_HANDLE;
+
+	return error;
+}
+
+UlError ulDIOSetConfig(DaqDeviceHandle daqDeviceHandle, DioConfigItem configItem, unsigned int index, long long configValue)
+{
+	FnLog log("ulDIOSetConfig()");
+
+	UlError error = ERR_NO_ERROR;
+
+	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
+
+	if(pDaqDevice)
+	{
+		try
+		{
+			DioDevice* dioDev = pDaqDevice->dioDevice();
+
+			if(dioDev)
+			{
+				UlDioConfig& dioConfig = dioDev->getDioConfig();
+
+				switch(configItem)
+				{
+				case DIO_CFG_PORT_INITIAL_OUTPUT_VAL:
+					dioConfig.setPortInitialOutputVal(index, configValue);
+				break;
+				case DIO_CFG_PORT_ISO_FILTER_MASK:
+					dioConfig.setPortIsoMask(index, configValue);
+				break;
+				default:
+					error = ERR_BAD_CONFIG_ITEM;
+				}
+
+			}
+			else
+				error = ERR_BAD_DEV_TYPE;
+		}
+		catch(UlException& e)
+		{
+			error = e.getError();
+		}
+		catch(...)
+		{
+			error = ERR_UNHANDLED_EXCEPTION;
+		}
+
 	}
 	else
 		error = ERR_BAD_DEV_HANDLE;

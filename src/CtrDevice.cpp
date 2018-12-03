@@ -189,11 +189,21 @@ void CtrDevice::check_CInScan_Args(int lowCtrNum, int highCtrNum, int samplesPer
 		throw UlException(ERR_BAD_FLAG);
 
 	if(((flags & CINSCAN_FF_CTR16_BIT) && (flags & CINSCAN_FF_CTR32_BIT)) ||
+	   ((flags & CINSCAN_FF_CTR16_BIT) && (flags & CINSCAN_FF_CTR48_BIT)) ||
 	   ((flags & CINSCAN_FF_CTR16_BIT) && (flags & CINSCAN_FF_CTR64_BIT)) ||
+	   ((flags & CINSCAN_FF_CTR32_BIT) && (flags & CINSCAN_FF_CTR48_BIT)) ||
 	   ((flags & CINSCAN_FF_CTR32_BIT) && (flags & CINSCAN_FF_CTR64_BIT)))
 		throw UlException(ERR_BAD_FLAG);
 
-	double throughput = rate * numOfScanCtr;
+	int sampleSize = 2;
+
+	if(flags & CINSCAN_FF_CTR32_BIT)
+		sampleSize = 4;
+	else if ((flags & CINSCAN_FF_CTR48_BIT) || (flags & CINSCAN_FF_CTR64_BIT))
+		sampleSize = 8;
+
+
+	double throughput = rate * numOfScanCtr * (sampleSize / 2);
 
 	if(!(options & SO_EXTCLOCK))
 	{

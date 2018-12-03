@@ -141,7 +141,8 @@ double AiUsb26xx::aInScan(int lowChan, int highChan, AiInputMode inputMode, Rang
 	loadAInConfigs(range, lowChan, highChan, queueEnabled());
 
 	//daqDev().clearFifo(epAddr);
-	//daqDev().clearHalt(epAddr);
+	daqDev().clearHalt(epAddr);
+
 	daqDev().sendCmd(CMD_AINSCAN_CLEAR_FIFO);
 
 	setScanInfo(FT_AI, chanCount, samplesPerChan, mAiInfo.getSampleSize(), mAiInfo.getResolution(), options, flags, calCoefs, customScales, data);

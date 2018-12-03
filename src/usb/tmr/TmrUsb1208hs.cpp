@@ -114,6 +114,8 @@ void TmrUsb1208hs::tmrPulseOutStop(int timerNum)
 
 void TmrUsb1208hs::tmrPulseOutStatus(int timerNum, TmrStatus* status)
 {
+	check_TmrOutStatus_Args(timerNum);
+
 	unsigned char state = 0;
 
 	daqDev().queryCmd(CMD_TMR_CTRL, 0, timerNum, &state, sizeof(state));

@@ -1,7 +1,6 @@
 /*
  * AiUsb1608fsPlus.h
  *
- *  Created on: Aug 29, 2015
  *     Author: Measurement Computing Corporation
  */
 

@@ -286,9 +286,9 @@ void DaqEventHandler::check_DisableEvent_Args(DaqEventType eventTypes)
 	//	throw UlException(ERR_BAD_EVENT_TYPE);
 }
 
-int DaqEventHandler::getEventIndex(DaqEventType eventType)
+unsigned int DaqEventHandler::getEventIndex(DaqEventType eventType)
 {
-	int index = -1;
+	int index = 0;
 	switch(eventType)
 	{
 	case DE_ON_DATA_AVAILABLE:
@@ -307,8 +307,8 @@ int DaqEventHandler::getEventIndex(DaqEventType eventType)
 		index =	4;
 		break;
 	default:
+		std::cout << "**** getEventIndex(), Invalid event type specified";
 		break;
-
 	}
 	return index;
 }

@@ -15,7 +15,7 @@ namespace ul
 class UL_LOCAL UsbDio32hs: public UsbFpgaDevice
 {
 public:
-	UsbDio32hs(DaqDeviceDescriptor daqDeviceDescriptor, std::string fpgaFileName);
+	UsbDio32hs(const DaqDeviceDescriptor& daqDeviceDescriptor, std::string fpgaFileName);
 	virtual ~UsbDio32hs();
 
 	virtual void setupTrigger(FunctionType functionType, ScanOption options) const;

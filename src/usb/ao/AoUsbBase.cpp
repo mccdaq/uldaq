@@ -192,7 +192,7 @@ int AoUsbBase::calcStageSize(int epAddr, double rate, int chanCount, int sampleC
 	else
 	{
 		double aggRate =  chanCount * rate * mAoInfo.getSampleSize(); // bytes per second
-		long long bufferBytesCount = sampleCount * mAoInfo.getSampleSize();
+		long long bufferBytesCount = (long long) sampleCount * mAoInfo.getSampleSize();
 		double stageRate = daqDev().scanTranserOut()->getStageRate();
 		stageSize = (int)(aggRate * stageRate);
 
@@ -315,18 +315,22 @@ void AoUsbBase::readCalDate()
 			time.tm_sec = calDateBuf[5];
 			time.tm_isdst = -1;
 
-			time_t cal_date_sec = mktime(&time); // seconds since unix epoch
+			// make sure the date is valid, mktime does not validate the range
+			if(time.tm_mon <= 11 && time.tm_mday <= 31 && time.tm_hour <= 23 && time.tm_min <= 59 && time.tm_sec <= 60)
+			{
+				time_t cal_date_sec = mktime(&time); // seconds since unix epoch
 
-			if(cal_date_sec != -1) // mktime returns  -1 if cal date is invalid
-				mCalDate = cal_date_sec;
+				if(cal_date_sec != -1) // mktime returns  -1 if cal date is invalid
+					mCalDate = cal_date_sec;
 
-			// convert seconds to string
+				// convert seconds to string
 
-			/*struct tm *timeinfo;
-			timeinfo = localtime(&cal_date_sec);
-			char b[100];
-			strftime(b, 100, "%Y-%m-%d %H:%M:%S", timeinfo);
-			std::cout << b << std::endl;*/
+				/*struct tm *timeinfo;
+				timeinfo = localtime(&cal_date_sec);
+				char b[100];
+				strftime(b, 100, "%Y-%m-%d %H:%M:%S", timeinfo);
+				std::cout << b << std::endl;*/
+			}
 		}
 	}
 }

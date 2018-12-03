@@ -119,6 +119,26 @@ public:
 		return _tmp.b32;
 	}
 
+	inline unsigned int le_ptr_to_cpu_ui32(const unsigned char x[4])
+	{
+		union
+		{
+			unsigned char  b8[4];
+			unsigned int b32;
+		} _tmp;
+
+		if(mLittleEndian)
+			_tmp.b32 = *((int*)x);
+		else
+		{
+			_tmp.b8[3] = x[0];
+			_tmp.b8[2] = x[1];
+			_tmp.b8[1] = x[2];
+			_tmp.b8[0] = x[3];
+		}
+		return _tmp.b32;
+	}
+
 	inline int be_ptr_to_cpu_i32(const unsigned char x[4])
 	{
 		union
@@ -138,7 +158,7 @@ public:
 		}
 		return _tmp.b32;
 	}
-	inline unsigned int be_ptr_to_cpu_u32(const unsigned char x[4])
+	inline unsigned int be_ptr_to_cpu_ui32(const unsigned char x[4])
 	{
 		union
 		{

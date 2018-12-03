@@ -21,6 +21,12 @@ public:
 
 	virtual unsigned long long getPortDirectionMask(int portNum);
 
+	virtual void setPortInitialOutputVal(int portNum, unsigned long long val);
+
+	virtual void setPortIsoMask(int portNum, unsigned long long mask);
+	virtual unsigned long long getPortIsoMask(int portNum);
+	virtual unsigned long long getPortLogic(int portNum);
+
 private:
 	DioDevice& mDioDevice;
 };

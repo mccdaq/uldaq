@@ -15,7 +15,7 @@ namespace ul
 class UL_LOCAL Usb20x: public UsbDaqDevice
 {
 public:
-	Usb20x(DaqDeviceDescriptor daqDeviceDescriptor);
+	Usb20x(const DaqDeviceDescriptor& daqDeviceDescriptor);
 	virtual ~Usb20x();
 };
 

@@ -84,14 +84,16 @@ void IoDevice::setScanInfo(FunctionType functionType, int chanCount, int samples
 	mScanInfo.dataBuffer = dataBuffer;
 	mScanInfo.dataBufferType = dataBufferType;
 	mScanInfo.fullScale =  (1ULL << analogResolution) - 1;
-	mScanInfo.currentCalCoefIdx = 0;
-	mScanInfo.currentDataBufferIdx = 0;
-	mScanInfo.totalSampleTransferred = 0;
-	mScanInfo.allSamplesTransferred = false;
 	mScanInfo.dataBufferSize = mScanInfo.chanCount * mScanInfo.samplesPerChanCount;
 	mScanInfo.stoppingScan = false;
 
 	mScanDoneWaitEvent.reset();
+
+	UlLock lock(mProcessScanDataMutex);
+	mScanInfo.currentCalCoefIdx = 0;
+	mScanInfo.currentDataBufferIdx = 0;
+	mScanInfo.totalSampleTransferred = 0;
+	mScanInfo.allSamplesTransferred = false;
 }
 void IoDevice::setScanInfo(FunctionType functionType, int chanCount, int samplesPerChanCount, int sampleSize, unsigned int analogResolution, ScanOption options, long long flags, std::vector<CalCoef> calCoefs, void* dataBuffer)
 {
@@ -112,23 +114,26 @@ void IoDevice::getXferStatus(TransferStatus* xferStatus) const
 	}
 	else
 	{
-		unsigned long long count = mScanInfo.totalSampleTransferred; // return current sample count
-		unsigned long long idx = -1;
+		//unsigned long long count = mScanInfo.totalSampleTransferred; // return current sample count
+		//unsigned long long idx = -1;
 
-		if(mScanInfo.chanCount > 0 && count >= mScanInfo.chanCount)
+		if(mScanInfo.chanCount > 0 && mScanInfo.totalSampleTransferred >= mScanInfo.chanCount)
 		{
-			idx = count;
-
+			unsigned long long idx = mScanInfo.totalSampleTransferred;
 			idx -= (idx % mScanInfo.chanCount);
-
 			idx -= mScanInfo.chanCount;
-
 			idx = idx % mScanInfo.dataBufferSize;
-		}
 
-		xferStatus->currentIndex = idx;
-		xferStatus->currentTotalCount = count;
-		xferStatus->currentScanCount = count / mScanInfo.chanCount;
+			xferStatus->currentIndex = idx;
+			xferStatus->currentTotalCount = mScanInfo.totalSampleTransferred;
+			xferStatus->currentScanCount = mScanInfo.totalSampleTransferred / mScanInfo.chanCount;
+		}
+		else
+		{
+			xferStatus->currentIndex = -1;
+			xferStatus->currentTotalCount = mScanInfo.totalSampleTransferred;
+			xferStatus->currentScanCount = 0;
+		}
 	}
 }
 /*

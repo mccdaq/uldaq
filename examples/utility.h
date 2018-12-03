@@ -166,6 +166,9 @@ void ConvertRangeToString(Range range, char* rangeStr)
 	case(UNIPT005VOLTS):
 		strcpy(rangeStr, "UNIPT005VOLTS");
 		break;
+	case(MA0TO20):
+		strcpy(rangeStr, "MA0TO20");
+		break;
 	}
 }
 
@@ -341,6 +344,10 @@ void ConvertRangeToMinMax(Range range, double* min, double* max)
 	case(UNIPT005VOLTS):
 		*min = 0.0;
 		*max = 0.005;
+		break;
+	case(MA0TO20):
+		*min = 0.0;
+		*max = 20.0;
 		break;
 	}
 }
@@ -640,6 +647,56 @@ void ConvertDaqOChanTypeToString(DaqOutChanType daqoChanType, char* daqoChanType
 	}
 }
 
+void ConvertTCTypeToString(TcType type, char* typeStr)
+{
+	switch(type)
+	{
+	case(TC_J):
+		strcpy(typeStr, "J");
+		break;
+	case(TC_K):
+		strcpy(typeStr, "K");
+		break;
+	case(TC_T):
+		strcpy(typeStr, "T");
+		break;
+	case(TC_E):
+		strcpy(typeStr, "E");
+		break;
+	case(TC_R):
+		strcpy(typeStr, "R");
+		break;
+	case(TC_S):
+		strcpy(typeStr, "S");
+		break;
+	case(TC_B):
+		strcpy(typeStr, "B");
+		break;
+	case(TC_N):
+		strcpy(typeStr, "N");
+		break;
+	}
+}
+
+void ConvertSensorConnectionTypeToString(SensorConnectionType type, char* typeStr)
+{
+	switch(type)
+	{
+	case(SCT_2_WIRE_1):
+		strcpy(typeStr, "2-wire (1 sensor)");
+		break;
+	case(SCT_2_WIRE_2):
+		strcpy(typeStr, "2-wire (2 sensors)");
+		break;
+	case(SCT_3_WIRE):
+		strcpy(typeStr, "3-wire");
+		break;
+	case(SCT_4_WIRE):
+		strcpy(typeStr, "4-wire");
+		break;
+	}
+}
+
 /****************************************************************************
  * Device Info Functions
  ****************************************************************************/
@@ -752,7 +809,7 @@ UlError getAiInfoFirstTriggerType(DaqDeviceHandle daqDeviceHandle, TriggerType* 
 	long long triggerTypes = 0;
 	err = ulAIGetInfo(daqDeviceHandle, AI_INFO_TRIG_TYPES, 0, &triggerTypes);
 
-	if (err == ERR_NO_ERROR)
+	if (err == ERR_NO_ERROR && triggerTypes != 0)
 	{
 		// use the first available trigger type
 		long long triggerMask = 1;
@@ -810,9 +867,16 @@ UlError getAiInfoFirstSupportedInputMode(DaqDeviceHandle daqDeviceHandle, int* n
 	err = ulAIGetInfo(daqDeviceHandle, AI_INFO_NUM_CHANS_BY_MODE, AI_SINGLE_ENDED, &numChans);
 
 	if (numChans > 0)
+	{
 		*inputMode = AI_SINGLE_ENDED;
+	}
 	else
-		*inputMode = AI_DIFFERENTIAL;
+	{
+		err = ulAIGetInfo(daqDeviceHandle, AI_INFO_NUM_CHANS_BY_MODE, AI_DIFFERENTIAL, &numChans);
+
+		if (numChans > 0)
+			*inputMode = AI_DIFFERENTIAL;
+	}
 
 	ConvertInputModeToString(*inputMode, inputModeStr);
 
@@ -850,6 +914,67 @@ UlError getAiInfoQueueTypes(DaqDeviceHandle daqDeviceHandle, int* queueTypes)
 	err = ulAIGetInfo(daqDeviceHandle, AI_INFO_QUEUE_TYPES, 0, &qTypes);
 
 	*queueTypes = (int)qTypes;
+
+	return err;
+}
+
+UlError getAiInfoHasTempChan(DaqDeviceHandle daqDeviceHandle, int* hasTempChan)
+{
+	long long chanTypeMask = 0;
+	UlError err = ERR_NO_ERROR;
+
+	err = ulAIGetInfo(daqDeviceHandle, AI_INFO_CHAN_TYPES, 0, &chanTypeMask);
+
+	if(chanTypeMask & (AI_TC  | AI_RTD 	| AI_THERMISTOR | AI_SEMICONDUCTOR))
+		*hasTempChan = 1;
+	else
+		*hasTempChan = 0;
+
+	return err;
+}
+
+UlError getAiInfoTempChanConfig(DaqDeviceHandle daqDeviceHandle, int chan, char* chanTypeStr, char* sensorStr)
+{
+	UlError err = ERR_NO_ERROR;
+
+	long long chanType, cfg;
+	char typeStr[64] = "";
+	char cfgStr[64] = "N/A";
+
+	err = ulAIGetConfig(daqDeviceHandle, AI_CFG_CHAN_TYPE, chan, &chanType);
+
+	if(chanType == AI_TC)
+	{
+		strcpy(typeStr, "Thermocouple");
+
+		err = ulAIGetConfig(daqDeviceHandle, AI_CFG_CHAN_TC_TYPE, chan, &cfg);
+
+		ConvertTCTypeToString((TcType)cfg, cfgStr);
+	}
+	else if(chanType == AI_RTD || chanType == AI_THERMISTOR)
+	{
+		if(chanType == AI_RTD)
+			strcpy(typeStr, "RTD");
+		else
+			strcpy(typeStr, "Thermistor");
+
+		err = ulAIGetConfig(daqDeviceHandle, AI_CFG_CHAN_SENSOR_CONNECTION_TYPE, chan, &cfg);
+
+		ConvertSensorConnectionTypeToString((SensorConnectionType) cfg, cfgStr);
+	}
+	else if(chanType == AI_SEMICONDUCTOR)
+	{
+		strcpy(typeStr, "Semicoductor");
+	}
+	else if(chanType == AI_VOLTAGE)
+	{
+		strcpy(typeStr, "Voltage");
+	}
+	else if(chanType == AI_DISABLED)
+		strcpy(typeStr, "Disabled");
+
+	strcpy(chanTypeStr, typeStr);
+	strcpy(sensorStr, cfgStr);
 
 	return err;
 }
@@ -926,7 +1051,7 @@ UlError getDioInfoNumberOfBitsForFirstPort(DaqDeviceHandle daqDeviceHandle, int*
 	return err;
 }
 
-UlError getDioInfoPortIoType(DaqDeviceHandle daqDeviceHandle, DigitalPortIoType* portIoType, char* portIoTypeStr)
+UlError getDioInfoFirstSupportedPortIoType(DaqDeviceHandle daqDeviceHandle, DigitalPortIoType* portIoType, char* portIoTypeStr)
 {
 	UlError err = ERR_NO_ERROR;
 	long long ioType;
@@ -1062,7 +1187,7 @@ UlError getDaqiInfoFirstTriggerType(DaqDeviceHandle daqDeviceHandle, TriggerType
 	long long triggerTypes = 0;
 	err = ulDaqIGetInfo(daqDeviceHandle, DAQI_INFO_TRIG_TYPES, 0, &triggerTypes);
 
-	if (err == ERR_NO_ERROR)
+	if (err == ERR_NO_ERROR && triggerTypes != 0)
 	{
 		// use the first available trigger type
 		long long triggerMask = 1;
