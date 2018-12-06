@@ -1,10 +1,10 @@
 ## MCC Universal Library for Linux (uldaq)
-**Info:** Contains a library to access and control supported Measurement Computing [DAQ devices](https://www.mccdaq.com/PDFs/Manuals/Linux-hw.pdf) over the Linux platform. The UL for Linux binary name is libuldaq.
+**Info:** Contains a library to access and control supported Measurement Computing [DAQ devices](https://www.mccdaq.com/PDFs/Manuals/Linux-hw.pdf) over the Linux and macOS platforms. The UL for Linux binary name is libuldaq.
 
 **Author:** Measurement Computing
 
 ## About
-The **uldaq** package contains programming libraries and components for developing applications using C/C++ on Linux Operating Systems. An API (Application Programming Interface) for interacting with the library in Python is available as an additional installation. This package was created and is supported by MCC. 
+The **uldaq** package contains programming libraries and components for developing applications using C/C++ on Linux and macOS Operating Systems. An API (Application Programming Interface) for interacting with the library in Python is available as an additional installation. This package was created and is supported by MCC. 
 
 ### Prerequisites:
 ---------------
@@ -34,7 +34,7 @@ Building the **uldaq** package requires C/C++ compilers, make tool, and the deve
      $ sudo zypper install gcc gcc-c++ make
      $ sudo zypper install libusb-devel
   ```
-  - MacOS (Version 10.11 or later recommended)
+  - macOS (Version 10.11 or later recommended)
   
   ```
      $ xcode-select --install
@@ -51,7 +51,7 @@ Building the **uldaq** package requires C/C++ compilers, make tool, and the deve
   Linux
      $ wget https://github.com/mccdaq/uldaq/releases/download/v1.1.0/libuldaq-1.1.0.tar.bz2
 
-  MacOS
+  macOS
      $ curl -L -O https://github.com/mccdaq/uldaq/releases/download/v1.1.0/libuldaq-1.1.0.tar.bz2
 ``` 
 2. Extract the tar file:
