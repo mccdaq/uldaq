@@ -1,4 +1,6 @@
 ## MCC Universal Library for Linux (uldaq)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/16116/badge.svg)](https://scan.coverity.com/projects/uldaq)
+
 **Info:** Contains a library to access and control supported Measurement Computing [DAQ devices](https://www.mccdaq.com/PDFs/Manuals/Linux-hw.pdf) over the Linux and macOS platforms. The UL for Linux binary name is libuldaq.
 
 **Author:** Measurement Computing
