@@ -38,7 +38,6 @@ Release
 *.patch
 *~
 *.bz2
-libuldaq.pc.in
 .dirstamp
 src/*.sh
 examples/*
