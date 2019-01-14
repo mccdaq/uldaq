@@ -1,0 +1,17 @@
+diff --git a/src/Makefile.am b/src/Makefile.am
+index a0781a3..6f58a9a 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -1,7 +1,11 @@
+ AUTOMAKE_OPTIONS = subdir-objects
+ 
+ if DEBUG
+-AM_CPPFLAGS = -DDEBUG
++    AM_CFLAGS = -g3 -O0 -DDEBUG
++    AM_CXXFLAGS = -g3 -O0 -DDEBUG
++else
++    AM_CFLAGS = -O2
++    AM_CXXFLAGS = -O2
+ endif
+ 
+ lib_LTLIBRARIES = libuldaq.la
