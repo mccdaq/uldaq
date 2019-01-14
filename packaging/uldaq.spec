@@ -6,9 +6,6 @@ URL: http://www.mccdaq.com
 License: MIT
 
 Source0: https://github.com/mccdaq/uldaq/archive/v1.1.0.tar.gz
-#Patch0: add-libuldaq.pc.in.patch
-#Patch1: fix-debug.patch
-#Patch2: fix-debug2.patch
 
 BuildRequires: libusb-devel m4 autoconf automake libtool
 Requires: libusb
