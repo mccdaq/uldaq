@@ -152,3 +152,6 @@ If Doxygen is installed and you wish to build the API documentation on your syst
   $ doxygen Doxyfile
 ```
 
+### Changelog
+The changelog for this project can be found [here](https://github.com/mccdaq/uldaq/blob/master/CHANGELOG.md)
+
