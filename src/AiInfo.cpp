@@ -40,6 +40,8 @@ AiInfo::AiInfo()
 	mTInFlags = 0;
 	mTInArrayFlags = 0;
 	mNumCjcChans = 0;
+
+	mSupportsIepe = false;
 }
 
 AiInfo::~AiInfo()
@@ -486,14 +488,13 @@ bool AiInfo::isRangeSupported(AiInputMode inputMode, Range range) const
 
 	return supported;
 }
-/*
-	void addTcType(int firtChan, int lastChan, TcType tcType)
-	{
-		if(mAiChanInfo != null)
-		{
-			for(int ch = firtChan; ch <=lastChan; ch++)
-				mAiChanInfo[ch].getTcInfo().addTcType(tcType);
-		}
-	}*/
 
+void AiInfo::supportsIepe(bool val)
+{
+	mSupportsIepe = val;
+}
+bool AiInfo::supportsIepe() const
+{
+	return mSupportsIepe;
+}
 } /* namespace ul */

@@ -45,10 +45,10 @@ public:
 	virtual TcType getCfg_ChanTcType(int channel) const;
 
 	virtual void setCfg_ScanTempUnit(TempUnit unit);
-	//virtual TempUnit getCfg_TempUnit() const;
+	virtual TempUnit getCfg_ScanTempUnit() const;
 
-	virtual void setCfg_ScanChanTempUnit(int channel, TempUnit unit);
-	virtual TempUnit getCfg_ScanChanTempUnit(int channel) const;
+	//virtual void setCfg_ScanChanTempUnit(int channel, TempUnit unit);
+	//virtual TempUnit getCfg_ScanChanTempUnit(int channel) const;
 
 	virtual void setCfg_AutoZeroMode(AutoZeroMode mode);
 	virtual AutoZeroMode getCfg_AutoZeroMode() const;
@@ -76,6 +76,11 @@ public:
 	virtual SensorConnectionType getCfg_SensorConnectionType(int channel) const;
 	virtual void getCfg_ChanCoefsStr(int channel, char* coefsStr, unsigned int* len) const;
 
+	virtual void setCfg_ChanDataRate(int channel, double rate);
+	virtual double getCfg_ChanDataRate(int channel) const;
+
+	virtual void setCfg_ChanOpenTcDetectionMode(int channel, OtdMode mode);
+	virtual OtdMode getCfg_ChanOpenTcDetectionMode(int channel) const;
 
 protected:
 	virtual void loadAdcCoefficients() = 0;
@@ -98,10 +103,10 @@ protected:
 	bool isValidGainQueue(const AiQueueElement queue[], unsigned int numElements) const;
 	bool isValidModeQueue(const AiQueueElement queue[], unsigned int numElements) const;
 
-	void initCustomScales();
+	virtual void initCustomScales();
 	std::vector<CustomScale> getCustomScales(int lowChan, int highChan) const;
 
-	void initTempUnits();
+	//void initTempUnits();
 
 	void enableCalMode(bool enable) { mCalModeEnabled = enable;}
 	bool calModeEnabled() const { return mCalModeEnabled;}
@@ -116,7 +121,8 @@ protected:
 	std::vector<AiQueueElement> mAQueue;
 
 	bool mScanTempChanSupported;
-	std::vector<TempUnit> mScanChanTempUnit;
+	TempUnit mScanTempUnit;
+	//std::vector<TempUnit> mScanChanTempUnit;
 
 	unsigned long long mCalDate; // cal date in sec
 

@@ -87,7 +87,12 @@ void AiUsbTemp::tIn(int channel, TempScale scale, TInFlag flags, double* data)
 		break;
 	default:
 		tempValue = convertTempUnit(tempValue, (TempUnit)scale);
-		*data = mCustomScales[channel].slope * tempValue + mCustomScales[channel].offset;
+
+		if(channel & 0x80) // CJC chan
+			*data = tempValue;
+		else
+			*data = mCustomScales[channel].slope * tempValue + mCustomScales[channel].offset;
+
 		break;
 	}
 }

@@ -36,6 +36,20 @@ public:
 
 	#define le_ui16_to_cpu cpu_to_le_ui16
 
+	static inline short cpu_to_le_i16(const short x)
+	{
+		union
+		{
+			unsigned char  b8[2];
+			short b16;
+		} _tmp;
+		_tmp.b8[1] = (unsigned char) (x >> 8);
+		_tmp.b8[0] = (unsigned char) (x & 0xff);
+		return _tmp.b16;
+	}
+
+	#define le_i16_to_cpu cpu_to_le_i16
+
 	static inline unsigned int cpu_to_le_ui32(const unsigned int x)
 	{
 		union
@@ -255,6 +269,54 @@ public:
 	}
 
 	#define be_ui16_to_cpu cpu_to_be_ui16
+
+	inline double le_ptr_to_cpu_f64(const unsigned char x[4])
+	{
+		union
+		{
+			unsigned char  b8[8];
+			double b64;
+		} _tmp;
+
+		if(mLittleEndian)
+			_tmp.b64 = *((double*)x);
+		else
+		{
+			_tmp.b8[7] = x[0];
+			_tmp.b8[6] = x[1];
+			_tmp.b8[5] = x[2];
+			_tmp.b8[4] = x[3];
+			_tmp.b8[3] = x[4];
+			_tmp.b8[2] = x[5];
+			_tmp.b8[1] = x[6];
+			_tmp.b8[0] = x[7];
+		}
+		return _tmp.b64;
+	}
+
+	inline void cpu_f64_to_le_ptr(double f64, unsigned char x[8])
+	{
+		union
+		{
+			unsigned char  b8[8];
+			double b64;
+		} _tmp;
+
+		if(mLittleEndian)
+			std::memcpy((void*)&f64, (void*)x, sizeof(double));
+		else
+		{
+			_tmp.b64 = f64;
+			 x[0] = _tmp.b8[7];
+			 x[1] = _tmp.b8[6];
+			 x[2] = _tmp.b8[5];
+			 x[3] = _tmp.b8[4];
+			 x[4] = _tmp.b8[3];
+			 x[5] = _tmp.b8[2];
+			 x[6] = _tmp.b8[1];
+			 x[8] = _tmp.b8[0];
+		}
+	}
 
 protected:
 	Endian();

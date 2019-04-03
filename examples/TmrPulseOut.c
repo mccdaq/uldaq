@@ -148,6 +148,8 @@ int main(void)
 			// show the termination message
 			resetCursor();
 
+			printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
+
 			printf("Outputting %f Hz pulse with duty cycle %.3f for timer %d ...\n\n", frequency, dutyCycle, timerNumber);
 
 			printf("Hit 'Enter' to terminate the process and stop the timer output\n");

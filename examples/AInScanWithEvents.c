@@ -30,15 +30,15 @@
 #define MAX_STR_LENGTH 64
 #define MAX_SCAN_OPTIONS_LENGTH 256
 
-double rate = 1000;
-
 void eventCallbackFunction(DaqDeviceHandle daqDeviceHandle, DaqEventType eventType, unsigned long long eventData, void* userData);
 
 struct ScanEventParameters
 {
 	double* buffer;	// data buffer
+	int bufferSize;	// data buffer size
 	int lowChan;	// first channel in acquisition
 	int highChan;	// last channel in acquisition
+	double rate;
 };
 typedef struct ScanEventParameters ScanEventParameters;
 
@@ -57,6 +57,7 @@ int main(void)
 	AiInputMode inputMode;
 	Range range;
 	int samplesPerChannel = 10000;
+	double rate = 1000;
 	AInScanFlag flags = AINSCAN_FF_DEFAULT;
 	DaqEventType eventTypes = (DaqEventType) (DE_ON_DATA_AVAILABLE | DE_ON_INPUT_SCAN_ERROR | DE_ON_END_OF_INPUT_SCAN);
 
@@ -68,12 +69,12 @@ int main(void)
 	// to the event handler (eventCallbackFunction) to account for the buffer wrap
 	// around condition
 	ScanOption scanOptions = SO_DEFAULTIO;
-	//scanOptions |= SO_CONTINUOUS;
+	//scanOptions = (ScanOption) (scanOptions | SO_CONTINUOUS);
 
 	int hasAI = 0;
 	int hasPacer = 0;
 	int numberOfChannels = 0;
-	int availableSampeCount = 0;
+	int availableSampleCount = 0;
 
 	char inputModeStr[MAX_STR_LENGTH];
 	char rangeStr[MAX_STR_LENGTH];
@@ -81,6 +82,7 @@ int main(void)
 
 	// allocate a buffer to receive the data
 	int chanCount = 0;
+	int bufferSize;
 	double* buffer = NULL;
 	UlError err = ERR_NO_ERROR;
 
@@ -148,7 +150,8 @@ int main(void)
 	chanCount = highChan - lowChan + 1;
 
 	// allocate a buffer to receive the data
-	buffer = (double*) malloc(chanCount * samplesPerChannel * sizeof(double));
+	bufferSize = chanCount * samplesPerChannel;
+	buffer = (double*) malloc(bufferSize * sizeof(double));
 
 	if(buffer == 0)
 	{
@@ -158,12 +161,13 @@ int main(void)
 
 	// store the scan event parameters for use in the callback function
 	scanEventParameters.buffer =  buffer;
+	scanEventParameters.bufferSize =  bufferSize;
 	scanEventParameters.lowChan = lowChan;
 	scanEventParameters.highChan = highChan;
 
 	// enable the event to be notified every time 100 samples are available
-	availableSampeCount = 100;
-	err = ulEnableEvent(daqDeviceHandle, eventTypes, availableSampeCount, eventCallbackFunction, &scanEventParameters);
+	availableSampleCount = 100;
+	err = ulEnableEvent(daqDeviceHandle, eventTypes, availableSampleCount, eventCallbackFunction, &scanEventParameters);
 
 	// get the first supported analog input range
 	err = getAiInfoFirstSupportedRange(daqDeviceHandle, inputMode, &range, rangeStr);
@@ -187,6 +191,8 @@ int main(void)
 
 	// start the finite acquisition
 	err = ulAInScan(daqDeviceHandle, lowChan, highChan, inputMode, range, samplesPerChannel, &rate, scanOptions, flags, buffer);
+
+	scanEventParameters.rate = rate;
 
 	if(err == ERR_NO_ERROR)
 	{
@@ -234,36 +240,44 @@ void eventCallbackFunction(DaqDeviceHandle daqDeviceHandle, DaqEventType eventTy
 {
 	char eventTypeStr[MAX_STR_LENGTH];
 	UlError err = ERR_NO_ERROR;
+	DaqDeviceDescriptor activeDevDescriptor;
+	int i;
+
+	ScanEventParameters* scanEventParameters = (ScanEventParameters*) userData;
+	int chanCount = scanEventParameters->highChan  - scanEventParameters->lowChan + 1;
+	int newlineCount = chanCount + 7;
 
 	// reset the cursor to the top of the display and
 	// show the termination message
 	resetCursor();
+
+	ulGetDaqDeviceDescriptor(daqDeviceHandle, &activeDevDescriptor);
+
+	printf("Hit 'Enter' to terminate the process\n\n");
+	printf("Active DAQ device: %s (%s)\n\n", activeDevDescriptor.productName, activeDevDescriptor.uniqueId);
 
 	ConvertEventTypesToString(eventType, eventTypeStr);
 	printf("eventType: %s \n", eventTypeStr);
 
 	if (eventType == DE_ON_DATA_AVAILABLE)
 	{
-		ScanEventParameters* scanEventParameters = (ScanEventParameters*) userData;
-		long long totalSamples = eventData;
-		int i;
+		long long scanCount = eventData;
+		long long totalSamples = scanCount * chanCount;
 		long long index = 0;
 
-		int chanCount = scanEventParameters->highChan  - scanEventParameters->lowChan + 1;;
-
 		printf("eventData: %lld \n\n", eventData);
-
-		printf("actual scan rate = %f\n\n", rate);
+		printf("actual scan rate = %f\n\n", scanEventParameters->rate);
 
 		// if this example is changed to a CONTINUOUS scan, then you will need
 		// to maintain the index of where the data is being written to the buffer
 		// to handle the buffer wrap around condition
-		index = (totalSamples * chanCount) - chanCount;
+		index = (totalSamples - chanCount) % scanEventParameters->bufferSize;
+
 		printf("currentIndex = %lld \n\n", index);
 
 		for (i = 0; i < chanCount; i++)
 		{
-			printf("chan %d = %10.6f\n",
+			printf("chan %d = %+-10.6f\n",
 					i + scanEventParameters->lowChan,
 					scanEventParameters->buffer[index + i]);
 		}
@@ -271,6 +285,9 @@ void eventCallbackFunction(DaqDeviceHandle daqDeviceHandle, DaqEventType eventTy
 
 	if(eventType == DE_ON_INPUT_SCAN_ERROR)
 	{
+		for (i = 0; i < newlineCount; i++)
+			putchar('\n');
+
 		err = (UlError) eventData;
 		char errMsg[ERR_MSG_LEN];
 		ulGetErrMsg(err, errMsg);
@@ -281,7 +298,16 @@ void eventCallbackFunction(DaqDeviceHandle daqDeviceHandle, DaqEventType eventTy
 
 	if (eventType == DE_ON_END_OF_INPUT_SCAN)
 	{
-		printf("\nThe scan using device handle %lld is complete \n", daqDeviceHandle);
+		for (i = 0; i < newlineCount; i++)
+			putchar('\n');
+
+		printf("\nThe scan using device %s (%s) is complete \n", activeDevDescriptor.productName, activeDevDescriptor.uniqueId);
+	}
+
+	// stop the acquisition if the Enter key is pressed
+	if (enter_press())
+	{
+		err = ulAInScanStop(daqDeviceHandle);
 	}
 }
 

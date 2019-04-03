@@ -34,14 +34,18 @@ void EuScale::getEuScaling(Range range, double &scale, double &offset)
 		scale = 8.0;
 		offset = -(scale / 2.0);
 		break;
+	case BIP3VOLTS:
+		scale = 6.0;
+		offset = -(scale / 2.0);
+		break;
 	case BIP2PT5VOLTS:
 		scale = 5.0;
 		offset = -(scale / 2.0);
 		break;
 	case BIP2VOLTS:
-	  scale = 4.0;
-	  offset = -(scale/2.0);
-	  break;
+		scale = 4.0;
+		offset = -(scale/2.0);
+		break;
 	case BIP1PT25VOLTS:
 		scale = 2.5;
 		offset = -(scale / 2.0);
@@ -58,6 +62,10 @@ void EuScale::getEuScaling(Range range, double &scale, double &offset)
 		scale = 1.0;
 		offset = -(scale / 2.0);
 	  break;
+	case BIPPT312VOLTS:
+		scale = .625;
+		offset = -(scale / 2.0);
+		break;
 	case BIPPT25VOLTS:
 	  scale = 0.5;
 	  offset = -(scale/2.0);
@@ -65,6 +73,10 @@ void EuScale::getEuScaling(Range range, double &scale, double &offset)
 	case BIPPT2VOLTS:
 	  scale = 0.4;
 	  offset = -(scale/2.0);
+	  break;
+	case BIPPT156VOLTS:
+	  scale = 0.3125;
+	  offset = -(scale / 2.0);
 	  break;
 	case BIPPT125VOLTS:
 	  scale = 0.250;

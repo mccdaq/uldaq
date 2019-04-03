@@ -246,8 +246,8 @@ void DaqIDevice::check_DaqInScan_Args(DaqInChanDescriptor chanDescriptors[], int
 		if(~mDaqIInfo.getScanOptions() & options)
 			throw UlException(ERR_BAD_OPTION);
 
-		//if(~mDaqIInfo.getDaqInScanFlags() & flags)
-		//	throw UlException(ERR_BAD_FLAG);
+		if(~mDaqIInfo.getDaqInScanFlags() & flags)
+			throw UlException(ERR_BAD_FLAG);
 
 		if((!(options & SO_EXTCLOCK) && invalidRate) || (rate <= 0.0))
 			throw UlException(ERR_BAD_RATE);

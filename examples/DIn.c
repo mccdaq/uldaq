@@ -121,6 +121,7 @@ int main(void)
 
 		resetCursor();
 		printf("Hit 'Enter' to terminate the process\n\n");
+		printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 
 		clearEOL();
 		printf("Data: %lld (0x%llx)\n", data, data);

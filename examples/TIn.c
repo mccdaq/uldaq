@@ -109,7 +109,7 @@ int main(void)
 
 	for (chan = lowChan; chan <= highChan; chan++)
 	{
-		getAiInfoTempChanConfig(daqDeviceHandle, chan, chanTypeStr, sensorStr);
+		getAiConfigTempChanConfig(daqDeviceHandle, chan, chanTypeStr, sensorStr);
 		printf("    Channel %d: type: %s (%s)\n", chan, chanTypeStr, sensorStr);
 	}
 
@@ -125,6 +125,7 @@ int main(void)
 		// show the termination message
 		resetCursor();
 		printf("Hit 'Enter' to terminate the process\n\n");
+		printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 
 		// display data for the first 4 analog input channels
 		for (chan = lowChan; chan <= highChan; chan++)

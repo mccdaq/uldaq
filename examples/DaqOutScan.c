@@ -15,10 +15,10 @@
     5. Call ulConnectDaqDevice() to establish a UL connection to the DAQ device
     6. Configure the analog and digital channels
     7. Call ulDaqOutScan() to start the scan
-	8. Call ulDaqOutScanStatus to check the status of the background operation
-	9. Display the data for each channel
-	10. Call ulDaqOutScanStop() to stop the background operation
-	11. Call ulDisconnectDaqDevice and ulReleaseDaqDevice() before exiting the process
+    8. Call ulDaqOutScanStatus to check the status of the background operation
+    9. Display the data for each channel
+    10. Call ulDaqOutScanStop() to stop the background operation
+    11. Call ulDisconnectDaqDevice and ulReleaseDaqDevice() before exiting the process
 */
 
 #include <stdio.h>
@@ -61,7 +61,7 @@ int main(void)
 	char daqoChannelTypeStr[MAX_SCAN_OPTIONS_LENGTH];
 	char rangeStr[MAX_SCAN_OPTIONS_LENGTH];
 
-	DaqOutChanDescriptor scanDescriptors[numberOfScanChannels];
+	DaqOutChanDescriptor chanDescriptors[numberOfScanChannels];
 
 	int scanDescriptorIndex = 0;
 
@@ -129,7 +129,7 @@ int main(void)
 		// get the first supported output range
 		getAoInfoFirstSupportedRange(daqDeviceHandle, &range, rangeStr);
 
-		err = ConfigureAnalogOutputChannels(1, range, scanDescriptors, &scanDescriptorIndex);
+		err = ConfigureAnalogOutputChannels(1, range, chanDescriptors, &scanDescriptorIndex);
 	}
 	else
 	{
@@ -140,7 +140,7 @@ int main(void)
 	// configure the digital channels
 	if ((chanTypesMask & DAQO_DIGITAL) && err == ERR_NO_ERROR)
 	{
-		err = ConfigureDigitalOutputChannels(daqDeviceHandle, scanDescriptors, &scanDescriptorIndex);
+		err = ConfigureDigitalOutputChannels(daqDeviceHandle, chanDescriptors, &scanDescriptorIndex);
 
 		// get the number of bits in the port
 		err = getDioInfoNumberOfBitsForFirstPort(daqDeviceHandle, &bitsPerPort);
@@ -161,7 +161,7 @@ int main(void)
 	}
 
 	// fill the buffer with data
-	CreateOutputData(numberOfScanChannels, scanDescriptors, samplesPerChannel, range, bitsPerPort, buffer);
+	CreateOutputData(numberOfScanChannels, chanDescriptors, samplesPerChannel, range, bitsPerPort, buffer);
 
 	ConvertScanOptionsToString(scanOptions, scanOptionsStr);
 
@@ -170,15 +170,15 @@ int main(void)
 	printf("    Number of scan channels: %d\n", numberOfScanChannels);
 	for (i = 0; i < numberOfScanChannels; i++)
 	{
-		ConvertDaqOChanTypeToString(scanDescriptors[i].type, daqoChannelTypeStr);
-		if (scanDescriptors[i].type == DAQO_ANALOG)
+		ConvertDaqOChanTypeToString(chanDescriptors[i].type, daqoChannelTypeStr);
+		if (chanDescriptors[i].type == DAQO_ANALOG)
 		{
-			ConvertRangeToString(scanDescriptors[i].range, rangeStr);
-			printf("        ScanChannel %d: type = %s, channel = %d, range = %s\n", i, daqoChannelTypeStr, scanDescriptors[i].channel, rangeStr);
+			ConvertRangeToString(chanDescriptors[i].range, rangeStr);
+			printf("        ScanChannel %d: type = %s, channel = %d, range = %s\n", i, daqoChannelTypeStr, chanDescriptors[i].channel, rangeStr);
 		}
 		else
 		{
-			printf("        ScanChannel %d: type = %s, channel = %d\n", i, daqoChannelTypeStr, scanDescriptors[i].channel);
+			printf("        ScanChannel %d: type = %s, channel = %d\n", i, daqoChannelTypeStr, chanDescriptors[i].channel);
 		}
 	}
 	printf("    Samples per channel: %d\n", samplesPerChannel);
@@ -191,7 +191,7 @@ int main(void)
 	ret = system("clear");
 
 	// start the output
-	err = ulDaqOutScan(daqDeviceHandle, scanDescriptors, numberOfScanChannels, samplesPerChannel, &rate, scanOptions, flags, buffer);
+	err = ulDaqOutScan(daqDeviceHandle, chanDescriptors, numberOfScanChannels, samplesPerChannel, &rate, scanOptions, flags, buffer);
 
 	if(err == ERR_NO_ERROR)
 	{
@@ -212,13 +212,13 @@ int main(void)
 				// show the termination message
 				resetCursor();
 				printf("Hit 'Enter' to terminate the process\n\n");
-
+				printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 				printf("actual scan rate = %f\n\n", rate);
 
 				index = transferStatus.currentIndex;
-				printf("currentScanCount =  %10llu \n", transferStatus.currentScanCount);
-				printf("currentTotalCount = %10llu \n", transferStatus.currentTotalCount);
-				printf("currentIndex =      %10d \n\n", index);
+				printf("currentScanCount =  %-10llu \n", transferStatus.currentScanCount);
+				printf("currentTotalCount = %-10llu \n", transferStatus.currentTotalCount);
+				printf("currentIndex =      %-10d \n\n", index);
 
 				usleep(100000);
 			}
@@ -230,9 +230,9 @@ int main(void)
 	// before leaving, configure the digital port for input
 	for (i = 0; i < numberOfScanChannels; i++)
 	{
-		if (scanDescriptors[i].type == DAQO_DIGITAL)
+		if (chanDescriptors[i].type == DAQO_DIGITAL)
 		{
-			err = ulDConfigPort(daqDeviceHandle, (DigitalPortType) scanDescriptors[i].channel, DD_INPUT);
+			err = ulDConfigPort(daqDeviceHandle, (DigitalPortType) chanDescriptors[i].channel, DD_INPUT);
 		}
 	}
 

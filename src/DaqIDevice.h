@@ -35,8 +35,8 @@ public:
 	virtual double daqInScan(FunctionType functionType, DaqInChanDescriptor chanDescriptors[], int numChans, int samplesPerChan, double rate, ScanOption options, DaqInScanFlag flags, void* data);
 
 protected:
-	void check_DaqInScan_Args(DaqInChanDescriptor chanDescriptors[], int numChans, int samplesPerChan, double rate, ScanOption options, DaqInScanFlag flags, void* data) const;
-	void check_DaqInSetTrigger_Args(TriggerType type, DaqInChanDescriptor trigChanDesc, double level, double variance, unsigned int retriggerCount) const;
+	virtual void check_DaqInScan_Args(DaqInChanDescriptor chanDescriptors[], int numChans, int samplesPerChan, double rate, ScanOption options, DaqInScanFlag flags, void* data) const;
+	virtual void check_DaqInSetTrigger_Args(TriggerType type, DaqInChanDescriptor trigChanDesc, double level, double variance, unsigned int retriggerCount) const;
 
 	void storeLastStatus();
 	UlError getLastStatus(FunctionType functionType, TransferStatus* xferStatus);

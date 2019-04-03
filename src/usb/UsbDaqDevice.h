@@ -23,13 +23,15 @@ namespace ul
 class UsbScanTransferIn;
 class UsbScanTransferOut;
 
+#define NO_PERMISSION_STR		"NO PERMISSION"
+
 class UL_LOCAL UsbDaqDevice: public DaqDevice
 {
 	friend class Usb9171;
 public:
-	enum {MCC_USB_VID = 0x09db};
+	enum {MCC_USB_VID = 0x09db, DT_USB_VID = 0x0867};
 	typedef enum {CMD_FLASH_LED_KEY = 1, CMD_RESET_KEY = 2, CMD_STATUS_KEY = 3, CMD_SERIAL_NUM_KEY = 4,
-		  	  	  CMD_MEM_KEY = 10, CMD_MEM_ADDR_KEY = 11, CMD_MEM_CAL_KEY = 12, CMD_MEM_USER_KEY = 13} CmdKey;
+		  	  	  CMD_MEM_KEY = 10, CMD_MEM_ADDR_KEY = 11, CMD_MEM_CAL_KEY = 12, CMD_MEM_USER_KEY = 13, CMD_MEM_SETTINGS_KEY = 14, CMD_MEM_RESERVED_KEY = 15} CmdKey;
 
 	enum {MAX_CMD_READ_TRANSFER = 256, MAX_CMD_WRITE_TRANSFER = 256};
 
@@ -49,7 +51,7 @@ public:
 	void clearFifo(unsigned char epAddr) const;
 
 	virtual int sendCmd(uint8_t request, uint16_t wValue, uint16_t wIndex, unsigned char *buff, uint16_t buffLen, unsigned int timeout = 1000) const;
-	virtual int queryCmd(uint8_t request, uint16_t wValue, uint16_t wIndex, unsigned char *buff, uint16_t buffLen, unsigned int timeout = 1000) const;
+	virtual int queryCmd(uint8_t request, uint16_t wValue, uint16_t wIndex, unsigned char *buff, uint16_t buffLen, unsigned int timeout = 1000, bool checkReplySize = true) const;
 
 	int sendCmd(uint8_t request, unsigned int timeout = 1000) const { return sendCmd(request, 0, 0, NULL, 0, timeout);}
 
@@ -71,6 +73,7 @@ public:
 	int getBulkEndpointMaxPacketSize(int epAddr) const;
 
 	static void readSerialNumber(libusb_device* dev, libusb_device_descriptor descriptor, char* serialNum);
+	static void readProductName(libusb_device *dev, libusb_device_descriptor descriptor, char* productName);
 
 	int getOverrunBitMask() const;
 	int getUnderrunBitMask() const;
@@ -111,7 +114,7 @@ protected:
 
 private:
 	UlError send(uint8_t request, uint16_t wValue, uint16_t wIndex, unsigned char* buff, uint16_t buffLen, int* sent, unsigned int timeout) const;
-	UlError query(uint8_t request, uint16_t wValue, uint16_t wIndex, unsigned char* buff, uint16_t buffLen, int* received, unsigned int timeout) const;
+	UlError query(uint8_t request, uint16_t wValue, uint16_t wIndex, unsigned char* buff, uint16_t buffLen, int* received, unsigned int timeout, bool checkReplySize) const;
 
 	void setMemAddress(MemoryType memType, unsigned short address) const;
 	virtual int memRead_SingleCmd(MemoryType memType, MemRegion memRegionType, unsigned int address, unsigned char* buffer, unsigned int count) const;
@@ -123,6 +126,9 @@ private:
 	static bool loadFirmware(DaqDeviceDescriptor daqDeviceDescriptor);
 
 	static bool isHidDevice(libusb_device *dev);
+
+	static unsigned int getVirtualProductId(libusb_device* dev, libusb_device_descriptor descriptor);
+	static unsigned int getActualProductId(unsigned int vendorId, unsigned int vProductId);
 
 private:
 	virtual void establishConnection();

@@ -93,22 +93,6 @@ bool UsbFpgaDevice::isFpgaLoaded() const
 	return loaded;
 }
 
-
-/*bool UsbFpgaDevice::isFpgaLoaded() const
-{
-	bool loaded = false;
-
-	unsigned char cmd = getCmdValue(UsbDaqDevice::CMD_STATUS_KEY);
-	unsigned short status = 0;
-
-	queryCmd(cmd, 0, 0, (unsigned char*)&status, sizeof(status));
-
-	if((status & 0x100) == 0x100)
-		loaded = true;
-
-	return loaded;
-}*/
-
 void UsbFpgaDevice::loadFpga() const
 {
 	UlError __attribute__((unused)) error = ERR_NO_ERROR;
@@ -136,8 +120,12 @@ void UsbFpgaDevice::loadFpga() const
 				unsigned long num_bytes = sizeof(unlockCode);
 				UsbDaqDevice::sendCmd(CMD_FPGA_CFG, 0, 0, &unlockCode, num_bytes);
 
-				// transfer data
+				 if(getDeviceType() == DaqDeviceId::USB_2020)
+				 {
+					 reverseFpgaBits(fpgaImage, size);
+				 }
 
+				// transfer data
 				int remaining = size;
 				unsigned char* ptr = fpgaImage;
 				do
@@ -189,6 +177,19 @@ void UsbFpgaDevice::loadFpga() const
 	}
 }
 
+void UsbFpgaDevice::reverseFpgaBits(unsigned char* fpgaImage, unsigned long size) const
+{
+	for(unsigned int index = 0; index < size; index++)
+	{
+		if(fpgaImage[index] != 0)
+		{
+			fpgaImage[index] = (fpgaImage[index] & 0x0f) <<  4  |  (fpgaImage[index] & 0xf0) >>  4;
+			fpgaImage[index] = (fpgaImage[index] & 0x33) <<  2  |  (fpgaImage[index] & 0xcc) >>  2;
+			fpgaImage[index] = (fpgaImage[index] & 0x55) <<  1  |  (fpgaImage[index] & 0xaa) >>  1;
+		}
+	}
+}
+
 bool UsbFpgaDevice::isSpartanFpga() const
 {
 	bool spartan_fpga = false;
@@ -200,6 +201,7 @@ bool UsbFpgaDevice::isSpartanFpga() const
 	case DaqDeviceId::USB_CTR08:
 	case DaqDeviceId::USB_CTR04:
 	case DaqDeviceId::USB_DIO32HS:
+	case DaqDeviceId::USB_2020:
 		spartan_fpga = true;
 		break;
 	}

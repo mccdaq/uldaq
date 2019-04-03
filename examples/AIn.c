@@ -123,6 +123,7 @@ int main(void)
 		// show the termination message
 		resetCursor();
 		printf("Hit 'Enter' to terminate the process\n\n");
+		printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 
 		// display data for the first 4 analog input channels
 		for (chan = lowChan; chan <= highChan; chan++)
@@ -130,7 +131,7 @@ int main(void)
 			err = ulAIn(daqDeviceHandle, chan, inputMode, range, flags, &data);
 
 			if(err == ERR_NO_ERROR)
-				printf("Channel(%d) Data: %10.6f\n", chan, data);
+				printf("Channel(%d) Data: %+-10.6f\n", chan, data);
 		}
 
 		usleep(100000);

@@ -17,10 +17,10 @@
     8. Call ulConnectDaqDevice() to establish a UL connection to the DAQ device
     9. Call ulAInLoadQueue() to load the queue
     10. Call ulAInScan() to start the scan of A/D input channels
-	11. Call ulAiScanStatus to check the status of the background operation
-	12. Display the data for each channel
-	13. Call ulAinScanStop() to stop the background operation
-	14. Call ulDisconnectDaqDevice and ulReleaseDaqDevice() before exiting the process
+    11. Call ulAiScanStatus to check the status of the background operation
+    12. Display the data for each channel
+    13. Call ulAinScanStop() to stop the background operation
+    14. Call ulDisconnectDaqDevice and ulReleaseDaqDevice() before exiting the process
 */
 
 #include <stdio.h>
@@ -29,7 +29,7 @@
 #include "utility.h"
 
 #define MAX_DEV_COUNT  100
-#define MAX_RANGE_COUNT  8
+#define MAX_RANGE_COUNT  16
 #define MAX_STR_LENGTH 64
 #define MAX_SCAN_OPTIONS_LENGTH 256
 #define MAX_QUEUE_SIZE 32	// arbitrary limit for the size for the queue
@@ -59,7 +59,7 @@ int main(void)
 
 	int hasAI = 0;
 	int hasPacer = 0;
-	int numRanges = 0;
+	int numRanges = MAX_RANGE_COUNT;
 	int numberOfChannels = 0;
 	int queueTypes;
 	int index = 0;
@@ -225,30 +225,34 @@ int main(void)
 				// show the termination message
 				resetCursor();
 				printf("Hit 'Enter' to terminate the process\n\n");
-
+				printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 				printf("actual scan rate = %f\n\n", rate);
 
 				index = transferStatus.currentIndex;
-				printf("currentScanCount =  %10llu \n", transferStatus.currentScanCount);
-				printf("currentTotalCount = %10llu \n", transferStatus.currentTotalCount);
-				printf("currentIndex =      %10d \n\n", index);
-
-				// display the data
-				for (i = 0; i < chanCount; i++)
+				printf("currentScanCount =  %-10llu \n", transferStatus.currentScanCount);
+				printf("currentTotalCount = %-10llu \n", transferStatus.currentTotalCount);
+				printf("currentIndex =      %-10d \n\n", index);
+				
+				if(index >= 0)
 				{
-					printf("chan %d = %10.6f\n",
-							i + lowChan,
-							buffer[index + i]);
-				}
 
-				usleep(100000);
+					// display the data
+					for (i = 0; i < chanCount; i++)
+					{
+						printf("chan %d = %+-10.6f\n",
+								i + lowChan,
+								buffer[index + i]);
+					}
+
+					usleep(100000);
+				}
 			}
 		}
 
 		// stop the acquisition if it is still running
 		if (status == SS_RUNNING && err == ERR_NO_ERROR)
 		{
-			ulAInScanStop(daqDeviceHandle);
+			err = ulAInScanStop(daqDeviceHandle);
 		}
 	}
 

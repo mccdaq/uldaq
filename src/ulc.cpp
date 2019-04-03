@@ -52,6 +52,8 @@ UlError ulGetDaqDeviceInventory(DaqDeviceInterface interfaceTypes, DaqDeviceDesc
 // coverity[pass_by_value]
 DaqDeviceHandle ulCreateDaqDevice(DaqDeviceDescriptor daqDevDescriptor)
 {
+	UL_LOG("ulCreateDaqDevice() <----");
+
 	int __attribute__((unused)) error = ERR_NO_ERROR;
 
 	DaqDeviceHandle virtualHandle = 0;
@@ -70,6 +72,8 @@ DaqDeviceHandle ulCreateDaqDevice(DaqDeviceDescriptor daqDevDescriptor)
 	{
 		error = ERR_UNHANDLED_EXCEPTION;
 	}
+
+	UL_LOG("ulCreateDaqDevice() ---->");
 
 	return virtualHandle;
 }
@@ -122,6 +126,8 @@ UlError ulGetDaqDeviceDescriptor(DaqDeviceHandle daqDeviceHandle, DaqDeviceDescr
 
 UlError ulConnectDaqDevice(DaqDeviceHandle daqDeviceHandle)
 {
+	UL_LOG("ulConnectDaqDevice() <----");
+
 	UlError error = ERR_NO_ERROR;
 
 	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
@@ -144,12 +150,16 @@ UlError ulConnectDaqDevice(DaqDeviceHandle daqDeviceHandle)
 	else
 		error = ERR_BAD_DEV_HANDLE;
 
+	UL_LOG("ulConnectDaqDevice() ---->");
+
 	return error;
 }
 
 
 UlError ulDisconnectDaqDevice(DaqDeviceHandle daqDeviceHandle)
 {
+	UL_LOG("ulDisconnectDaqDevice() <----");
+
 	UlError error = ERR_NO_ERROR;
 
 	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
@@ -171,6 +181,8 @@ UlError ulDisconnectDaqDevice(DaqDeviceHandle daqDeviceHandle)
 	}
 	else
 		error = ERR_BAD_DEV_HANDLE;
+
+	UL_LOG("ulDisconnectDaqDevice() ---->");
 
 	return error;
 }
@@ -201,6 +213,8 @@ UlError ulIsDaqDeviceConnected(DaqDeviceHandle daqDeviceHandle, int* connected)
 
 UlError ulReleaseDaqDevice(DaqDeviceHandle daqDeviceHandle)
 {
+	UL_LOG("ulReleaseDaqDevice() <----");
+
 	UlError error = ERR_NO_ERROR;
 
 	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
@@ -222,6 +236,8 @@ UlError ulReleaseDaqDevice(DaqDeviceHandle daqDeviceHandle)
 	}
 	else
 		error = ERR_BAD_DEV_HANDLE;
+
+	UL_LOG("ulReleaseDaqDevice() ---->");
 
 	return error;
 }
@@ -2700,9 +2716,9 @@ UlError ulAISetConfig(DaqDeviceHandle daqDeviceHandle, AiConfigItem configItem, 
 				case AI_CFG_CHAN_TC_TYPE:
 					aiConfig.setChanTcType(index, (TcType) configValue);
 					break;
-				case AI_CFG_SCAN_CHAN_TEMP_UNIT:
+				/*case AI_CFG_SCAN_CHAN_TEMP_UNIT:
 					aiConfig.setScanChanTempUnit(index, (TempUnit) configValue);
-					break;
+					break;*/
 				case AI_CFG_SCAN_TEMP_UNIT:
 					aiConfig.setScanTempUnit((TempUnit) configValue);
 					break;
@@ -2718,11 +2734,13 @@ UlError ulAISetConfig(DaqDeviceHandle daqDeviceHandle, AiConfigItem configItem, 
 				case AI_CFG_CHAN_COUPLING_MODE:
 					aiConfig.setChanCouplingMode(index, (CouplingMode) configValue);
 					break;
+				case AI_CFG_CHAN_OTD_MODE:
+					aiConfig.setChanOpenTcDetectionMode(index, (OtdMode) configValue);
+					break;
 
 				default:
 					error = ERR_BAD_CONFIG_ITEM;
 				}
-
 			}
 			else
 				error = ERR_BAD_DEV_TYPE;
@@ -2770,8 +2788,11 @@ UlError ulAIGetConfig(DaqDeviceHandle daqDeviceHandle, AiConfigItem configItem, 
 					case AI_CFG_CHAN_TC_TYPE:
 						*configValue = aiConfig.getChanTcType(index);
 						break;
-					case AI_CFG_SCAN_CHAN_TEMP_UNIT:
+					/*case AI_CFG_SCAN_CHAN_TEMP_UNIT:
 						*configValue = aiConfig.getScanChanTempUnit(index);
+						break;*/
+					case AI_CFG_SCAN_TEMP_UNIT:
+						*configValue = aiConfig.getScanTempUnit();
 						break;
 					case AI_CFG_ADC_TIMING_MODE:
 						*configValue = aiConfig.getAdcTimingMode();
@@ -2790,6 +2811,9 @@ UlError ulAIGetConfig(DaqDeviceHandle daqDeviceHandle, AiConfigItem configItem, 
 						break;
 					case AI_CFG_CHAN_SENSOR_CONNECTION_TYPE:
 						*configValue = aiConfig.getChanSensorConnectionType(index);
+						break;
+					case AI_CFG_CHAN_OTD_MODE:
+						*configValue = aiConfig.getChanOpenTcDetectionMode(index);
 						break;
 
 					default:
@@ -2847,10 +2871,12 @@ UlError ulAISetConfigDbl(DaqDeviceHandle daqDeviceHandle, AiConfigItemDbl config
 				case AI_CFG_CHAN_SENSOR_SENSITIVITY:
 					aiConfig.setChanSensorSensitivity(index, configValue);
 					break;
+				case AI_CFG_CHAN_DATA_RATE:
+					aiConfig.setChanDataRate(index, configValue);
+					break;
 				default:
 					error = ERR_BAD_CONFIG_ITEM;
 				}
-
 			}
 			else
 				error = ERR_BAD_DEV_TYPE;
@@ -2900,6 +2926,9 @@ UlError ulAIGetConfigDbl(DaqDeviceHandle daqDeviceHandle, AiConfigItemDbl config
 						break;
 					case AI_CFG_CHAN_SENSOR_SENSITIVITY:
 						*configValue = aiConfig.getChanSensorSensitivity(index);
+						break;
+					case AI_CFG_CHAN_DATA_RATE:
+						*configValue = aiConfig.getChanDataRate(index);
 						break;
 
 					default:
@@ -3048,6 +3077,9 @@ UlError ulAIGetInfo(DaqDeviceHandle daqDeviceHandle, AiInfoItem infoItem, unsign
 						break;
 					case AI_INFO_FIFO_SIZE:
 						*infoValue = aiInfo.getFifoSize();
+						break;
+					case AI_INFO_IEPE_SUPPORTED:
+						*infoValue = aiInfo.supportsIepe();
 						break;
 
 					default:
@@ -3737,6 +3769,106 @@ UlError ulCtrGetInfoDbl(DaqDeviceHandle daqDeviceHandle, CtrInfoItemDbl infoItem
 	return error;
 }
 
+UlError ulCtrSetConfig(DaqDeviceHandle daqDeviceHandle, CtrConfigItem configItem, unsigned int index, long long configValue)
+{
+	FnLog log("ulCtrSetConfig()");
+
+	UlError error = ERR_NO_ERROR;
+
+	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
+
+	if(pDaqDevice)
+	{
+		try
+		{
+			CtrDevice* ctrDev = pDaqDevice->ctrDevice();
+
+			if(ctrDev)
+			{
+				UlCtrConfig& ctrConfig = ctrDev->getCtrConfig();
+
+				switch(configItem)
+				{
+				case CTR_CFG_REG:
+					ctrConfig.setCtrCfgReg(index, configValue);
+					break;
+
+				default:
+					error = ERR_BAD_CONFIG_ITEM;
+				}
+
+			}
+			else
+				error = ERR_BAD_DEV_TYPE;
+		}
+		catch(UlException& e)
+		{
+			error = e.getError();
+		}
+		catch(...)
+		{
+			error = ERR_UNHANDLED_EXCEPTION;
+		}
+	}
+	else
+		error = ERR_BAD_DEV_HANDLE;
+
+	return error;
+}
+
+UlError ulCtrGetConfig(DaqDeviceHandle daqDeviceHandle, CtrConfigItem configItem, unsigned int index, long long* configValue)
+{
+	FnLog log("ulCtrGetConfig()");
+
+	UlError error = ERR_NO_ERROR;
+
+	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
+
+	if(pDaqDevice)
+	{
+		if(configValue)
+		{
+			try
+			{
+				CtrDevice* ctrDev = pDaqDevice->ctrDevice();
+
+				if(ctrDev)
+				{
+					UlCtrConfig& ctrConfig = ctrDev->getCtrConfig();
+
+					switch(configItem)
+					{
+					case CTR_CFG_REG:
+						*configValue = ctrConfig.getCtrCfgReg(index);
+						break;
+
+
+					default:
+						error = ERR_BAD_CONFIG_ITEM;
+					}
+				}
+				else
+					error = ERR_BAD_DEV_TYPE;
+			}
+			catch(UlException& e)
+			{
+				error = e.getError();
+			}
+			catch(...)
+			{
+				error = ERR_UNHANDLED_EXCEPTION;
+			}
+		}
+		else
+			error = ERR_BAD_ARG;
+	}
+	else
+		error = ERR_BAD_DEV_HANDLE;
+
+	return error;
+}
+
+
 UlError ulTmrGetInfo(DaqDeviceHandle daqDeviceHandle, TmrInfoItem infoItem, unsigned int index, long long* infoValue)
 {
 	FnLog log("ulTmrGetInfo()");
@@ -3790,6 +3922,7 @@ UlError ulTmrGetInfo(DaqDeviceHandle daqDeviceHandle, TmrInfoItem infoItem, unsi
 
 	return error;
 }
+
 
 UlError ulTmrGetInfoDbl(DaqDeviceHandle daqDeviceHandle, TmrInfoItemDbl infoItem, unsigned int index, double* infoValue)
 {

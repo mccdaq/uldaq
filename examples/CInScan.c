@@ -27,7 +27,6 @@
 
 #define MAX_DEV_COUNT  100
 #define MAX_SCAN_OPTIONS_LENGTH 256
-#define MAX_EVENT_COUNTERS 8
 
 int main(void)
 {
@@ -50,7 +49,6 @@ int main(void)
 	int hasPacer = 0;
 	int index = 0;
 	int numberOfCounters = 0;
-	int eventCounters[MAX_EVENT_COUNTERS];
 
 	char scanOptionsStr[MAX_SCAN_OPTIONS_LENGTH];
 
@@ -111,13 +109,8 @@ int main(void)
 	if (err != ERR_NO_ERROR)
 		goto end;
 
-	// get the counter numbers for the supported event counters
-	getCtrInfoSupportedEventCounters(daqDeviceHandle, eventCounters, &numberOfCounters);
-	if (numberOfCounters == 0)
-	{
-		printf("\nThe specified DAQ device does not support event counters\n");
-		goto end;
-	}
+	// get the counter numbers for the supported counters
+	getCtrInfoNumberOfChannels(daqDeviceHandle, &numberOfCounters);
 
 	if (highCtr >= numberOfCounters)
 		highCtr = numberOfCounters - 1;
@@ -125,7 +118,7 @@ int main(void)
 	chanCount = highCtr - lowCtr + 1;
 
 	// allocate a buffer to receive the data
-	buffer = (unsigned long long*) malloc(numberOfCounters * samplesPerCounter * sizeof(unsigned long long));
+	buffer = (unsigned long long*) malloc(chanCount * samplesPerCounter * sizeof(unsigned long long));
 
 	if(buffer == 0)
 	{
@@ -169,23 +162,26 @@ int main(void)
 				// show the termination message
 				resetCursor();
 				printf("Hit 'Enter' to terminate the process\n\n");
-
+				printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 				printf("actual scan rate = %f\n\n", rate);
 
 				index = transferStatus.currentIndex;
-				printf("currentScanCount =  %10llu \n", transferStatus.currentScanCount);
-				printf("currentTotalCount = %10llu \n", transferStatus.currentTotalCount);
-				printf("currentIndex =      %10d \n\n", index);
+				printf("currentScanCount =  %-10llu \n", transferStatus.currentScanCount);
+				printf("currentTotalCount = %-10llu \n", transferStatus.currentTotalCount);
+				printf("currentIndex =      %-10d \n\n", index);
 
-				// display the data
-				for (i = 0; i < chanCount; i++)
+				if(index >= 0)
 				{
-					printf("chan %d = %lld\n",
-							i + lowCtr,
-							buffer[index + i]);
-				}
+					// display the data
+					for (i = 0; i < chanCount; i++)
+					{
+						printf("Counter %d = %-20lld\n",
+								i + lowCtr,
+								buffer[index + i]);
+					}
 
-				usleep(100000);
+					usleep(100000);
+				}
 			}
 		}
 

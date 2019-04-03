@@ -23,7 +23,6 @@
 #include "utility.h"
 
 #define MAX_DEV_COUNT  100
-#define MAX_EVENT_COUNTERS 2
 
 int main(void)
 {
@@ -34,9 +33,6 @@ int main(void)
 	unsigned int numDevs = MAX_DEV_COUNT;
 
 	int ctrNumber = 0;
-	int numberOfCounters = 0;
-	int eventCounters[MAX_EVENT_COUNTERS];
-
 	int hasCTR = 0;
 
 	unsigned long long data = 0;
@@ -89,15 +85,6 @@ int main(void)
 	if (err != ERR_NO_ERROR)
 		goto end;
 
-	getCtrInfoSupportedEventCounters(daqDeviceHandle, eventCounters, &numberOfCounters);
-	if (numberOfCounters == 0)
-	{
-		printf("\nThe specified DAQ device does not support event counters\n");
-		goto end;
-	}
-
-	if (ctrNumber >= numberOfCounters)
-		ctrNumber = numberOfCounters - 1;
 
 	printf("\n%s ready\n", devDescriptors[descriptorIndex].devString);
 	printf("    Function demonstrated: ulCIn()\n");
@@ -120,6 +107,7 @@ int main(void)
 		// show the termination message
 		resetCursor();
 		printf("Hit 'Enter' to terminate the process\n\n");
+		printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 
 		err = ulCIn(daqDeviceHandle, ctrNumber, &data);
 

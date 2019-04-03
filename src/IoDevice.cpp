@@ -18,6 +18,8 @@ IoDevice::IoDevice(const DaqDevice& daqDevice): mDaqDevice(daqDevice), mMinScanS
 	memset(&mTrigCfg, 0, sizeof(mTrigCfg));
 	mTrigCfg.type = TRIG_POS_EDGE;
 
+	mScanErrorFlag = false; //only used by DT devices
+
 	UlLock::initMutex(mIoDeviceMutex, PTHREAD_MUTEX_RECURSIVE);
 
 	UlLock::initMutex(mProcessScanDataMutex, PTHREAD_MUTEX_RECURSIVE);

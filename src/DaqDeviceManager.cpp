@@ -7,6 +7,7 @@
 
 #include "DaqDeviceManager.h"
 #include "./utility/FnLog.h"
+#include "./usb/UsbDaqDevice.h"
 
 #include <algorithm>
 #include <cstring>
@@ -15,6 +16,7 @@ namespace ul
 {
 
 std::map<int, std::string> DaqDeviceManager::mSupportedDevices;
+std::map<int, std::string> DaqDeviceManager::mSupportedDtDevices;
 std::map<long long, DaqDevice*> DaqDeviceManager::mCreatedDevicesMap;
 
 DaqDeviceManager::DaqDeviceManager()
@@ -55,6 +57,8 @@ void DaqDeviceManager::addSupportedDaqDevice()
 	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_CTR04, "USB-CTR04"));
 	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_CTR08, "USB-CTR08"));
 
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_QUAD08, "USB-QUAD08"));
+
 	// HID devices
 	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_DIO96H, "USB-DIO96H"));
 	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_DIO96H_50, "USB-DIO96H/50"));
@@ -81,30 +85,59 @@ void DaqDeviceManager::addSupportedDaqDevice()
 	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_TC, "USB-TC"));
 	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_TEMP_AI, "USB-TEMP_AI"));
 	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_TC_AI, "USB-TC_AI"));
+
+
+	// DT devices
+	mSupportedDtDevices.insert(std::pair<int, std::string>(DaqDeviceId::DT9837_ABC, "DT9837ABC"));
+
+	// Virtual DT devices
+	mSupportedDtDevices.insert(std::pair<int, std::string>(DaqDeviceId::UL_DT9837_A, "DT9837A"));
+	mSupportedDtDevices.insert(std::pair<int, std::string>(DaqDeviceId::UL_DT9837_B, "DT9837B"));
+	mSupportedDtDevices.insert(std::pair<int, std::string>(DaqDeviceId::UL_DT9837_C, "DT9837C"));
 }
 
-bool DaqDeviceManager::isDaqDeviceSupported(int productId)
+bool DaqDeviceManager::isDaqDeviceSupported(int productId, int vendorId)
 {
 	bool supported = false;
 
 	if(mSupportedDevices.empty())
 		addSupportedDaqDevice();
 
-	std::map<int, std::basic_string<char> >::iterator itr = mSupportedDevices.find(productId);
-	if(itr != mSupportedDevices.end())
-		supported = true;
+	if(vendorId == UsbDaqDevice::DT_USB_VID)
+	{
+		std::map<int, std::basic_string<char> >::iterator itr = mSupportedDtDevices.find(productId);
+		if(itr != mSupportedDtDevices.end())
+			supported = true;
+	}
+	else
+	{
+		std::map<int, std::basic_string<char> >::iterator itr = mSupportedDevices.find(productId);
+		if(itr != mSupportedDevices.end())
+			supported = true;
+	}
 
 	return supported;
 }
 
-std::string DaqDeviceManager::getDeviceName(int productId)
+std::string DaqDeviceManager::getDeviceName(int productId, int vendorId)
 {
 	std::string deviceName;
+	std::map<int, std::string>::iterator itr;
 
-	std::map<int, std::string>::iterator itr = mSupportedDevices.find(productId);
+	if(vendorId == UsbDaqDevice::DT_USB_VID)
+	{
+		itr = mSupportedDtDevices.find(productId);
 
-	if(itr != mSupportedDevices.end())
-		deviceName = itr->second;
+		if(itr != mSupportedDtDevices.end())
+			deviceName = itr->second;
+	}
+	else
+	{
+		itr = mSupportedDevices.find(productId);
+
+		if(itr != mSupportedDevices.end())
+			deviceName = itr->second;
+	}
 
 	return deviceName;
 }
@@ -183,7 +216,7 @@ void DaqDeviceManager::releaseDevices()
 	FnLog log("DaqDeviceManager::releaseDevices");
 
 	if(mCreatedDevicesMap.size())
-		UL_LOG("#### " << mCreatedDevices.size() << " lingering device(s) being released: ");
+		UL_LOG("#### " << mCreatedDevicesMap.size() << " lingering device(s) being released: ");
 	else
 		UL_LOG("No lingering device found");
 

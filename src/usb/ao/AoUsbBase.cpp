@@ -222,9 +222,9 @@ unsigned int AoUsbBase::processScanData(void* transfer, unsigned int stageSize)
 	case 2:  // 2 bytes
 		actualStageSize = processScanData16(usbTransfer, stageSize);
 		break;
-	/*case 4:  // 4 bytes
-		processScanData32(usbTransfer);
-		break;*/
+	case 4:  // 4 bytes
+		actualStageSize = processScanData32(usbTransfer, stageSize);
+		break;
 	default:
 		std::cout << "##### undefined sample size";
 		break;
@@ -267,6 +267,66 @@ unsigned int AoUsbBase::processScanData16(libusb_transfer* transfer, unsigned in
 		}
 
 		buffer[numOfSampleCopied] = Endian::cpu_to_le_ui16(count);
+
+		mScanInfo.currentDataBufferIdx++;
+		mScanInfo.currentCalCoefIdx++;
+		numOfSampleCopied++;
+
+		mScanInfo.totalSampleTransferred++;
+
+		if(mScanInfo.currentDataBufferIdx == mScanInfo.dataBufferSize)
+		{
+			mScanInfo.currentDataBufferIdx = 0;
+			if(!mScanInfo.recycle)
+			{
+				mScanInfo.allSamplesTransferred = true;
+				break;
+			}
+		}
+
+		if(mScanInfo.currentCalCoefIdx == mScanInfo.chanCount)
+			mScanInfo.currentCalCoefIdx = 0;
+	}
+
+	actualStageSize = numOfSampleCopied * mScanInfo.sampleSize;
+
+	return actualStageSize;
+}
+
+unsigned int AoUsbBase::processScanData32(libusb_transfer* transfer, unsigned int stageSize)
+{
+	UlLock lock(mProcessScanDataMutex);  // added the lock since mScanInfo.totalSampleTransferred is not updated atomically and is accessed from different thread when user invokes the getStatus function
+
+	int numOfSampleCopied = 0;
+	unsigned int actualStageSize = 0;
+	int requestSampleCount = stageSize / mScanInfo.sampleSize;
+	unsigned int* buffer = (unsigned int*)transfer->buffer;
+
+	double data;
+	long long rawVal;
+	unsigned int count;
+	double* dataBuffer = (double*) mScanInfo.dataBuffer;
+	long long fullScale = mScanInfo.fullScale;
+
+	while(numOfSampleCopied < requestSampleCount)
+	{
+		data = dataBuffer[mScanInfo.currentDataBufferIdx];
+
+		if((mScanInfo.flags & NOCALIBRATEDATA) && (mScanInfo.flags & NOSCALEDATA))
+			count = data;
+		else
+		{
+			rawVal = (mScanInfo.calCoefs[mScanInfo.currentCalCoefIdx].slope * data) + mScanInfo.calCoefs[mScanInfo.currentCalCoefIdx].offset + 0.5;
+
+			if(rawVal > fullScale)
+				count = fullScale;
+			else if(rawVal < 0)
+				count = 0;
+			else
+				count = rawVal;
+		}
+
+		buffer[numOfSampleCopied] = Endian::cpu_to_le_ui32(count);
 
 		mScanInfo.currentDataBufferIdx++;
 		mScanInfo.currentCalCoefIdx++;

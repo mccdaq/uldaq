@@ -23,9 +23,10 @@ public:
 	virtual void setChanTcType(int channel, TcType tcType) = 0;
 	virtual TcType getChanTcType(int channel) = 0;
 
-	virtual void setScanChanTempUnit(int channel, TempUnit unit) = 0;
-	virtual TempUnit getScanChanTempUnit(int channel) = 0;
+	//virtual void setScanChanTempUnit(int channel, TempUnit unit) = 0;
+	//virtual TempUnit getScanChanTempUnit(int channel) = 0;
 	virtual void setScanTempUnit(TempUnit unit) = 0;
+	virtual TempUnit getScanTempUnit() = 0;
 
 	virtual void setAutoZeroMode(AutoZeroMode mode) = 0;
 	virtual AutoZeroMode getAutoZeroMode() = 0;
@@ -54,6 +55,12 @@ public:
 	virtual void getChanCoefsStr(int channel, char* coefs, unsigned int* maxStrLen) = 0;
 
 	virtual SensorConnectionType getChanSensorConnectionType(int channel) = 0;
+
+	virtual void setChanDataRate(int channel, double rate) = 0;
+	virtual double getChanDataRate(int channel) = 0;
+
+	virtual void setChanOpenTcDetectionMode(int channel, OtdMode mode) = 0;
+	virtual OtdMode getChanOpenTcDetectionMode(int channel) = 0;
 };
 
 } /* namespace ul */

@@ -29,7 +29,7 @@
 
 #define MAX_DEV_COUNT  100
 #define MAX_SCAN_OPTIONS_LENGTH 256
-#define MAX_ENCODER_COUNTERS 2
+#define MAX_ENCODER_COUNTERS 16
 
 int main(void)
 {
@@ -43,7 +43,7 @@ int main(void)
 	int lowCtr = 0;
 	int highCtr = 0;
 	int firstEncoder = 0;
-	int encoderCount = MAX_ENCODER_COUNTERS;
+	int encoderCount = 0;
 	const int samplesPerCounter = 10000;
 	double rate = 1000;
 	ScanOption scanOptions = (ScanOption) (SO_DEFAULTIO | SO_CONTINUOUS);
@@ -61,7 +61,7 @@ int main(void)
 	int hasCI = 0;
 	int hasPacer = 0;
 	int index = 0;
-	int numberOfEncoders = 0;
+	int numberOfEncoders = MAX_ENCODER_COUNTERS;
 	int encoderCounters[MAX_ENCODER_COUNTERS];
 
 	char scanOptionsStr[MAX_SCAN_OPTIONS_LENGTH];
@@ -142,12 +142,8 @@ int main(void)
 	if (lowCtr > firstEncoder + numberOfEncoders - 1)
 		lowCtr = firstEncoder;
 
-	// Verify that the encoder count is valid
-    if (encoderCount > numberOfEncoders)
-		encoderCount = numberOfEncoders;
-
 	// set the high_encoder channel
-	highCtr = lowCtr + encoderCount - 1;
+	highCtr = lowCtr + numberOfEncoders - 1;
     if (highCtr > firstEncoder + numberOfEncoders - 1)
     	highCtr = firstEncoder + numberOfEncoders - 1;
 
@@ -206,24 +202,27 @@ int main(void)
 				// show the termination message
 				resetCursor();
 				printf("Hit 'Enter' to terminate the process\n\n");
-
+				printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 				printf("actual scan rate = %f\n\n", rate);
 
 				index = transferStatus.currentIndex;
-				printf("currentScanCount =  %10llu \n", transferStatus.currentScanCount);
-				printf("currentTotalCount = %10llu \n", transferStatus.currentTotalCount);
-				printf("currentIndex =      %10d \n\n", index);
+				printf("currentScanCount =  %-10llu \n", transferStatus.currentScanCount);
+				printf("currentTotalCount = %-10llu \n", transferStatus.currentTotalCount);
+				printf("currentIndex =      %-10d \n\n", index);
 
-				// display the data
-				for (i = 0; i < encoderCount; i++)
+				if(index >= 0)
 				{
-					clearEOL();
-					printf("chan %d = %llu \n",
-							i + lowCtr,
-							buffer[index + i]);
-				}
+					// display the data
+					for (i = 0; i < encoderCount; i++)
+					{
+						clearEOL();
+						printf("chan %d = %-20llu \n",
+								i + lowCtr,
+								buffer[index + i]);
+					}
 
-				usleep(100000);
+					usleep(100000);
+				}
 			}
 		}
 

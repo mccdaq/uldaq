@@ -18,10 +18,10 @@
     7. Call ulConnectDaqDevice() to establish a UL connection to the DAQ device
     8. Call ulAInSetTrigger to set the external trigger
     9. Call ulAInScan() to start the scan of A/D input channels
-	10. Call ulAiScanStatus to check the status of the background operation
-	11. Display the data for each channel
-	12. Call ulAinScanStop() to stop the background operation
-	13. Call ulDisconnectDaqDevice and ulReleaseDaqDevice() before exiting the process
+    10. Call ulAiScanStatus to check the status of the background operation
+    11. Display the data for each channel
+    12. Call ulAinScanStop() to stop the background operation
+    13. Call ulDisconnectDaqDevice and ulReleaseDaqDevice() before exiting the process
 */
 
 #include <stdio.h>
@@ -183,6 +183,7 @@ int main(void)
 		ulAInScanStatus(daqDeviceHandle, &status, &transferStatus);
 
 		printf ("Hit 'Enter' to quit waiting for trigger\n\n");
+		printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 		printf ("Waiting for trigger ...\n");
 
 		while(status == SS_RUNNING && err == ERR_NO_ERROR && !enter_press())
@@ -194,18 +195,18 @@ int main(void)
 			if(err == ERR_NO_ERROR && index >= 0)
 			{
 				resetCursor();
-				printf("Hit 'Enter' to terminate the process\n\n");
-
+				printf("%-40s\n\n","Hit 'Enter' to terminate the process");
+				printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 				printf("actual scan rate = %f\n\n", rate);
 
-				printf("currentScanCount =  %10llu \n", transferStatus.currentScanCount);
-				printf("currentTotalCount = %10llu \n", transferStatus.currentTotalCount);
-				printf("currentIndex =      %10d \n\n", index);
+				printf("currentScanCount =  %-10llu \n", transferStatus.currentScanCount);
+				printf("currentTotalCount = %-10llu \n", transferStatus.currentTotalCount);
+				printf("currentIndex =      %-10d \n\n", index);
 
 				// display the data
 				for (i = 0; i < chanCount; i++)
 				{
-					printf("chan %d = %f10.6\n",
+					printf("chan %d = %+-10.6f\n",
 							i + lowChan,
 							buffer[index + i]);
 				}

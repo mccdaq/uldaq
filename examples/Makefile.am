@@ -1,7 +1,7 @@
 AM_CPPFLAGS = -I$(top_srcdir)/src
 LDADD = ../src/libuldaq.la
 
-noinst_PROGRAMS = AIn AInScan AInScanWithEvents AInScanWithQueue AInScanWithTrigger\
+noinst_PROGRAMS = AIn AInScan AInScanWithEvents AInScanWithQueue AInScanWithTrigger AInScanIepe\
 AOut AOutScan\
 CIn CInScan CInScanWithEncoder\
 DaqInScan DaqInScanWithTrigger\
@@ -15,6 +15,7 @@ AInScan_SOURCES = AInScan.c
 AInScanWithEvents_SOURCES = AInScanWithEvents.c
 AInScanWithQueue_SOURCES = AInScanWithQueue.c
 AInScanWithTrigger_SOURCES = AInScanWithTrigger.c
+AInScanIepe_SOURCES = AInScanIepe.c
 AOut_SOURCES = AOut.c
 AOutScan_LDADD = $(LDADD) -lm
 AOutScan_SOURCES = AOutScan.c

@@ -15,10 +15,10 @@
     5. Call ulConnectDaqDevice() to establish a UL connection to the DAQ device
     6. Configure the available analog, digital, and counter channels
     7. Call ulDaqInScan() to start the scan
-	8. Call ulDaqInScanStatus to check the status of the background operation
-	9. Display the data for each channel
-	10. Call ulDaqInScanStop() to stop the background operation
-	11. Call ulDisconnectDaqDevice and ulReleaseDaqDevice() before exiting the process
+    8. Call ulDaqInScanStatus to check the status of the background operation
+    9. Display the data for each channel
+    10. Call ulDaqInScanStop() to stop the background operation
+    11. Call ulDisconnectDaqDevice and ulReleaseDaqDevice() before exiting the process
 */
 
 #include <stdio.h>
@@ -30,11 +30,12 @@
 // prototypes
 UlError ConfigureAnalogInputChannels(int numberOfChannels, Range range, DaqInChanDescriptor* descriptors, int* scanDesriptorIndex);
 UlError ConfigureDigitalInputChannel(DaqDeviceHandle daqDeviceHandle, DaqInChanDescriptor* descriptors, int* scanDesriptorIndex);
-UlError ConfigureCounterInputChannels(DaqDeviceHandle daqDeviceHandle, int numberOfChannels, DaqInChanDescriptor* descriptors, int* scanDesriptorIndex);
+UlError ConfigureCounterInputChannels(int numberOfChannels, DaqInChanDescriptor* descriptors, int* scanDesriptorIndex);
 
 #define MAX_DEV_COUNT  100
 #define MAX_STR_LENGTH 64
 #define MAX_SCAN_OPTIONS_LENGTH 256
+#define MAX_SCAN_CHAN_COUNT 64
 
 int main(void)
 {
@@ -51,8 +52,8 @@ int main(void)
 	ScanOption scanOptions = (ScanOption) (SO_DEFAULTIO | SO_CONTINUOUS);
 	DaqInScanFlag flags = DAQINSCAN_FF_DEFAULT;
 
-	int numberOfAiChannels = 3;
-	int numberOfScanChannels = 3;
+	int numberOfAiChannels = 0;
+	int numberOfScanChannels = 0;
 	int hasDAQI = 0;
 	int index = 0;
 	int chanTypesMask = 0;
@@ -62,7 +63,7 @@ int main(void)
 	char daqiChannelTypeStr[MAX_SCAN_OPTIONS_LENGTH];
 	char rangeStr[MAX_SCAN_OPTIONS_LENGTH];
 
-	DaqInChanDescriptor scanDescriptors[numberOfScanChannels];
+	DaqInChanDescriptor chanDescriptors[MAX_SCAN_CHAN_COUNT];
 
 	int scanDescriptorIndex = 0;
 
@@ -133,35 +134,34 @@ int main(void)
 		// get the first supported input range
 		getAiInfoFirstSupportedRange(daqDeviceHandle, inputMode, &range, rangeStr);
 
-		err = ConfigureAnalogInputChannels(1, range, scanDescriptors, &scanDescriptorIndex);
-	}
-	else
-	{
-		// no analog channels so decrement the count
-		numberOfScanChannels--;
+		err = ConfigureAnalogInputChannels(2, range, chanDescriptors, &scanDescriptorIndex);
+
+		/* uncomment this section to enable IEPE mode for the specified analog channel and set coupling mode to AC
+
+		// enable IEPE mode for the specified channel
+		err = ulAISetConfig(daqDeviceHandle, AI_CFG_CHAN_IEPE_MODE, chanDescriptors[0].channel, IEPE_ENABLED);
+
+		// set coupling mode to AC for the specified channel
+		err = ulAISetConfig(daqDeviceHandle, AI_CFG_CHAN_COUPLING_MODE, chanDescriptors[0].channel, CM_AC);
+	
+		// set sensor sensitivity for the specified channel
+		err = ulAISetConfigDbl(daqDeviceHandle, AI_CFG_CHAN_SENSOR_SENSITIVITY,  chan, 1.0);*/
 	}
 
 	// configure the digital channels
 	if ((chanTypesMask & DAQI_DIGITAL) && err == ERR_NO_ERROR)
 	{
-		err = ConfigureDigitalInputChannel(daqDeviceHandle, scanDescriptors, &scanDescriptorIndex);
-	}
-	else
-	{
-		// no digital channels so decrement the count
-		numberOfScanChannels--;
+		err = ConfigureDigitalInputChannel(daqDeviceHandle, chanDescriptors, &scanDescriptorIndex);
 	}
 
 	// configure the counter channels
 	if ((chanTypesMask & DAQI_CTR32) && err == ERR_NO_ERROR)
 	{
-		err = ConfigureCounterInputChannels(daqDeviceHandle, 1, scanDescriptors, &scanDescriptorIndex);
+		err = ConfigureCounterInputChannels(1, chanDescriptors, &scanDescriptorIndex);
 	}
-	else
-	{
-		// no counter channels so decrement the count
-		numberOfScanChannels--;
-	}
+	
+
+	numberOfScanChannels = scanDescriptorIndex;
 
 	// allocate a buffer to receive the data
 	buffer = (double*) malloc(numberOfScanChannels * samplesPerChannel * sizeof(double));
@@ -179,15 +179,15 @@ int main(void)
 	printf("    Number of scan channels: %d\n", numberOfScanChannels);
 	for (i=0; i<numberOfScanChannels; i++)
 	{
-		ConvertDaqIChanTypeToString(scanDescriptors[i].type, daqiChannelTypeStr);
-		if (scanDescriptors[i].type == DAQI_ANALOG_SE || scanDescriptors[i].type == DAQI_ANALOG_DIFF)
+		ConvertDaqIChanTypeToString(chanDescriptors[i].type, daqiChannelTypeStr);
+		if (chanDescriptors[i].type == DAQI_ANALOG_SE || chanDescriptors[i].type == DAQI_ANALOG_DIFF)
 		{
-			ConvertRangeToString(scanDescriptors[i].range, rangeStr);
-			printf("        ScanChannel %d: type = %s, channel = %d, range = %s\n", i, daqiChannelTypeStr, scanDescriptors[i].channel, rangeStr);
+			ConvertRangeToString(chanDescriptors[i].range, rangeStr);
+			printf("        ScanChannel %d: type = %s, channel = %d, range = %s\n", i, daqiChannelTypeStr, chanDescriptors[i].channel, rangeStr);
 		}
 		else
 		{
-			printf("        ScanChannel %d: type = %s, channel = %d\n", i, daqiChannelTypeStr, scanDescriptors[i].channel);
+			printf("        ScanChannel %d: type = %s, channel = %d\n", i, daqiChannelTypeStr, chanDescriptors[i].channel);
 		}
 	}
 	printf("    Samples per channel: %d\n", samplesPerChannel);
@@ -200,7 +200,7 @@ int main(void)
 	ret = system("clear");
 
 	// start the acquisition
-	err = ulDaqInScan(daqDeviceHandle, scanDescriptors, numberOfScanChannels, samplesPerChannel, &rate, scanOptions, flags, buffer);
+	err = ulDaqInScan(daqDeviceHandle, chanDescriptors, numberOfScanChannels, samplesPerChannel, &rate, scanOptions, flags, buffer);
 
 	if(err == ERR_NO_ERROR)
 	{
@@ -220,28 +220,31 @@ int main(void)
 			// show the termination message
 			resetCursor();
 			printf("Hit 'Enter' to terminate the process\n\n");
-
+			printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 			printf("actual scan rate = %f\n\n", rate);
 
 			index = transferStatus.currentIndex;
-			printf("currentScanCount =  %10llu \n", transferStatus.currentScanCount);
-			printf("currentTotalCount = %10llu \n", transferStatus.currentTotalCount);
-			printf("currentIndex =      %10d \n\n", index);
+			printf("currentScanCount =  %-10llu \n", transferStatus.currentScanCount);
+			printf("currentTotalCount = %-10llu \n", transferStatus.currentTotalCount);
+			printf("currentIndex =      %-10d \n\n", index);
 
-			// display the data
-			for (i = 0; i < numberOfScanChannels; i++)
+			if(index >= 0)
 			{
-				if (scanDescriptors[i].type == DAQI_ANALOG_SE || scanDescriptors[i].type == DAQI_ANALOG_DIFF)
+				// display the data
+				for (i = 0; i < numberOfScanChannels; i++)
 				{
-					printf("chan (%s%d) = %10.6f\n",
-							"Ai", scanDescriptors[i].channel,
-							buffer[index + i]);
-				}
-				else
-				{
-					printf("chan (%s%d) = %lld \n",
-							(scanDescriptors[i].type == DAQI_DIGITAL) ? "Di" : "Ci", scanDescriptors[i].channel,
-							(long long)buffer[index + i]);
+					if (chanDescriptors[i].type == DAQI_ANALOG_SE || chanDescriptors[i].type == DAQI_ANALOG_DIFF)
+					{
+						printf("chan (%s%d) = %+-10.6f\n",
+								"Ai", chanDescriptors[i].channel,
+								buffer[index + i]);
+					}
+					else
+					{
+						printf("chan (%s%d) = %-10lld \n",
+								(chanDescriptors[i].type == DAQI_DIGITAL) ? "Di" : "Ci", chanDescriptors[i].channel,
+								(long long)buffer[index + i]);
+					}
 				}
 
 				usleep(100000);
@@ -281,7 +284,6 @@ end:
 UlError ConfigureAnalogInputChannels(int numberOfChannels, Range range, DaqInChanDescriptor* descriptors, int* scanDesriptorIndex)
 {
 	UlError err = ERR_NO_ERROR;
-	int numberOfAnalogChans = 0;
 	int i;
 	int index = *scanDesriptorIndex;
 
@@ -292,11 +294,6 @@ UlError ConfigureAnalogInputChannels(int numberOfChannels, Range range, DaqInCha
 		descriptors[index].type = DAQI_ANALOG_SE;
 		descriptors[index].range = range;
 		index++;
-
-		numberOfAnalogChans++;
-
-		if (numberOfAnalogChans == numberOfChannels)
-			break;
 	}
 
 	*scanDesriptorIndex = index;
@@ -325,36 +322,18 @@ UlError ConfigureDigitalInputChannel(DaqDeviceHandle daqDeviceHandle, DaqInChanD
 	return err;
 }
 
-UlError ConfigureCounterInputChannels(DaqDeviceHandle daqDeviceHandle, int numberOfChannels, DaqInChanDescriptor* descriptors, int* scanDesriptorIndex)
+UlError ConfigureCounterInputChannels(int numberOfChannels, DaqInChanDescriptor* descriptors, int* scanDesriptorIndex)
 {
 	UlError err = ERR_NO_ERROR;
-	int numberOfCounters = 0;
-	int numberOfEventCounters = 0;
 	int i;
 	int index = *scanDesriptorIndex;
 
-	// get the number of counter channels
-	err = getCtrInfoNumberOfChannels(daqDeviceHandle, &numberOfCounters);
-
-	// allocate memory to store the port types
-	int measurementTypes;
-
 	// fill a descriptor for each channel
-	for (i = 0; i < numberOfCounters; i++)
+	for (i = 0; i < numberOfChannels; i++)
 	{
-		err = getCtrInfoMeasurementTypes(daqDeviceHandle, i, &measurementTypes);
-
-		if (measurementTypes & CMT_COUNT)
-		{
-			descriptors[index].channel = i;
-			descriptors[index].type = DAQI_CTR32;
-			index++;
-
-			numberOfEventCounters++;
-
-			if (numberOfEventCounters == numberOfChannels)
-				break;
-		}
+		descriptors[index].channel = i;
+		descriptors[index].type = DAQI_CTR32;
+		index++;
 	}
 
 	*scanDesriptorIndex = index;

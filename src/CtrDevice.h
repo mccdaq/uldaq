@@ -10,6 +10,7 @@
 
 #include "IoDevice.h"
 #include "CtrInfo.h"
+#include "CtrConfig.h"
 #include "interfaces/UlCtrDevice.h"
 
 namespace ul
@@ -22,6 +23,7 @@ public:
 	virtual ~CtrDevice();
 
 	virtual const UlCtrInfo& getCtrInfo() { return mCtrInfo;}
+	virtual UlCtrConfig& getCtrConfig() { return *mCtrConfig;}
 
 	virtual unsigned long long cIn(int ctrNum);
 	virtual void cLoad(int ctrNum, CounterRegisterType regType, unsigned long long loadValue);
@@ -43,6 +45,10 @@ public:
 	void setScanCountersInactive();
 	bool isScanCounterActive(int ctrNum) const;
 
+	//////////////////////          Configuration functions          /////////////////////////////////
+	virtual void setCfg_CtrReg(int ctrNum, long long regVal);
+	virtual long long getCfg_CtrReg(int ctrNum) const;
+
 protected:
 	void check_CIn_Args(int ctrNum) const;
 	void check_CLoad_Args(int ctrNum, CounterRegisterType regType, unsigned long long loadValue) const;
@@ -53,11 +59,12 @@ protected:
 								CounterEdgeDetection edgeDetection, CounterTickSize tickSize,
 								CounterDebounceMode debounceMode, CounterDebounceTime debounceTime, CConfigScanFlag flag) const;
 
-	void check_CtrSetTrigger_Args(TriggerType trigtype, int trigChan,  double level, double variance, unsigned int retriggerCount) const;
+	virtual void check_CtrSetTrigger_Args(TriggerType trigtype, int trigChan,  double level, double variance, unsigned int retriggerCount) const;
 
 
 protected:
 	CtrInfo mCtrInfo;
+	CtrConfig* mCtrConfig;
 
 private:
 	std::vector<bool> mScanCtrActive;

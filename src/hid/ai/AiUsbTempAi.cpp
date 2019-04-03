@@ -45,7 +45,7 @@ AiUsbTempAi::AiUsbTempAi(const HidDaqDevice& daqDevice) : AiHidBase(daqDevice)
 
 	addSupportedRanges();
 
-	initTempUnits();
+	//initTempUnits();
 	initCustomScales();
 
 	memset(mCurrentChanCfg, 0, sizeof(mCurrentChanCfg));
@@ -187,8 +187,13 @@ void AiUsbTempAi::tIn(int channel, TempScale scale, TInFlag flags, double* data)
 		  break;
 		default:
 			tempValue = convertTempUnit(tempValue, (TempUnit)scale);
-			*data = mCustomScales[channel].slope * tempValue + mCustomScales[channel].offset;
-			 break;
+
+			if(channel & 0x80) // CJC chan
+				*data = tempValue;
+			else
+				*data = mCustomScales[channel].slope * tempValue + mCustomScales[channel].offset;
+
+			break;
 		}
 	}
 }

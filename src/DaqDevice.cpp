@@ -33,6 +33,8 @@ DaqDevice::DaqDevice(const DaqDeviceDescriptor& daqDeviceDescriptor): mDaqDevice
 	mDaqDeviceConfig = new DaqDeviceConfig(*this);
 	mDaqDeviceInfo.setProductId(daqDeviceDescriptor.productId);
 
+	mMinRawFwVersion = 0;
+
 	mRawFwVersion = 0;
 	mRawFpgaVersion = 0;
 	mRawRadioVersion = 0;
@@ -42,10 +44,14 @@ DaqDevice::DaqDevice(const DaqDeviceDescriptor& daqDeviceDescriptor): mDaqDevice
 
 	mCurrentSuspendCount = 0;
 
+	mHasExp = false;
+
 	pthread_mutex_lock(&mDeviceNumberMutex);
 	mDeviceNumber = mNextAvailableDeviceNumber;
 	mNextAvailableDeviceNumber++;
 	pthread_mutex_unlock(&mDeviceNumberMutex);
+
+	UlLock::initMutex(mDeviceMutex, PTHREAD_MUTEX_RECURSIVE);
 }
 
 DaqDevice::~DaqDevice()
@@ -105,6 +111,8 @@ DaqDevice::~DaqDevice()
 	}
 
 	DaqDeviceManager::removeFromCreatedList(mDeviceNumber);
+
+	UlLock::destroyMutex(mDeviceMutex);
 }
 
 DaqDeviceDescriptor DaqDevice::getDescriptor() const

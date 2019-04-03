@@ -21,6 +21,7 @@ AiDevice::AiDevice(const DaqDevice& daqDevice) : IoDevice(daqDevice), UlAiDevice
 	mCalDate = 0;
 	mCalModeEnabled = false;
 	mScanTempChanSupported = false;
+	mScanTempUnit = TU_CELSIUS;
 }
 
 AiDevice::~AiDevice()
@@ -487,13 +488,13 @@ void AiDevice::initCustomScales()
 	}
 }
 
-void AiDevice::initTempUnits()
+/*void AiDevice::initTempUnits()
 {
 	for(int i = 0; i < mAiInfo.getNumChans(); i++)
 	{
 		mScanChanTempUnit.push_back(TU_CELSIUS);
 	}
-}
+}*/
 
 void AiDevice::check_TIn_Args(int channel, TempScale scale, TInFlag flags) const
 {
@@ -568,10 +569,21 @@ void AiDevice::setCfg_ScanTempUnit(TempUnit unit)
 	if( unit < TU_CELSIUS || unit > TU_KELVIN)
 		throw UlException(ERR_BAD_UNIT);
 
-	for(unsigned int i = 0; i < mScanChanTempUnit.size(); i++)
-		mScanChanTempUnit[i] = unit;
+	mScanTempUnit = unit;
+
+	//for(unsigned int i = 0; i < mScanChanTempUnit.size(); i++)
+	//	mScanChanTempUnit[i] = unit;
 }
 
+TempUnit AiDevice::getCfg_ScanTempUnit() const
+{
+	if(!mScanTempChanSupported)
+		throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+
+	return mScanTempUnit;
+}
+
+/*
 void AiDevice::setCfg_ScanChanTempUnit(int channel, TempUnit unit)
 {
 	if(!mScanTempChanSupported)
@@ -594,7 +606,7 @@ TempUnit AiDevice::getCfg_ScanChanTempUnit(int channel) const
 			throw UlException(ERR_BAD_AI_CHAN);
 
 	return mScanChanTempUnit[channel];
-}
+}*/
 
 void AiDevice::setCfg_AutoZeroMode(AutoZeroMode mode)
 {
@@ -715,6 +727,24 @@ SensorConnectionType AiDevice::getCfg_SensorConnectionType(int channel) const
 }
 
 void AiDevice::getCfg_ChanCoefsStr(int channel, char* coefsStr, unsigned int* len) const
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+
+void  AiDevice::setCfg_ChanDataRate(int channel, double rate)
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+double  AiDevice::getCfg_ChanDataRate(int channel) const
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+
+void  AiDevice::setCfg_ChanOpenTcDetectionMode(int channel, OtdMode mode)
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+OtdMode  AiDevice::getCfg_ChanOpenTcDetectionMode(int channel) const
 {
 	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
 }

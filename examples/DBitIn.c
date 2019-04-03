@@ -137,6 +137,7 @@ int main(void)
 	{
 		resetCursor();
 		printf("Hit 'Enter' to terminate the process\n\n");
+		printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 
 		// read each of the bits from the first port
 		for (bitNumber = 0; bitNumber < bitsPerPort; bitNumber++)

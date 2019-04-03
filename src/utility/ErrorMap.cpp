@@ -101,6 +101,16 @@ ErrorMap::ErrorMap()
 	mErrMap.insert(std::pair<int, std::string>(ERR_OPEN_CONNECTION, "Temperature input has open connection"));  // 85
 	mErrMap.insert(std::pair<int, std::string>(ERR_DEV_NOT_READY, "Device is not ready to send data"));  // 86
 	mErrMap.insert(std::pair<int, std::string>(ERR_PACER_OVERRUN, "Pacer overrun, external clock rate too fast"));  // 87
+	mErrMap.insert(std::pair<int, std::string>(ERR_BAD_TRIG_CHANNEL, "Invalid trigger channel specified"));  // 88
+	mErrMap.insert(std::pair<int, std::string>(ERR_BAD_TRIG_LEVEL, "Invalid trigger level specified"));  // 89
+	mErrMap.insert(std::pair<int, std::string>(ERR_BAD_CHAN_ORDER, "Invalid channel order"));  // 90
+	mErrMap.insert(std::pair<int, std::string>(ERR_TEMP_OUT_OF_RANGE, "Temperature input is out of range"));  // 91
+	mErrMap.insert(std::pair<int, std::string>(ERR_TRIG_THRESHOLD_OUT_OF_RANGE, "Trigger threshold is out of range"));  // 92
+	mErrMap.insert(std::pair<int, std::string>(ERR_INCOMPATIBLE_FIRMWARE, "Incompatible firmware version, firmware update required"));  // 93
+
+
+
+
 }
 
 std::string ErrorMap::getErrorMsg(int errNum)

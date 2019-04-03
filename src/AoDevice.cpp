@@ -59,8 +59,8 @@ void AoDevice::setTrigger(TriggerType type, int trigChan,  double level, double 
 
 		mTrigCfg.type = type;
 		mTrigCfg.trigChan = trigChan;
-		mTrigCfg.level = round(level);
-		mTrigCfg.variance = round(variance);
+		mTrigCfg.level = level;
+		mTrigCfg.variance = variance;
 		mTrigCfg.retrigCount = retriggerCount;
 	}
 	else

@@ -114,9 +114,9 @@ int main(void)
 		cursorUp();
 		clearEOL();
 		resetCursor();
-
+		printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 		printf ("Enter a value between %f and %f volts (or non-numeric character to exit):  ", min, max);
-		ret = scanf ("%s", dataStr);
+		ret = scanf ("%63s", dataStr);
 		strtod(dataStr, &p);
 		if (*p != '\0')
 			break;

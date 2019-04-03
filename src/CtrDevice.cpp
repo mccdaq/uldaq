@@ -15,12 +15,16 @@ namespace ul
 
 CtrDevice::CtrDevice(const DaqDevice& daqDevice) : IoDevice(daqDevice), UlCtrDevice()
 {
-
+	mCtrConfig = new CtrConfig(*this);
 }
 
 CtrDevice::~CtrDevice()
 {
-
+	if(mCtrConfig != NULL)
+	{
+		delete mCtrConfig;
+		mCtrConfig = NULL;
+	}
 }
 
 unsigned long long CtrDevice::cIn(int ctrNum)
@@ -255,6 +259,9 @@ void CtrDevice::check_CConfigScan_Args(int ctrNum, CounterMeasurementType measur
 	if(!(mCtrInfo.getCtrMeasurementTypes(ctrNum) & measureType))
 		throw UlException(ERR_BAD_CTR_MEASURE_TYPE);
 
+	if((measureMode != CMM_DEFAULT) && (~mCtrInfo.getCtrMeasurementModes(measureType) & measureMode))
+		throw UlException(ERR_BAD_CTR_MEASURE_MODE);
+
 	if((measureMode != CMM_DEFAULT) && !(mCtrInfo.getCtrMeasurementModes(measureType) & measureMode))
 		throw UlException(ERR_BAD_CTR_MEASURE_MODE);
 
@@ -306,6 +313,17 @@ void CtrDevice::check_CtrSetTrigger_Args(TriggerType trigType, int trigChan,  do
 	}
 	else
 		throw UlException(ERR_BAD_DEV_TYPE);
+}
+
+//////////////////////          Configuration functions          /////////////////////////////////
+
+void CtrDevice::setCfg_CtrReg(int ctrNum, long long regVal)
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+long long CtrDevice::getCfg_CtrReg(int ctrNum) const
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
 }
 
 

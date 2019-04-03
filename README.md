@@ -10,7 +10,7 @@ The **uldaq** package contains programming libraries and components for developi
 
 ### Prerequisites:
 ---------------
-Building the **uldaq** package requires C/C++ compilers, make tool, and the development package for libusb. The following describes how these prerequisites can be installed on different Linux distributions.
+Building the **uldaq** package requires C/C++ compilers, make tool, and the development package for libusb. The following describes how these prerequisites can be installed on different Linux distributions and macOS.
   
   - Debian-based Linux distributions such as Ubuntu, Raspbian
   
@@ -51,21 +51,21 @@ Building the **uldaq** package requires C/C++ compilers, make tool, and the deve
 
 ```
   Linux
-     $ wget https://github.com/mccdaq/uldaq/releases/download/v1.1.0/libuldaq-1.1.0.tar.bz2
+     $ wget https://github.com/mccdaq/uldaq/releases/download/v1.1.1/libuldaq-1.1.1.tar.bz2
 
   macOS
-     $ curl -L -O https://github.com/mccdaq/uldaq/releases/download/v1.1.0/libuldaq-1.1.0.tar.bz2
+     $ curl -L -O https://github.com/mccdaq/uldaq/releases/download/v1.1.1/libuldaq-1.1.1.tar.bz2
 ``` 
 2. Extract the tar file:
  
 ```
-  $ tar -xvjf libuldaq-1.1.0.tar.bz2
+  $ tar -xvjf libuldaq-1.1.1.tar.bz2
 ```
   
 3. Run the following commands to build and install the library:
 
 ```
-  $ cd libuldaq-1.1.0
+  $ cd libuldaq-1.1.1
   $ ./configure && make
   $ sudo make install
 ```
@@ -131,6 +131,16 @@ int main(void)
 	return 0;
 }
 ```
+
+### Uninstall Instructions
+---------------------
+
+Run the following command to uninstall the library
+
+``` sh
+  $ sudo make uninstall
+``` 
+
 ### Support/Feedback
 The **uldaq** package is supported by MCC. For support for uldaq, contact technical support through [support page](https://www.mccdaq.com/support/support_form.aspx). Please include detailed steps on how to reproduce the problem in your request.
 

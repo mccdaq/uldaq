@@ -103,6 +103,15 @@ void ConvertRangeToString(Range range, char* rangeStr)
 	case(BIPPT005VOLTS):
 		strcpy(rangeStr, "BIPPT005VOLTS");
 		break;
+	case(BIP3VOLTS):
+		strcpy(rangeStr, "BIP3VOLTS");
+		break;
+	case(BIPPT312VOLTS):
+		strcpy(rangeStr, "BIPPT312VOLTS");
+		break;
+	case(BIPPT156VOLTS):
+		strcpy(rangeStr, "BIPPT156VOLTS");
+		break;
 	case(UNI60VOLTS):
 		strcpy(rangeStr, "UNI60VOLTS");
 		break;
@@ -261,6 +270,19 @@ void ConvertRangeToMinMax(Range range, double* min, double* max)
 		*min = -0.005;
 		*max = 0.005;
 		break;
+	case(BIP3VOLTS):
+		*min = -3.0;
+		*max = 3.0;
+		break;
+	case(BIPPT312VOLTS):
+		*min = -0.312;
+		*max = 0.312;
+		break;
+	case(BIPPT156VOLTS):
+		*min = -0.156;
+		*max = 0.156;
+		break;
+
 	case(UNI60VOLTS):
 		*min = 0.0;
 		*max = 60.0;
@@ -630,6 +652,9 @@ void ConvertDaqIChanTypeToString(DaqInChanType daqiChanType, char* daqiChanTypeS
 	case(DAQI_CTR48):
 		strcpy(daqiChanTypeStr, "DAQI_CTR48");
 		break;
+	case(DAQI_DAC):
+		strcpy(daqiChanTypeStr, "DAQI_DAC");
+		break;
 	}
 }
 
@@ -840,18 +865,21 @@ UlError getAiInfoRanges(DaqDeviceHandle daqDeviceHandle, AiInputMode inputMode, 
 		err = ulAIGetInfo(daqDeviceHandle, AI_INFO_NUM_DIFF_RANGES, 0, &numRanges);
 	}
 
-	for (i=0; i<numRanges; i++)
+	if(numRanges <= *numberOfRanges)
 	{
-		if (inputMode == AI_SINGLE_ENDED)
+		for (i=0; i<numRanges; i++)
 		{
-			err = ulAIGetInfo(daqDeviceHandle, AI_INFO_SE_RANGE, i, &rng);
-		}
-		else
-		{
-			err = ulAIGetInfo(daqDeviceHandle, AI_INFO_DIFF_RANGE, i, &rng);
-		}
+			if (inputMode == AI_SINGLE_ENDED)
+			{
+				err = ulAIGetInfo(daqDeviceHandle, AI_INFO_SE_RANGE, i, &rng);
+			}
+			else
+			{
+				err = ulAIGetInfo(daqDeviceHandle, AI_INFO_DIFF_RANGE, i, &rng);
+			}
 
-		ranges[i] = (Range)rng;
+			ranges[i] = (Range)rng;
+		}
 	}
 
 	*numberOfRanges = (int)numRanges;
@@ -933,7 +961,19 @@ UlError getAiInfoHasTempChan(DaqDeviceHandle daqDeviceHandle, int* hasTempChan)
 	return err;
 }
 
-UlError getAiInfoTempChanConfig(DaqDeviceHandle daqDeviceHandle, int chan, char* chanTypeStr, char* sensorStr)
+UlError getAiInfoIepeSupported(DaqDeviceHandle daqDeviceHandle, int* iepeSupported)
+{
+	long long supportsIepe;
+	UlError err = ERR_NO_ERROR;
+
+	err = ulAIGetInfo(daqDeviceHandle, AI_INFO_IEPE_SUPPORTED, 0, &supportsIepe);
+
+	*iepeSupported = (int)supportsIepe;
+
+	return err;
+}
+
+UlError getAiConfigTempChanConfig(DaqDeviceHandle daqDeviceHandle, int chan, char* chanTypeStr, char* sensorStr)
 {
 	UlError err = ERR_NO_ERROR;
 
@@ -1112,7 +1152,11 @@ UlError getCtrInfoSupportedEventCounters(DaqDeviceHandle daqDeviceHandle, int* e
 
 		if (measurementTypes & CMT_COUNT)
 		{
-			*eventCounters++ = i;
+			if(numEvntCtrs < *numberOfEventCounters)
+			{
+				*eventCounters++ = i;
+			}
+
 			numEvntCtrs++;
 		}
 	}
@@ -1141,7 +1185,11 @@ UlError getCtrInfoSupportedEncoderCounters(DaqDeviceHandle daqDeviceHandle, int*
 
 		if (measurementTypes & CMT_ENCODER)
 		{
-			*encoders++ = i;
+			if(numEncCtrs < *numberOfEncoders)
+			{
+				*encoders++ = i;
+			}
+
 			numEncCtrs++;
 		}
 	}

@@ -33,7 +33,7 @@ protected:
 	virtual void loadAdcCoefficients();
 
 	int calcStageSize(int epAddr, double rate, int chanCount, int sampleCount) const;
-	void setTransferMode(ScanOption scanOptions, double rate);
+	virtual void setTransferMode(ScanOption scanOptions, double rate);
 	int getTransferMode() const;
 
 	void setScanEndpointAddr(int addr);
@@ -51,10 +51,12 @@ private:
 	void virtual processScanData16(libusb_transfer* transfer);
 	void virtual processScanData32(libusb_transfer* transfer);
 
+protected:
+	int mTransferMode;
+
 private:
 	const UsbDaqDevice&  mUsbDevice;
 	int mScanEndpointAddr;
-	int mTransferMode;
 	unsigned char mScanStopCmd;
 };
 

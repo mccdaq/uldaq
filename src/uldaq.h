@@ -356,7 +356,26 @@ typedef enum
 	ERR_DEV_NOT_READY				= 86,
 
 	/** Pacer overrun, external clock rate too fast. */
-	ERR_PACER_OVERRUN				= 87
+	ERR_PACER_OVERRUN				= 87,
+
+	/** Invalid trigger channel specified */
+	ERR_BAD_TRIG_CHANNEL			= 88,
+
+	/** Invalid trigger level specified */
+	ERR_BAD_TRIG_LEVEL				= 89,
+
+	/** Invalid channel order */
+	ERR_BAD_CHAN_ORDER				= 90,
+
+	/** Temperature input is out of range */
+	ERR_TEMP_OUT_OF_RANGE			= 91,
+
+	/** Trigger threshold is out of range */
+	ERR_TRIG_THRESHOLD_OUT_OF_RANGE	= 92,
+
+	/** Incompatible firmware version, firmware update required */
+	ERR_INCOMPATIBLE_FIRMWARE 		= 93
+
 
 } UlError;
 
@@ -512,6 +531,18 @@ typedef enum
 	/** -.005 to +.005 Volts */
 	BIPPT005VOLTS   = 21,
 
+	/** -3.0 to +3.0 Volts */
+	BIP3VOLTS       = 22,
+
+	/** -.312 to +.312 Volts */
+	BIPPT312VOLTS   = 23,
+
+	/** -.156 to +.156 Volts */
+	BIPPT156VOLTS   = 24,
+
+
+
+
 	/** 0 to +60 Volts */
 	UNI60VOLTS		= 1001,
 
@@ -641,7 +672,6 @@ typedef enum
 }AdcTimingMode;
 #endif /* doxy_skip */
 
-#ifndef doxy_skip
 /** IEPE modes */
 typedef enum
 {
@@ -651,9 +681,7 @@ typedef enum
 	/** IEPE excitation current is enabled. */
 	IEPE_ENABLED = 2
 }IepeMode;
-#endif /* doxy_skip */
 
-#ifndef doxy_skip
 /** Coupling modes */
 typedef enum
 {
@@ -663,7 +691,16 @@ typedef enum
 	/** AC coupling */
 	CM_AC = 2
 }CouplingMode;
-#endif /* doxy_skip */
+
+/** Open Thermocouple detection modes */
+typedef enum
+{
+	/** Open Thermocouple detection modes is disabled. */
+	OTD_DISABLED = 1,
+
+	/** Open Thermocouple detection modes is enabled. */
+	OTD_ENABLED = 2
+}OtdMode;
 
 /** Bitmask indicating supported queue types. Returned to the \p infoValue argument by ulAIGetInfo() using #AiInfoItem ::AI_INFO_QUEUE_TYPES. */
 typedef enum
@@ -928,15 +965,13 @@ typedef enum
 	 * specified by the \p level argument value. */
 	GATE_BELOW = 1 << 11,
 
-	#ifndef doxy_skip
 	/** Scanning is enabled as long as the external analog trigger is inside
-	 * the region defined by \p lowThreshold and \p highThreshold. */
+	 * the region defined by the \p level argument value and the \p variance argument value. */
 	GATE_IN_WINDOW = 1 << 12,
 
 	/** Scanning is enabled as long as the external analog trigger is outside
-	 * the region defined by \p lowThreshold and \p highThreshold. */
+	 * the region defined by the \p level argument value and the \p variance argument value. */
 	GATE_OUT_WINDOW = 1 << 13,
-	#endif /* doxy_skip */
 
 	/** A digital pattern trigger. The trigger condition is met when the digital pattern
 	 * at the trigger input is equal to the pattern specified by the \p level argument value
@@ -1036,7 +1071,14 @@ typedef enum
 	SO_BURSTMODE 	= 1 << 7,
 
 	/** Enables or disables the internal pacer output on a DAQ device. */
-	SO_PACEROUT		= 1 << 8
+	SO_PACEROUT		= 1 << 8,
+
+	/** Changes the internal clock's timebase to an external timebase source. This can allow synchronization of multiple DAQ devices. */
+	SO_EXTTIMEBASE	= 1 << 9,
+
+	/** Enables or disables the internal timebase output on a DAQ device. */
+	SO_TIMEBASEOUT	= 1 << 10
+
 }ScanOption;
 
 /** Use as the \p flags argument value for the ulAInScan() function to set properties of data returned. */
@@ -1327,7 +1369,17 @@ typedef enum
 	CMM_ENCODER_RANGE_LIMIT_ON	=		1 << 24,
 
 	/** Sets the encoder Z signal as the active edge for the ::CMT_ENCODER measurement type. */
-	CMM_ENCODER_Z_ACTIVE_EDGE	=		1 << 25
+	CMM_ENCODER_Z_ACTIVE_EDGE	=		1 << 25,
+
+	/** Configures the counter to be latched by the signal on the index pin for the ::CMT_COUNT measurement type. */
+	CMM_LATCH_ON_INDEX	= 				1 << 26,
+
+	/** Configures the counter to increment when the phase B pin is high, and decrement when the phase B pin is low
+	 * for the ::CMT_COUNT measurement type. */
+	CMM_PHB_CONTROLS_DIR 	= 			1 << 27,
+
+	/** Configures the counter to decrement by the signal on the mapped channel for the ::CMT_COUNT measurement type. */
+	CMM_DECREMENT_ON = 					1 << 28
 }CounterMeasurementMode;
 
 /** Use as the value for the \p debounceTime argument for ulCConfigScan() when #CounterDebounceMode is not ::CDM_NONE. */
@@ -1506,8 +1558,10 @@ typedef enum
 	DAQI_CTR32			= 1 << 4,
 
 	/** 48-bit counter channel. */
-	DAQI_CTR48			= 1 << 5
+	DAQI_CTR48			= 1 << 5,
 	/** DAQI_CTR64 */
+
+	DAQI_DAC			= 1 << 7
 }DaqInChanType;
 
 /** \brief A structure that defines an input channel and its properties. Used with ulDaqInScan().
@@ -1622,7 +1676,10 @@ typedef enum
 	MR_USER = 		1 << 1,
 
 	/** Specifies the data settings region information returned to the MemDescriptor struct */
-	MR_SETTINGS = 	1 << 2
+	MR_SETTINGS = 	1 << 2,
+
+	/** Specifies the first reserved region information returned to the MemDescriptor struct */
+	MR_RESERVED0 = 	1 << 3
 }MemRegion;
 
 /** A bitmask used with ulMemGetInfo() as one of the field types returned in the MemDescriptor struct.
@@ -1765,7 +1822,10 @@ typedef enum
 	AI_INFO_QUEUE_LIMITS = 15,
 
 	/** Returns the FIFO size in bytes to the \p infoValue argument. Index is ignored. */
-	AI_INFO_FIFO_SIZE = 16
+	AI_INFO_FIFO_SIZE = 16,
+
+	/** Returns a zero or non-zero value to the \p infoValue argument. If non-zero, IEPE mode is supported. Index is ignored. */
+	AI_INFO_IEPE_SUPPORTED = 17
 
 }AiInfoItem;
 
@@ -1801,47 +1861,50 @@ typedef enum
 #ifndef doxy_skip
 	/** The temperature unit of the specified analog input scan channel. Set with #TempUnit. */
 	AI_CFG_SCAN_CHAN_TEMP_UNIT = 3,
-
+#endif /* doxy_skip */
 	/** The analog input scan temperature unit. Set with #TempUnit. */
 	AI_CFG_SCAN_TEMP_UNIT = 4,
 	
+#ifndef doxy_skip
 	/** The timing mode. Set with #AdcTimingMode. */
 	AI_CFG_ADC_TIMING_MODE = 5,
-#endif /* doxy_skip */
 
-#ifndef doxy_skip
 	/** The auto zero mode. Set with #AutoZeroMode. */
 	AI_CFG_AUTO_ZERO_MODE = 6,
 
 	/** The date when the device was calibrated last in UNIX Epoch time. */
 	AI_CFG_CAL_DATE = 7,
+#endif /* doxy_skip */
 
 	/** The IEPE current excitation mode for the specified channel. Set with #IepeMode. */
 	AI_CFG_CHAN_IEPE_MODE = 8,
 
 	/** The coupling mode for the specified device. Set with #CouplingMode. */
 	AI_CFG_CHAN_COUPLING_MODE = 9,
-#endif /* doxy_skip */
 
 	/** The connection type of the sensor connected to the specified channel. */
-	AI_CFG_CHAN_SENSOR_CONNECTION_TYPE = 10
+	AI_CFG_CHAN_SENSOR_CONNECTION_TYPE = 10,
+
+	/** The open thermocouple detection mode for the specified channel. Set with #OtdMode. */
+	AI_CFG_CHAN_OTD_MODE = 11
 }AiConfigItem;
 
-#ifndef doxy_skip
 /** Use with ulAISetConfigDbl() and ulAIGetConfigDbl() to configure the AI subsystem. */
 typedef enum
 {
-	/** The slope of the specified channel. */
+	/** The custom slope of the specified channel. */
 	AI_CFG_CHAN_SLOPE = 1000,
 
-	/** The offset of the specified channel. */
+	/** The custom offset of the specified channel. */
 	AI_CFG_CHAN_OFFSET = 1001,
 
 	/** The sensitivity of the sensor connected to the specified channel. */
-	AI_CFG_CHAN_SENSOR_SENSITIVITY = 1002
+	AI_CFG_CHAN_SENSOR_SENSITIVITY = 1002,
+
+	/** The data rate of the specified channel. */
+	AI_CFG_CHAN_DATA_RATE = 1003
 }AiConfigItemDbl;
 
-#endif /* doxy_skip */
 
 typedef enum
 {
@@ -2043,6 +2106,13 @@ typedef enum
 	/** Returns the maximum throughput in samples per second to the \p infoValue argument. Index is ignored. */
 	CTR_INFO_MAX_THROUGHPUT = 1002
 }CtrInfoItemDbl;
+
+/** Use with ulCtrSetConfig() and ulCtrGetConfig() to configure the Ctr subsystem. */
+typedef enum
+{
+	/** Returns or writes a bitmask indicating the configuration of one or more counters. */
+	CTR_CFG_REG = 1
+}CtrConfigItem;
 
 /** Use with ulTmrGetInfo() to obtain information about the timer subsystem for the specified device as an \p infoItem argument value. */
 typedef enum
@@ -3072,7 +3142,6 @@ UlError ulAIGetInfo(DaqDeviceHandle daqDeviceHandle, AiInfoItem infoItem, unsign
  */
 UlError ulAIGetInfoDbl(DaqDeviceHandle daqDeviceHandle, AiInfoItemDbl infoItem, unsigned int index, double* infoValue);
 
-#ifndef doxy_skip
 /**
  * \ingroup AnalogInput
  * Use with #AiConfigItem to set configuration options at runtime.
@@ -3116,8 +3185,6 @@ UlError ulAISetConfigDbl(DaqDeviceHandle daqDeviceHandle, AiConfigItemDbl config
  * @return The UL error code.
  */
 UlError ulAIGetConfigDbl(DaqDeviceHandle daqDeviceHandle, AiConfigItemDbl configItem, unsigned int index, double* configValue);
-
-#endif /* doxy_skip */
 
 /**
  * \ingroup AnalogInput
@@ -3241,6 +3308,28 @@ UlError ulCtrGetInfo(DaqDeviceHandle daqDeviceHandle, CtrInfoItem infoItem, unsi
  * @return The UL error code.
  */
 UlError ulCtrGetInfoDbl(DaqDeviceHandle daqDeviceHandle, CtrInfoItemDbl infoItem, unsigned int index, double* infoValue);
+
+/**
+ * \ingroup CounterInput
+ * Use with #CtrConfigItem to retrieve configuration options set for a device.
+ * @param daqDeviceHandle the handle to the DAQ device
+ * @param configItem the configuration item to retrieve
+ * @param index either ignored or an index into the \p configValue
+ * @param configValue the specified configuration value is returned to this variable
+ * @return The UL error code.
+ */
+UlError ulCtrGetConfig(DaqDeviceHandle daqDeviceHandle, CtrConfigItem configItem, unsigned int index, long long* configValue);
+
+/**
+ * \ingroup CounterInput
+ * Use with #CtrConfigItem to set configuration options at runtime.
+ * @param daqDeviceHandle the handle to the DAQ device
+ * @param configItem the configuration item to set
+ * @param index either ignored or an index into the \p configValue
+ * @param configValue the value to set the specified configuration item to
+ * @return The UL error code.
+ */
+UlError ulCtrSetConfig(DaqDeviceHandle daqDeviceHandle, CtrConfigItem configItem, unsigned int index, long long configValue);
 
 /**
  * \ingroup TimerOutput
@@ -3399,6 +3488,8 @@ available. Demonstrates the use of ulEnableEvent(), ulAInScanWait(), and ulAInSc
 use of ulAInLoadQueue(), ulAInScan(), and ulAInScanStop().</td></tr>
 <tr><td>AInScanWithTrigger</td><td>Scans a range of A/D channels when a trigger is received, and stores the data in an array. This
  example shows how to obtain and configure trigger options. Demonstrates the use of ulAInScan() and ulAInScanStop().</td></tr>
+<tr><td>AInScanIepe</td><td>Enables IEPE mode for a range of A/D input channels, and scans the specified A/D input channels. Demonstrates the use of ulAInScan()
+and ulAInScanStop().</td></tr>
 <tr><td>AOut</td><td>Writes a specified value to a D/A output channel. Demonstrates the use of ulAOut().</td></tr>
 <tr><td>AOutScan</td><td>Performs a D/A scan. Data can be viewed with an oscilloscope or meter.
 Demonstrates the use of ulAOutScan() and ulAOutScanStop().</td></tr>

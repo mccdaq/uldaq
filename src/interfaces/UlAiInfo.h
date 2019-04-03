@@ -46,6 +46,9 @@ public:
 	virtual long long getTInFlags() const = 0;
 	virtual long long getTInArrayFlags() const = 0;
 	virtual int getNumCjcChans() const = 0;
+
+	virtual void supportsIepe(bool val) = 0;
+	virtual bool supportsIepe() const = 0;
 };
 
 } /* namespace ul */

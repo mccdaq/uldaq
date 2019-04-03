@@ -49,6 +49,8 @@ Usb1208hs::Usb1208hs(const DaqDeviceDescriptor& daqDeviceDescriptor, std::string
 
 	addMemRegion(MR_CAL, 0x4000, 0x1000, MA_READ);
 	addMemRegion(MR_USER, 0x5000, 0x3000, MA_READ | MA_WRITE);
+
+	setMinRawFwVersion(0x107); // minimum supported firmware version is 1.07
 }
 
 Usb1208hs::~Usb1208hs()

@@ -173,23 +173,26 @@ int main(void)
 			// show the termination message
 			resetCursor();
 			printf("Hit 'Enter' to terminate the process\n\n");
-
+			printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 			printf("actual scan rate = %f\n\n", rate);
 
 			index = transferStatus.currentIndex;
-			printf("currentScanCount =  %10llu \n", transferStatus.currentScanCount);
-			printf("currentTotalCount = %10llu \n", transferStatus.currentTotalCount);
-			printf("currentIndex =      %10d \n\n", index);
+			printf("currentScanCount =  %-10llu \n", transferStatus.currentScanCount);
+			printf("currentTotalCount = %-10llu \n", transferStatus.currentTotalCount);
+			printf("currentIndex =      %-10d \n\n", index);
 
-			// display the data
-			for (i = 0; i < chanCount; i++)
+			if(index >= 0)
 			{
-				printf("chan %d = %10.6f\n",
-						i + lowChan,
-						buffer[index + i]);
-			}
+				// display the data
+				for (i = 0; i < chanCount; i++)
+				{
+					printf("chan %d = %+-10.6f\n",
+							i + lowChan,
+							buffer[index + i]);
+				}
 
-			usleep(100000);
+				usleep(100000);
+			}
 		}
 
 		// stop the acquisition if it is still running

@@ -45,12 +45,19 @@ public:
 		USB_TC_AI = 0xbb,
 		USB_TEMP_AI = 0xbc,
 
-		USB_1208FS_PLUS = 0xe8,
-		USB_1408FS_PLUS = 0xe9,
-		USB_1608FS_PLUS = 0xea,
+
 		USB_1208HS = 0xc4,
 		USB_1208HS_2AO = 0xc5,
 		USB_1208HS_4AO = 0xc6,
+		USB_QUAD08 = 0xca,
+		USB_2416 = 0xd0,
+		USB_2416_4AO = 0xd1,
+		USB_1208FS_PLUS = 0xe8,
+		USB_1408FS_PLUS = 0xe9,
+		USB_1608FS_PLUS = 0xea,
+		USB_2001_TC = 0xf9,
+		USB_2408 = 0xfd,
+		USB_2408_2AO = 0xfe,
 		USB_1608G = 0x110,
 		USB_1608GX = 0x111,
 		USB_1608GX_2AO = 0x112,
@@ -58,6 +65,8 @@ public:
 		USB_2637 = 0x119,
 		USB_2623 = 0x120,
 		USB_2627 = 0x121,
+
+		USB_2020 = 0x11c,
 
 		USB_201 = 0x113,
 		USB_202 = 0x12b,
@@ -70,7 +79,18 @@ public:
 		USB_1608GX_2 = 0x135,
 		USB_1608GX_2AO_2 = 0x136,
 		USB_1808 = 0x13d,
-		USB_1808X = 0x13e
+		USB_1808X = 0x13e,
+
+		PDAQ3KLD = 0x0470,
+		DT9837_ABC_LD = 0x9839,
+		DT9837_ABC = 0x3998,
+
+		// the DT9837A DT9837B and DT9837C devices all have the same PID added the following IDs to be able identify
+		// products
+
+		UL_DT9837_A = 0x3998A,
+		UL_DT9837_B = 0x3998B,
+		UL_DT9837_C = 0x3998C
 	};
 };
 

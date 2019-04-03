@@ -145,10 +145,11 @@ int main(void)
 		// reset the cursor to the top of the display and
 		// show the termination message
 		resetCursor();
+		printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 
 		clearEOL();
 		printf ("Enter a value  between 0 and %d (or non-numeric character to exit):  " , maxPortValue);
-		ret = scanf ("%s", dataStr);
+		ret = scanf ("%63s", dataStr);
 		strtod(dataStr, &p);
 		if (*p != '\0')
 			break;

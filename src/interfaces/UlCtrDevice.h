@@ -9,6 +9,7 @@
 
 #include "../uldaq.h"
 #include "UlCtrInfo.h"
+#include "UlCtrConfig.h"
 
 namespace ul
 {
@@ -19,6 +20,7 @@ public:
 	virtual ~UlCtrDevice() {};
 
 	virtual const UlCtrInfo& getCtrInfo() = 0;
+	virtual UlCtrConfig& getCtrConfig() = 0;
 
 	virtual unsigned long long cIn(int ctrNum) = 0;
 	virtual void cLoad(int ctrNum, CounterRegisterType regType, unsigned long long loadValue) = 0;

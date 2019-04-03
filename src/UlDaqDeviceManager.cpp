@@ -29,6 +29,11 @@
 #include "./hid/UsbTemp.h"
 #include "./hid/UsbTempAi.h"
 
+#include "./usb/fw/Fx2FwLoader.h"
+#include "./usb/fw/DtFx2FwLoader.h"
+#include "./usb/UsbQuad08.h"
+#include "./usb/Usb9837x.h"
+
 #include <iostream>
 #include <cstring>
 #include <vector>
@@ -52,6 +57,9 @@ std::vector<DaqDeviceDescriptor> UlDaqDeviceManager::getDaqDeviceInventory(DaqDe
 	FnLog log("UlDaqDeviceManager::getDaqDeviceInventory");
 
 	std::vector<DaqDeviceDescriptor> daqDeviceList;
+
+	Fx2FwLoader::prepareHardware();
+	DtFx2FwLoader::prepareHardware();
 
 	std::vector<DaqDeviceDescriptor> usbDaqDeviceList = UsbDaqDevice::findDaqDevices();
 
@@ -177,6 +185,17 @@ UlDaqDevice& UlDaqDeviceManager::createDaqDevice(const DaqDeviceDescriptor& daqD
 		case DaqDeviceId::USB_TC_AI:
 			daqDev = new UsbTempAi(daqDevDescriptor);
 		break;
+
+		case DaqDeviceId::USB_QUAD08:
+			daqDev = new UsbQuad08(daqDevDescriptor);
+		break;
+
+		case DaqDeviceId::UL_DT9837_A:
+		case DaqDeviceId::UL_DT9837_B:
+		case DaqDeviceId::UL_DT9837_C:
+			daqDev = new Usb9837x(daqDevDescriptor);
+		break;
+
 		}
 
 		if(daqDev)

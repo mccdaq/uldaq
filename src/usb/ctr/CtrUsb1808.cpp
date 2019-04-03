@@ -135,7 +135,9 @@ double CtrUsb1808::cInScan(int lowCtrNum, int highCtrNum, int samplesPerCounter,
 			chanDescriptors[i].type = DAQI_CTR32;
 		}
 
-		actualRate =  daqIDev->daqInScan(FT_CTR, chanDescriptors, numCtrs, samplesPerCounter, rate, options, (DaqInScanFlag) flags, data);
+		DaqInScanFlag daqInScanflags = (DaqInScanFlag) (flags & NOCLEAR); // only pass no clear flag to daqinscan if it is set
+
+		actualRate =  daqIDev->daqInScan(FT_CTR, chanDescriptors, numCtrs, samplesPerCounter, rate, options, daqInScanflags, data);
 
 		delete [] chanDescriptors;
 	}

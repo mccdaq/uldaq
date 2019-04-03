@@ -23,8 +23,8 @@ public:
 	DaqDeviceManager();
 	virtual ~DaqDeviceManager();
 
-	static bool isDaqDeviceSupported(int productId);
-	static std::string getDeviceName(int productId);
+	static bool isDaqDeviceSupported(int productId, int vendorId = 0);
+	static std::string getDeviceName(int productId, int vendorId = 0);
 
 	static void addToCreatedList(DaqDevice* daqDevice);
 	static void removeFromCreatedList(long long deviceNumber);
@@ -38,6 +38,7 @@ private:
 
 private:
 	static std::map<int, std::string> mSupportedDevices;
+	static std::map<int, std::string> mSupportedDtDevices;
 	static std::map<long long, DaqDevice*> mCreatedDevicesMap;
 };
 
