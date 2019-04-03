@@ -133,8 +133,6 @@ int main(void)
 ```
 
 ### Uninstall Instructions
----------------------
-
 Run the following command to uninstall the library
 
 ``` sh
