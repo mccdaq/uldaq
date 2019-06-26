@@ -1,5 +1,5 @@
 prefix=@prefix@
-exec_prefix=@bindir@
+exec_prefix=@prefix@
 includedir=@includedir@
 libdir=@libdir@
 
