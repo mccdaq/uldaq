@@ -55,6 +55,8 @@ DaqIUsbCtrx::~DaqIUsbCtrx()
 
 double DaqIUsbCtrx::daqInScan(FunctionType functionType, DaqInChanDescriptor chanDescriptors[], int numChans, int samplesPerChan, double rate, ScanOption options, DaqInScanFlag flags, void* data)
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_DaqInScan_Args(chanDescriptors, numChans, samplesPerChan, rate, options, flags, data);
 
 	UlLock trigCmdLock(daqDev().getTriggerCmdMutex());
@@ -289,8 +291,10 @@ void DaqIUsbCtrx::loadScanConfigs(DaqInChanDescriptor chanDescriptors[], int num
 
 		for(int i = 0; i < fillZeroBankCount; i++)
 		{
-			scanQueue[sqIdx].fillZeros = 1;
+			scanQueue[sqIdx].fillZeros = 1; // this bit is ignored in the FPGA, the following two lines imitate fill zero in FPGA
+
 			scanQueue[sqIdx].isDigitalPort = 1;
+			scanQueue[sqIdx].chanNum = 1;
 			sqIdx++;
 		}
 	}

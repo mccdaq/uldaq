@@ -154,7 +154,7 @@ int main(void)
 	// allocate a buffer for the output data
 	buffer = (double*) malloc(numberOfScanChannels * samplesPerChannel * sizeof(double));
 
-	if(buffer == 0)
+	if(buffer == NULL)
 	{
 		printf("\nOut of memory, unable to create scan buffer\n");
 		goto end;

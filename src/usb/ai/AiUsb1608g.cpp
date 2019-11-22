@@ -95,6 +95,8 @@ void AiUsb1608g::initialize()
 
 double AiUsb1608g::aIn(int channel, AiInputMode inputMode, Range range, AInFlag flags)
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AIn_Args(channel, inputMode, range, flags);
 
 	double data = 0.0;
@@ -115,6 +117,8 @@ double AiUsb1608g::aIn(int channel, AiInputMode inputMode, Range range, AInFlag 
 
 double AiUsb1608g::aInScan(int lowChan, int highChan, AiInputMode inputMode, Range range, int samplesPerChan, double rate, ScanOption options, AInScanFlag flags, double data[])
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AInScan_Args(lowChan, highChan, inputMode, range, samplesPerChan, rate, options, flags, data);
 
 	UlLock trigCmdLock(daqDev().getTriggerCmdMutex());
@@ -413,7 +417,7 @@ void AiUsb1608g::readCalDate()
 
 			time_t cal_date_sec = mktime(&time); // seconds since unix epoch
 
-			if(cal_date_sec != -1) // mktime returns  -1 if cal date is invalid
+			if(cal_date_sec > 0) // mktime returns  -1 if cal date is invalid
 				mCalDate = cal_date_sec;
 
 			// convert seconds to string

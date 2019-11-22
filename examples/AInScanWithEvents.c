@@ -57,7 +57,7 @@ int main(void)
 	AiInputMode inputMode;
 	Range range;
 	int samplesPerChannel = 10000;
-	double rate = 1000;
+	double rate = 100;
 	AInScanFlag flags = AINSCAN_FF_DEFAULT;
 	DaqEventType eventTypes = (DaqEventType) (DE_ON_DATA_AVAILABLE | DE_ON_INPUT_SCAN_ERROR | DE_ON_END_OF_INPUT_SCAN);
 
@@ -153,7 +153,7 @@ int main(void)
 	bufferSize = chanCount * samplesPerChannel;
 	buffer = (double*) malloc(bufferSize * sizeof(double));
 
-	if(buffer == 0)
+	if(buffer == NULL)
 	{
 		printf("\nOut of memory, unable to create scan buffer\n");
 		goto end;

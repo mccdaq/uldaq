@@ -1,8 +1,7 @@
 /*
  * AiChanInfo.h
  *
- *  Created on: Sep 25, 2015
- *      Author: root
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef AICHANINFO_H_

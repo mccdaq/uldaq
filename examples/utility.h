@@ -946,17 +946,26 @@ UlError getAiInfoQueueTypes(DaqDeviceHandle daqDeviceHandle, int* queueTypes)
 	return err;
 }
 
-UlError getAiInfoHasTempChan(DaqDeviceHandle daqDeviceHandle, int* hasTempChan)
+UlError getAiInfoHasTempChan(DaqDeviceHandle daqDeviceHandle, int* hasTempChan, int* numberOfChannels)
 {
 	long long chanTypeMask = 0;
+	long long tempChanCount = 0;
 	UlError err = ERR_NO_ERROR;
+
+	*numberOfChannels = 0;
 
 	err = ulAIGetInfo(daqDeviceHandle, AI_INFO_CHAN_TYPES, 0, &chanTypeMask);
 
-	if(chanTypeMask & (AI_TC  | AI_RTD 	| AI_THERMISTOR | AI_SEMICONDUCTOR))
+	if(chanTypeMask & (AI_TC  | AI_RTD | AI_THERMISTOR | AI_SEMICONDUCTOR))
 		*hasTempChan = 1;
 	else
 		*hasTempChan = 0;
+
+	if(*hasTempChan)
+	{
+		err = ulAIGetInfo(daqDeviceHandle, AI_INFO_NUM_CHANS_BY_TYPE, AI_TC, &tempChanCount);
+		*numberOfChannels = tempChanCount;
+	}	
 
 	return err;
 }
@@ -976,6 +985,7 @@ UlError getAiInfoIepeSupported(DaqDeviceHandle daqDeviceHandle, int* iepeSupport
 UlError getAiConfigTempChanConfig(DaqDeviceHandle daqDeviceHandle, int chan, char* chanTypeStr, char* sensorStr)
 {
 	UlError err = ERR_NO_ERROR;
+	long long chanTypeMask = 0;
 
 	long long chanType, cfg;
 	char typeStr[64] = "";
@@ -983,35 +993,53 @@ UlError getAiConfigTempChanConfig(DaqDeviceHandle daqDeviceHandle, int chan, cha
 
 	err = ulAIGetConfig(daqDeviceHandle, AI_CFG_CHAN_TYPE, chan, &chanType);
 
-	if(chanType == AI_TC)
+	if(err == ERR_NO_ERROR)
 	{
-		strcpy(typeStr, "Thermocouple");
+		if(chanType == AI_TC)
+		{
+			strcpy(typeStr, "Thermocouple");
 
-		err = ulAIGetConfig(daqDeviceHandle, AI_CFG_CHAN_TC_TYPE, chan, &cfg);
+			err = ulAIGetConfig(daqDeviceHandle, AI_CFG_CHAN_TC_TYPE, chan, &cfg);
 
-		ConvertTCTypeToString((TcType)cfg, cfgStr);
+			ConvertTCTypeToString((TcType)cfg, cfgStr);
+		}
+		else if(chanType == AI_RTD || chanType == AI_THERMISTOR)
+		{
+			if(chanType == AI_RTD)
+				strcpy(typeStr, "RTD");
+			else
+				strcpy(typeStr, "Thermistor");
+
+			err = ulAIGetConfig(daqDeviceHandle, AI_CFG_CHAN_SENSOR_CONNECTION_TYPE, chan, &cfg);
+
+			ConvertSensorConnectionTypeToString((SensorConnectionType) cfg, cfgStr);
+		}
+		else if(chanType == AI_SEMICONDUCTOR)
+		{
+			strcpy(typeStr, "Semicoductor");
+		}
+		else if(chanType == AI_VOLTAGE)
+		{
+			strcpy(typeStr, "Voltage");
+		}
+		else if(chanType == AI_DISABLED)
+		{
+			strcpy(typeStr, "Disabled");
+		}
 	}
-	else if(chanType == AI_RTD || chanType == AI_THERMISTOR)
+	else if(err == ERR_CONFIG_NOT_SUPPORTED) // channel is not configurable
 	{
-		if(chanType == AI_RTD)
-			strcpy(typeStr, "RTD");
-		else
-			strcpy(typeStr, "Thermistor");
+		err = ulAIGetInfo(daqDeviceHandle, AI_INFO_CHAN_TYPES, 0, &chanTypeMask);
 
-		err = ulAIGetConfig(daqDeviceHandle, AI_CFG_CHAN_SENSOR_CONNECTION_TYPE, chan, &cfg);
+		if(chanTypeMask & AI_TC)
+		{
+			strcpy(typeStr, "Thermocouple");
 
-		ConvertSensorConnectionTypeToString((SensorConnectionType) cfg, cfgStr);
+			err = ulAIGetConfig(daqDeviceHandle, AI_CFG_CHAN_TC_TYPE, chan, &cfg);
+
+			ConvertTCTypeToString((TcType)cfg, cfgStr);
+		}
 	}
-	else if(chanType == AI_SEMICONDUCTOR)
-	{
-		strcpy(typeStr, "Semicoductor");
-	}
-	else if(chanType == AI_VOLTAGE)
-	{
-		strcpy(typeStr, "Voltage");
-	}
-	else if(chanType == AI_DISABLED)
-		strcpy(typeStr, "Disabled");
 
 	strcpy(chanTypeStr, typeStr);
 	strcpy(sensorStr, cfgStr);

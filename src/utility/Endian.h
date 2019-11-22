@@ -1,7 +1,6 @@
 /*
  * Endian.h
  *
- *  Created on: Dec 4, 2015
  *     Author: Measurement Computing Corporation
  */
 
@@ -270,7 +269,7 @@ public:
 
 	#define be_ui16_to_cpu cpu_to_be_ui16
 
-	inline double le_ptr_to_cpu_f64(const unsigned char x[4])
+	inline double le_ptr_to_cpu_f64(const unsigned char x[8])
 	{
 		union
 		{

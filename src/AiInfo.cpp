@@ -1,7 +1,7 @@
 /*
  * AiInfo.cpp
  *
- *      Author: root
+ *      Author: Measurement Computing Corporation
  */
 
 #include <algorithm>

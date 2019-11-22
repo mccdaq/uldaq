@@ -1,8 +1,7 @@
 /*
  * UsbDtDevice.h
  *
- *  Created on: Nov 13, 2018
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef USB_USBDTDEVICE_H_

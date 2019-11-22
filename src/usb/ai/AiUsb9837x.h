@@ -1,8 +1,7 @@
 /*
  * AiUsb9837x.h
  *
- *  Created on: Nov 20, 2018
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef USB_AI_AIUSB9837X_H_

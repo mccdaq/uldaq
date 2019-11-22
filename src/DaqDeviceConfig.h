@@ -20,6 +20,7 @@ public:
 	DaqDeviceConfig(DaqDevice& daqDevice);
 
 	virtual void getVersionStr(DevVersionType verType, char* verStr, unsigned int* maxStrLen);
+	virtual bool hasExp();
 
 private:
 	DaqDevice& mDaqDevice;

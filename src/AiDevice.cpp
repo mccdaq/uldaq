@@ -19,6 +19,7 @@ AiDevice::AiDevice(const DaqDevice& daqDevice) : IoDevice(daqDevice), UlAiDevice
 {
 	mAiConfig = new AiConfig(*this);
 	mCalDate = 0;
+	mFieldCalDate = 0;
 	mCalModeEnabled = false;
 	mScanTempChanSupported = false;
 	mScanTempUnit = TU_CELSIUS;
@@ -229,8 +230,6 @@ void AiDevice::check_AInSetTrigger_Args(TriggerType trigType, int trigChan, doub
 
 		if(retriggerCount > 0 && !(mAiInfo.getScanOptions() & SO_RETRIGGER))
 			throw UlException(ERR_BAD_RETRIG_COUNT);
-
-		//TODO add check for trigChan, lowThreshold and the rest of arguments for USB-2020 and any other devices that support analog trigger
 	}
 	else
 		throw UlException(ERR_BAD_DEV_TYPE);
@@ -687,18 +686,29 @@ double AiDevice::getCfg_ChanOffset(int channel)
 	return mCustomScales[channel].offset;
 }
 
-unsigned long long AiDevice::getCfg_CalDate()
+unsigned long long AiDevice::getCfg_CalDate(int calTableIndex)
 {
 	mDaqDevice.checkConnection();
 
-	return mCalDate;
+	unsigned long long calDate = 0;
+
+	if(calTableIndex == 0)
+	{
+		calDate = mCalDate;
+	}
+	else if(calTableIndex == 1)
+	{
+		calDate = mFieldCalDate;
+	}
+
+	return calDate;
 }
 
-void AiDevice::getCfg_CalDateStr(char* calDate, unsigned int* maxStrLen)
+void AiDevice::getCfg_CalDateStr(int calTableIndex, char* calDate, unsigned int* maxStrLen)
 {
 	mDaqDevice.checkConnection();
 
-	long int calDateSec = mCalDate;
+	long int calDateSec = getCfg_CalDate(calTableIndex);
 
 	// convert seconds to string
 	struct tm *timeinfo;

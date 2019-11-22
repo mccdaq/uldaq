@@ -51,7 +51,7 @@ void AoUsb1608g::readCalDate()
 
 			time_t cal_date_sec = mktime(&time); // seconds since unix epoch
 
-			if(cal_date_sec != -1) // mktime returns  -1 if cal date is invalid
+			if(cal_date_sec > 0) // mktime returns  -1 if cal date is invalid
 				mCalDate = cal_date_sec;
 
 			// convert seconds to string

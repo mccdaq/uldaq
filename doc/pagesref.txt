@@ -1,0 +1,1733 @@
+/** \page hwref Hardware Reference
+ *  
+ * <h2 class="groupheader">Introduction</h2> 
+ * This section is an overview of capabilities for specific devices. In some cases, parameters 
+ * are dependent on other parameter settings. Where that is the case, the more inclusive value will be shown.
+ * For example, if a device has fewer channels in differential mode than in single-ended mode, the single-ended 
+ * value will be shown here. Likewise, if there are different ranges for different modes of operation, all potential 
+ * ranges are shown.
+ *
+ * To determine device capabilities for specific modes of operation, or valid arguments not listed here, use the 
+ * @ref DeviceInfo functions to query the device to determine the subsystems supported, then use the information 
+ * functions for each of the supported subsystems to determine capabilities. Refer to the <a href="mods.html"><b>Modules</b></a> page
+ * for links to each subsystem and supported library functions.
+ *
+ * After a connection to the device is established, you can also use the configuration functions to get and set the 
+ * current configuration of the device.
+ *
+ <h3 class="subsystem" ID="hwlist"><b>Hardware supported by UL for Linux software</b></h3>
+ <table class="hwdoxtable">
+	<tr><td colspan="4"><b>Measurement Computing</b></td></tr>
+	<tr><td><a href="sc1608g.html">SC-1608-USB</a><br><a href="sc1608g.html">SC-1608-2AO-USB</a><br><a href="sc1608g.html">SC-1608X-USB</a>
+	<br><a href="1024ls.html">USB-1024HLS</a><br><a href="1024ls.html">USB-1024LS</a>
+	<br><a href="1208fsplus.html">USB-1208FS-Plus</a><br><a href="1208hs.html">USB-1208HS-2AO</a><br><a href="1208hs.html">USB-1208HS-4AO</a>
+	<br><a href="1208hs.html">USB-1208HS</a><br><a href="1408fsplus.html">USB-1408FS-Plus</a><br><a href="1608fsplus.html">USB-1608FS-Plus</a>
+	<br><a href="1608g.html">USB-1608G</a><br><a href="1608g.html">USB-1608GX</a><br><a href="1608g.html">USB-1608GX-2AO</a>
+	<br><a href="1608hs.html">USB-1608HS</a></td>
+	
+	<td><a href="1608hs.html">USB-1608HS-2AO</a><br><a href="1808.html">USB-1808</a><br><a href="1808.html">USB-1808X</a>
+	<br><a href="2001tc.html">USB-2001-TC</a><br><a href="200.html">USB-201</a><br><a href="200.html">USB-202</a><br><a href="2020.html">USB-2020</a>
+	<br><a href="200.html">USB-204</a><br><a href="200.html">USB-205</a><br><a href="2408.html">USB-2408</a>
+	<br><a href="2408.html">USB-2408-2AO</a><br><a href="2416.html">USB-2416</a><br><a href="2416.html">USB-2416-4AO</a>
+	<br><a href="2600.html">USB-2623</a><br><a href="2600.html">USB-2627</a></td>
+	
+	<td><a href="2600.html">USB-2633</a><br><a href="2600.html">USB-2637</a><br><a href="310x.html">USB-3101</a>
+	<br><a href="310x.html">USB-3102</a><br><a href="310x.html">USB-3103</a><br><a href="310x.html">USB-3104</a>
+	<br><a href="310x.html">USB-3105</a><br><a href="310x.html">USB-3106</a><br><a href="310x.html">USB-3110</a>
+	<br><a href="310x.html">USB-3112</a><br><a href="310x.html">USB-3114</a><br><a href="ctr0x.html">USB-CTR04</a>
+	<br><a href="ctr0x.html">USB-CTR08</a><br><a href="dio24.html">USB-DIO24/37</a><br><a href="dio24.html">USB-DIO24H/37</a></td>
+	
+	<td><a href="dio32hs.html">USB-DIO32HS</a><br><a href="dio96h.html">USB-DIO96H</a><br><a href="dio96h.html">USB-DIO96H/50</a>
+	<br><a href="erb.html">USB-ERB08</a>
+	<br><a href="erb.html">USB-ERB24</a><br><a href="pdiso8.html">USB-PDISO8</a><br><a href="pdiso8.html">USB-PDISO8/40</a>
+	<br><a href="quad08.html">USB-QUAD08</a><br><a href="ssr.html">USB-SSR08</a><br><a href="ssr.html">USB-SSR24</a>
+	<br><a href="tc.html">USB-TC</a><br><a href="tcai.html">USB-TC-AI</a><br><a href="temp.html">USB-TEMP</a>
+	<br><a href="tempai.html">USB-TEMP-AI</a></td></tr>
+	
+	<tr><td colspan="4"><b>Data Translation</b></td></tr>
+	<tr><td rowspan="4"><a href="dt9837.html">DT9837A</a><br><a href="dt9837.html">DT9837B</a>
+	<br><a href="dt9837.html">DT9837C</a></td></tr>
+	</table>	
+ */
+ * 
+<!-- 1808 ==================================================================================================-->
+/* USB-1808 Series */
+/** \page 1808 USB-1808, USB-1808X
+*
+The USB-1808 Series includes the following devices:
+- USB-1808, USB-1808-OEM
+- USB-1808X, USB-1808X-OEM
+
+The USB-1808 Series supports the following UL for Linux capabilities. Unless otherwise indicated, OEM versions 
+support the same capabilities as the equivalent standard versions.
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 7</td></tr>
+<tr><td>Input modes:</td><td>::AI_DIFFERENTIAL, ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td>::BIP10VOLTS, ::BIP5VOLTS, ::UNI10VOLTS, ::UNI5VOLTS</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER</td></tr>
+<tr><td>Scan rates:</td><td>USB-1808: 0.0233 to 50,000 S/s<br>USB-1808X: 0.0233 to 200,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td>  ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE, ::TRIG_PATTERN_EQ, 
+::TRIG_PATTERN_NE, ::TRIG_PATTERN_ABOVE, ::TRIG_PATTERN_BELOW</td></tr>
+<tr><td>Functions:</td><td>ulAIn(), ulAInScan(), ulAInLoadQueue(), ulAInScanStatus(), ulAInScanStop(),
+ulAInScanWait(), ulAInSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- AO ==================================================================================-->
+<h2 class="subsystem">Analog Output</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 1</td></tr>
+<tr><td>Ranges:</td><td> ::BIP10VOLTS</td></tr>
+<tr><td>Scan options:</td><td> ::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+	::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER</td></tr>
+<tr><td>Scan rates:</td><td> USB-1808: 0.0233 to 125,000 S/s<br>USB-1808X: 0.0233 to 500,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td> ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE, ::TRIG_PATTERN_EQ, 
+	::TRIG_PATTERN_NE, ::TRIG_PATTERN_ABOVE, ::TRIG_PATTERN_BELOW</td></tr>
+<tr><td>Functions:</td><td>ulAOut(), ulAOutArray(), ulAOutScan(), ulAOutScanStatus(), ulAOutScanStop(),
+	ulAOutScanWait(), ulAOutSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+	::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER</td></tr>
+<tr><td>Scan rate:</td><td>USB-1808:  0.0233 to 50,000 S/s (Input),  0.0233 to 125,000 S/s 
+	(Output)<br>USB-1808X: 0.0233 to 200,000 S/s (Input), 0.0233 to 500,000 S/s (Output)</td></tr>
+<tr><td>Trigger types:</td><td>::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE, ::TRIG_PATTERN_EQ, 
+	::TRIG_PATTERN_NE, ::TRIG_PATTERN_ABOVE, ::TRIG_PATTERN_BELOW</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), 
+	ulDInScan(), ulDOutScan(), ulDInScanStatus(), ulDOutScanStatus(), ulDInScanStop(), ulDOutScanStop(), 
+	ulDInScanWait(), ulDOutScanWait(), ulDInSetTrigger(), ulDOutSetTrigger(), ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0 to 3</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+	::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER</td></tr>
+<tr><td>Scan rates:</td><td>USB-1808: 0.0233 to 50,000 S/s<br>USB-1808X: 0.0233 to 200,000 S/s</td></tr>
+<tr><td>Scan flags:</td><td>::CINSCAN_FF_DEFAULT, ::CINSCAN_FF_CTR32_BIT, ::CINSCAN_FF_NOCLEAR
+<tr><td>Trigger types:</td><td>::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE, ::TRIG_PATTERN_EQ, ::TRIG_PATTERN_NE, 
+	::TRIG_PATTERN_ABOVE, ::TRIG_PATTERN_BELOW</td></tr>
+<tr><td>Counter measurement types:</td><td>Counter 0 to Counter 1: ::CMT_COUNT, ::CMT_PERIOD, ::CMT_PULSE_WIDTH<br>
+	Counter 2 to Counter 3: ::CMT_ENCODER</td></tr>
+<tr><td>Counter measurement modes:</td><td>CMT_COUNT: ::CMM_CLEAR_ON_READ, ::CMM_NO_RECYCLE, ::CMM_COUNT_DOWN, ::CMM_RANGE_LIMIT_ON<br>
+	CMT_PERIOD: ::CMM_PERIOD_X1, ::CMM_PERIOD_X10, ::CMM_PERIOD_X100, ::CMM_PERIOD_X1000<br>
+	CMT_PULSE_WIDTH: ::CMM_PULSE_WIDTH_DEFAULT<br>	
+	CMT_ENCODER: ::CMM_ENCODER_X1, ::CMM_ENCODER_X2, ::CMM_ENCODER_X4, 
+	::CMM_ENCODER_LATCH_ON_Z, ::CMM_ENCODER_CLEAR_ON_Z, ::CMM_ENCODER_RANGE_LIMIT_ON, ::CMM_ENCODER_Z_ACTIVE_EDGE</td></tr>
+<tr><td>Tick sizes:</td><td>::CTS_TICK_20ns, ::CTS_TICK_200ns, ::CTS_TICK_2000ns, ::CTS_TICK_20000ns</td></tr>
+<tr><td>Register types:</td><td>::CRT_COUNT, ::CRT_LOAD, ::CRT_MIN_LIMIT, ::CRT_MAX_LIMIT</td></tr>
+<tr><td>Debounce times:</td><td>::CDT_DEBOUNCE_500ns, ::CDT_DEBOUNCE_1500ns, ::CDT_DEBOUNCE_3500ns, ::CDT_DEBOUNCE_7500ns, ::CDT_DEBOUNCE_15500ns, 
+	::CDT_DEBOUNCE_31500ns, ::CDT_DEBOUNCE_63500ns, ::CDT_DEBOUNCE_127500ns, ::CDT_DEBOUNCE_100us, ::CDT_DEBOUNCE_300us,
+	::CDT_DEBOUNCE_700us, ::CDT_DEBOUNCE_1500us, ::CDT_DEBOUNCE_3100us, ::CDT_DEBOUNCE_6300us, ::CDT_DEBOUNCE_12700us, 
+	::CDT_DEBOUNCE_25500us</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear(), ulCConfigScan(), ulCInScan(), ulCInSetTrigger(), ulCInScanStatus(), ulCInScanStop(),	
+	ulCInScanWait()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Timer ==================================================================================-->
+<h2 class="subsystem">Timer</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Timer argument:</td><td>0 to 1</td></tr>
+<tr><td>Options:</td><td>::PO_DEFAULT, ::PO_EXTTRIGGER, ::PO_RETRIGGER</td></tr>
+<tr><td>Frequency:</td><td>0.0233 to 50,000,000 Hz</td></tr>
+<tr><td>Trigger types:</td><td>  ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE, ::TRIG_PATTERN_EQ, 
+::TRIG_PATTERN_NE, ::TRIG_PATTERN_ABOVE, ::TRIG_PATTERN_BELOW</td></tr>
+<tr><td>Functions:</td><td>ulTmrPulseOutStart(), ulTmrPulseOutStop(), ulTmrPulseOutStatus(), ulTmrSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DAQI ==================================================================================-->
+<h2 class="subsystem">DAQI</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channel types:</td><td>::DAQI_ANALOG_DIFF, ::DAQI_ANALOG_SE, ::DAQI_DIGITAL, ::DAQI_CTR32</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS, ::SO_EXTCLOCK, ::SO_EXTTRIGGER, 
+	::SO_RETRIGGER</td></tr>	
+<tr><td>Scan rates:</td><td>USB-1808: 0.0233 to 50,000 S/s<br>USB-1808X: 0.0233 to 200,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td>::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE, ::TRIG_PATTERN_EQ, 
+	::TRIG_PATTERN_NE, ::TRIG_PATTERN_ABOVE, ::TRIG_PATTERN_BELOW</td></tr>
+<tr><td>Functions:</td><td>ulDaqInScan(), ulDaqInScanStatus(), ulDaqInScanStop(), ulDaqInScanWait(), ulDaqInSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DAQO ==================================================================================-->
+<h2 class="subsystem">DAQO</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channel types:</td><td>::DAQO_ANALOG, ::DAQO_DIGITAL</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS, ::SO_EXTCLOCK, ::SO_EXTTRIGGER, 
+	::SO_RETRIGGER</td></tr>
+<tr><td>Scan rates:</td><td> USB-1808: 0.0233 to 125,000 S/s<br>USB-1808X: 0.0233 to 500,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td> ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE, ::TRIG_PATTERN_EQ, 
+	::TRIG_PATTERN_NE, ::TRIG_PATTERN_ABOVE, ::TRIG_PATTERN_BELOW</td></tr>
+<tr><td>Functions:</td><td>ulDaqOutScan(), ulDaqOutScanStatus(), ulDaqOutScanStop(), ulDaqOutScanWait(), ulDaqOutSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, ::DE_ON_INPUT_SCAN_ERROR, ::DE_ON_END_OF_OUTPUT_SCAN, 
+	::DE_ON_OUTPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!-- 1608 ==================================================================================================-->
+/* USB-1608G Series */
+/** \page 1608g USB-1608G, USB-1608GX, USB-1608GX-2AO
+*
+The USB-1608G Series includes the following devices:
+- USB-1608G, USB-1608G-OEM
+- USB-1608GX, USB-1608GX-OEM
+- USB-1608GX-2AO, USB-1608GX-2AO-OEM
+
+The USB-1608G Series supports the following UL for Linux capabilities. Unless otherwise indicated, OEM versions support the same 
+capabilities as the equivalent standard versions.
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 15</td></tr>
+<tr><td>Input modes:</td><td>::AI_DIFFERENTIAL, ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td>::BIP10VOLTS, ::BIP5VOLTS, ::BIP2VOLTS, ::BIP1VOLTS</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+	::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER, ::SO_BURSTMODE</td></tr>
+<tr><td>Scan rates:</td><td>USB-1608G: 0.0149 to 250,000 S/s<br>USB-1608GX: 0.0149 to 500,000 S/s<br>
+	USB-1608GX-2AO: 0.0149 to 500,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td>::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Functions:</td><td>ulAIn(), ulAInScan(), ulAInLoadQueue(), ulAInScanStatus(), ulAInScanStop(),
+	ulAInScanWait(), ulAInSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- AO ==================================================================================-->
+<h2 class="subsystem">Analog Output</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 1</td></tr>
+<tr><td>Ranges:</td><td> ::BIP10VOLTS</td></tr>
+<tr><td>Scan options:</td><td> ::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER</td></tr>
+<tr><td>Scan rates:</td><td>0.0149 to 500,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td> ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Functions:</td><td>ulAOut(), ulAOutArray(), ulAOutScan(), ulAOutScanStatus(), ulAOutScanStop(),
+	ulAOutScanWait(), ulAOutSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 15</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), 
+	ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0 to 1</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Timer ==================================================================================-->
+<h2 class="subsystem">Timer</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Timer argument:</td><td>0</td></tr>
+<tr><td>Options:</td><td>::PO_DEFAULT</td></tr>
+<tr><td>Frequency:</td><td>0.0149 to 32,000,000 Hz</td></tr>
+<tr><td>Functions:</td><td>ulTmrPulseOutStart(), ulTmrPulseOutStop(), ulTmrPulseOutStatus()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, ::DE_ON_INPUT_SCAN_ERROR, 
+	::DE_ON_END_OF_OUTPUT_SCAN, ::DE_ON_OUTPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—- 1208HS ==================================================================================================-->
+/* USB-1208HS Series */
+/** \page 1208hs USB-1208HS, USB-1208HS-2AO, USB-1208HS-4AO
+*
+The USB-1208HS Series includes the following devices:
+- USB-1208HS
+- USB-1208HS-2AO
+- USB-1208HS-4AO
+
+The USB-1208HS Series supports the following UL for Linux capabilities.
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 7</td></tr>
+<tr><td>Input modes:</td><td>::AI_DIFFERENTIAL, ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td> Single-ended: ::BIP10VOLTS, ::BIP5VOLTS, ::BIP2PT5VOLTS, ::UNI10VOLTS<br>
+	Differential: ::BIP20VOLTS, ::BIP10VOLTS, ::BIP5VOLTS</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER, ::SO_BURSTMODE</td></tr>
+<tr><td>Scan rates:</td><td>0.009 to 1,000,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td>  ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Functions:</td><td>ulAIn(), ulAInScan(), ulAInLoadQueue(), ulAInScanStatus(), ulAInScanStop(),
+ulAInScanWait(), ulAInSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- AO ==================================================================================-->
+<h2 class="subsystem">Analog Output</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>USB-1208HS-2AO: 0 to 1<br> USB-1208HS-4AO: 0 to 3</td></tr>
+<tr><td>Ranges:</td><td> ::BIP10VOLTS</td></tr>
+<tr><td>Scan options:</td><td> ::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+	::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER</td></tr>
+<tr><td>Scan rates:</td><td>0.009 to 1,000,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td>  ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Functions:</td><td>ulAOut(), ulAOutArray(), ulAOutScan(), ulAOutScanStatus(), ulAOutScanStop(),
+	ulAOutScanWait(), ulAOutSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 15</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0 to 1</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Timer ==================================================================================-->
+<h2 class="subsystem">Timer</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Timer argument:</td><td>0</td></tr>
+<tr><td>Options:</td><td>::PO_DEFAULT</td></tr>
+<tr><td>Frequency:</td><td>0.009 to 20,000,000 Hz </td></tr>
+<tr><td>Functions:</td><td>ulTmrPulseOutStart(), ulTmrPulseOutStop(), ulTmrPulseOutStatus()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, ::DE_ON_INPUT_SCAN_ERROR, ::DE_ON_END_OF_OUTPUT_SCAN, 
+	::DE_ON_OUTPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—- 2600 ==================================================================================================-->
+/* USB-2600 Series */
+/** \page 2600 USB-2623, USB-2627, USB-2633, USB-2637 
+*
+The USB-2600 Series includes the following devices:
+- USB-2623
+- USB-2627
+- USB-2633
+- USB-2637
+
+The USB-2600 Series supports the following UL for Linux capabilities.
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>USB-2623: 0 to 15<br> USB-2633: 0 to 15<br> USB-2633: 0 to 63<br> USB-2637: 0 to 63</td></tr>
+<tr><td>Input modes:</td><td> ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td> ::BIP10VOLTS</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER, ::SO_BURSTMODE</td></tr>
+<tr><td>Scan rates:</td><td>0.0149 to 1,000,000 S/s </td></tr>
+<tr><td>Trigger types:</td><td>  ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Functions:</td><td>ulAIn(), ulAInScan(), ulAInLoadQueue(), ulAInScanStatus(), ulAInScanStop(),
+ulAInScanWait(), ulAInSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- AO ==================================================================================-->
+<h2 class="subsystem">Analog Output (USB-2627 and USB-2637)</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 1</td></tr>
+<tr><td>Ranges:</td><td> ::BIP10VOLTS</td></tr>
+<tr><td>Scan options:</td><td> ::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+	::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER</td></tr>
+<tr><td>Scan rates:</td><td>0.0149 to 1,000,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td>  ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Functions:</td><td>ulAOut(), ulAOutArray(), ulAOutScan(), ulAOutScanStatus(), ulAOutScanStop(),
+	ulAOutScanWait(), ulAOutSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::FIRSTPORTA, ::FIRSTPORTB, ::FIRSTPORTC</td></tr>
+<tr><td>Bits:</td><td>FIRSTPORTA: 0 to 7<br>FIRSTPORTB: 0 to 7<br>FIRSTPORTC: 0 to 7</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0 to 3</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Timer ==================================================================================-->
+<h2 class="subsystem">Timer</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Timer argument:</td><td>0 to 3</td></tr>
+<tr><td>Options:</td><td>::PO_DEFAULT</td></tr>
+<tr><td>Frequency:</td><td>0.0149 to 32,000,000 Hz</td></tr>
+<tr><td>Functions:</td><td>ulTmrPulseOutStart(), ulTmrPulseOutStop(), ulTmrPulseOutStatus()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, ::DE_ON_INPUT_SCAN_ERROR, ::DE_ON_END_OF_OUTPUT_SCAN, 
+	::DE_ON_OUTPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—1608FS-PLUS ==================================================================================================-->
+/* USB-1608FS-PLUS */
+/** \page 1608fsplus USB-1608FS-PLUS
+*
+The USB-1608FS-PLUS supports the following UL for Linux capabilities.
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 7</td></tr>
+<tr><td>Input modes:</td><td> ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td>::BIP10VOLTS, ::BIP5VOLTS, ::BIP2VOLTS, ::BIP1VOLTS</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_BURSTIO, ::SO_PACEROUT </td></tr>
+<tr><td>Scan rates:</td><td>0.009 to 1,000,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td>  ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Functions:</td><td>ulAIn(), ulAInScan(), ulAInLoadQueue(), ulAInScanStatus(), ulAInScanStop(),
+ulAInScanWait(), ulAInSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, ::DE_ON_INPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!-- 1208FS-PLUS ==================================================================================================-->
+/* USB-1208FS-PLUS*/
+/** \page 1208fsplus USB-1208FS-PLUS
+*
+The USB-1208FS-PLUS supports the following UL for Linux capabilities.
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 7</td></tr>
+<tr><td>Input modes:</td><td>::AI_DIFFERENTIAL, ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td> Single-ended: ::BIP10VOLTS <br>Differential: ::BIP20VOLTS, ::BIP10VOLTS, 
+	::BIP5VOLTS, ::BIP4VOLTS, ::BIP2PT5VOLTS, ::BIP2VOLTS, ::BIP1PT25VOLTS, ::BIP1VOLTS </td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER</td></tr>
+<tr><td>Scan rates:</td><td>0.0139 to 52,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td>  ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Functions:</td><td>ulAIn(), ulAInScan(), ulAInLoadQueue(), ulAInScanStatus(), ulAInScanStop(),
+	ulAInScanWait(), ulAInSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- AO ==================================================================================-->
+<h2 class="subsystem">Analog Output</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 1</td></tr>
+<tr><td>Ranges:</td><td> ::UNI5VOLTS </td></tr>
+<tr><td>Scan options:</td><td> ::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS</td></tr>
+<tr><td>Scan rates:</td><td>0.0139 to 50,000 S/s </td></tr>
+<tr><td>Functions:</td><td>ulAOut(), ulAOutArray(), ulAOutScan(), ulAOutScanStatus(), ulAOutScanStop(),
+	ulAOutScanWait()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::FIRSTPORTA, ::FIRSTPORTB </td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), 
+	ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, 
+	::DE_ON_INPUT_SCAN_ERROR, ::DE_ON_END_OF_OUTPUT_SCAN, ::DE_ON_OUTPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!-- 1408FS-PLUS ==================================================================================================-->
+/* USB-1408FS-PLUS*/
+/** \page 1408fsplus USB-1408FS-PLUS
+*
+The USB-1408FS-PLUS supports the following UL for Linux capabilities.
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 7</td></tr>
+<tr><td>Input modes:</td><td>::AI_DIFFERENTIAL, ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td> Single-ended: ::BIP10VOLTS <br>Differential: ::BIP20VOLTS, ::BIP10VOLTS, 
+	::BIP5VOLTS, ::BIP4VOLTS, ::BIP2PT5VOLTS, ::BIP2VOLTS, ::BIP1PT25VOLTS, ::BIP1VOLTS </td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER</td></tr>
+<tr><td>Scan rates:</td><td>0.0139 to 48,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td>  ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Functions:</td><td>ulAIn(), ulAInScan(), ulAInLoadQueue(), ulAInScanStatus(), ulAInScanStop(),
+	ulAInScanWait(), ulAInSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- AO ==================================================================================-->
+<h2 class="subsystem">Analog Output</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 1</td></tr>
+<tr><td>Ranges:</td><td> ::UNI5VOLTS </td></tr>
+<tr><td>Scan options:</td><td> ::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS</td></tr>
+<tr><td>Scan rates:</td><td>0.0139 to 50,000 S/s </td></tr>
+<tr><td>Functions:</td><td>ulAOut(), ulAOutArray(), ulAOutScan(), ulAOutScanStatus(), ulAOutScanStop(),
+	ulAOutScanWait()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::FIRSTPORTA, ::FIRSTPORTB </td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), 
+	ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, 
+	::DE_ON_INPUT_SCAN_ERROR, ::DE_ON_END_OF_OUTPUT_SCAN, ::DE_ON_OUTPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—- 200 ==================================================================================================-->
+/* USB-200 Series */
+/** \page 200 USB-201, USB-202, USB-204, USB-205
+*
+The USB-200 Series includes the following devices:
+- USB-201
+- USB-202
+- USB-204
+- USB-205
+
+The USB-200 Series supports the following UL for Linux capabilities.
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 7</td></tr>
+<tr><td>Input modes:</td><td> ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td> ::BIP10VOLTS</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+::SO_EXTCLOCK, ::SO_EXTTRIGGER</td></tr>
+<tr><td>Scan rates:</td><td>USB-201 and USB-202: 0.0162 to 100,000 S/s<br> USB-204 and 
+	USB-205: 0.0162 to 500,000 S/s </td></tr>
+<tr><td>Trigger types:</td><td>  ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Functions:</td><td>ulAIn(), ulAInScan(), ulAInLoadQueue(), ulAInScanStatus(), ulAInScanStop(),
+ulAInScanWait(), ulAInSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- AO ==================================================================================-->
+<h2 class="subsystem">Analog Output (USB-202 and USB-205)</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 1</td></tr>
+<tr><td>Ranges:</td><td> ::UNI5VOLTS</td></tr>
+<tr><td>Functions:</td><td>ulAOut()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), 
+	ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, 
+	::DE_ON_INPUT_SCAN_ERROR, ::DE_ON_END_OF_OUTPUT_SCAN, ::DE_ON_OUTPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—- 2020 ==================================================================================================-->
+/* USB-2020 */
+/** \page 2020 USB-2020
+*
+The USB-2020 supports the following UL for Linux capabilities.
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 1</td></tr>
+<tr><td>Input modes:</td><td> ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td> ::BIP10VOLTS, ::BIP5VOLTS, ::BIP2VOLTS, ::BIP1VOLTS </td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER, ::SO_PACEROUT, ::SO_BURSTIO </td></tr>
+<tr><td>Scan rates:</td><td>1,000 to 20,000,000 S/s </td></tr>
+<tr><td>Trigger types:</td><td>  ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE, 
+	::GATE_HIGH, ::GATE_LOW, ::TRIG_RISING, ::TRIG_FALLING, ::TRIG_ABOVE, ::TRIG_BELOW, ::GATE_ABOVE, 
+	::GATE_BELOW, ::GATE_IN_WINDOW, ::GATE_OUT_WINDOW </td></tr>
+<tr><td>Functions:</td><td>ulAIn(), ulAInScan(), ulAInLoadQueue(), ulAInScanStatus(), ulAInScanStop(),
+ulAInScanWait(), ulAInSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, 
+	::DE_ON_INPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!-- 2408 ==================================================================================================-->
+/* USB-2408 */
+/** \page 2408 USB-2408, USB-2408-2AO
+*
+
+The USB-2408 Series includes the following devices:
+- USB-2408
+- USB-2408-2AO
+
+The USB-2408 Series supports the following UL for Linux capabilities.
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 15</td></tr>
+<tr><td>Input modes:</td><td>::AI_DIFFERENTIAL, ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td> ::BIP10VOLTS, ::BIP5VOLTS, ::BIP2PT5VOLTS, ::BIP1PT25VOLTS, 
+	::BIPPT625VOLTS, ::BIPPT312VOLTS, ::BIPPT156VOLTS, ::BIPPT078VOLTS </td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS 
+</td></tr>
+<tr><td>Scan rates:</td><td>0.000011 to 1102.9411 S/s <br>The rate is dependent on the 
+	data rate value; the actual rate that is set will be returned.</td></tr>
+<tr><td>Functions:</td><td>ulAIn(), ulAInScan(), ulAInLoadQueue(), ulAInScanStatus(), ulAInScanStop(),
+	ulAInScanWait(), ulAInSetTrigger(), ulTIn(), ulAISetConfig(), ulAIGetConfig(), ulAISetConfigDbl(), 
+		ulAIGetConfigDbl()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get/Set): ::AI_CFG_CHAN_TYPE, ::AI_CFG_CHAN_TC_TYPE, 
+	::AI_CFG_CHAN_DATA_RATE, ::AI_CFG_CHAN_OTD_MODE, ::AI_CFG_SCAN_TEMP_UNIT</td></tr>
+</table>
+<!-- AO ==================================================================================-->
+<h2 class="subsystem">Analog Output</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 1</td></tr>
+<tr><td>Ranges:</td><td> ::BIP10VOLTS </td></tr>
+<tr><td>Scan options:</td><td> ::SO_DEFAULTIO,::SO_BLOCKIO, ::SO_CONTINUOUS</td></tr>
+<tr><td>Scan rates:</td><td>0.000011 to 1,000</td></tr>
+<tr><td>Functions:</td><td>ulAOut(), ulAOutArray(), ulAOutScan(), ulAOutScanStatus(), ulAOutScanStop(),
+	ulAOutScanWait()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td> ::AUXPORT </td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut()<td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0 to 1</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, 
+	::DE_ON_INPUT_SCAN_ERROR, ::DE_ON_END_OF_OUTPUT_SCAN, ::DE_ON_OUTPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!-- 2416 ==================================================================================================-->
+/* USB-2416 */
+/** \page 2416 USB-2416, USB-2416-4AO
+*
+The USB-2416 Series includes the following devices:
+- USB-2416
+- USB-2416-4AO
+
+The USB-2416 Series supports the following UL for Linux capabilities.
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 31 (0 to 63 if the AI-EXP32 is attached).</td></tr>
+<tr><td>Input modes:</td><td>::AI_DIFFERENTIAL, ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td> ::BIP20VOLTS, ::BIP10VOLTS, 	::BIP5VOLTS, ::BIP2PT5VOLTS,  ::BIP1PT25VOLTS, ::BIPPT625VOLTS, ::BIPPT312VOLTS, ::BIPPT156VOLTS, ::BIPPT078VOLTS </td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS 
+</td></tr>
+<tr><td>Scan rates:</td><td>0.000011 to 1102.9411 S/s </td></tr>
+<tr><td>Functions:</td><td>ulAIn(), ulAInScan(), ulAInLoadQueue(), ulAInScanStatus(), ulAInScanStop(),
+	ulAInScanWait(), ulAInSetTrigger(), ulTIn(), ulAISetConfig(), ulAIGetConfig(), ulAISetConfigDbl(), 
+	ulAIGetConfigDbl()</td></tr>
+<tr><td>Configuration:</td><td>Config Item  (Get/Set): ::AI_CFG_CHAN_TYPE, ::AI_CFG_CHAN_TC_TYPE, ::AI_CFG_CHAN_DATA_RATE, 
+	::AI_CFG_CHAN_OTD_MODE, ::AI_CFG_SCAN_TEMP_UNIT</td></tr>
+</table>
+<!-- AO ==================================================================================-->
+<h2 class="subsystem">Analog Output</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 3</td></tr>
+<tr><td>Ranges:</td><td> ::BIP10VOLTS </td></tr>
+<tr><td>Scan options:</td><td> ::SO_DEFAULTIO,::SO_BLOCKIO, ::SO_CONTINUOUS</td></tr>
+<tr><td>Scan rates:</td><td>0.000011 to 1,000</td></tr>
+<tr><td>Functions:</td><td>ulAOut(), ulAOutArray(), ulAOutScan(), ulAOutScanStatus(), ulAOutScanStop(),
+	ulAOutScanWait()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td> ::AUXPORT0 (::AUXPORT0, ::AUXPORT1, ::AUXPORT2 if the AI-EXP32 is attached).</td></tr>
+<tr><td>Bits:</td><td>AUXPORT0: 0 to 7<br>AUXPORT1: 0 to 7 (terminals 8 to 15 on the AI-EXP32)
+	<br>AUXPORT2: 0 to 7 (terminals 16 to 23 on the AI-EXP32)</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut()<td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0 to 1</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, 
+	::DE_ON_INPUT_SCAN_ERROR, ::DE_ON_END_OF_OUTPUT_SCAN, ::DE_ON_OUTPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed(), ulDevGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DEV_CFG_HAS_EXP</td></tr>
+</table>
+*/
+
+<!—1608hs ==================================================================================================-->
+/* USB-1608HS */
+/** \page 1608hs USB-1608HS, USB-1608HS-2AO
+*
+The USB-1608HS Series includes the following devices:
+- USB-1608HS
+- USB-1608HS-2AO
+
+The USB-1608HS Series supports the following UL for Linux capabilities.
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 7</td></tr>
+<tr><td>Input modes:</td><td>::AI_DIFFERENTIAL, ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td> ::BIP10VOLTS, 	::BIP5VOLTS, ::BIP2VOLTS, ::BIP1VOLTS</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS, ::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER 
+</td></tr>
+<tr><td>Scan rates:</td><td>0.0093 to 250,000 S/s </td></tr>
+<tr><td>Trigger types:</td><td>  ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE, ::TRIG_ABOVE, ::TRIG_BELOW</td></tr>
+<tr><td>Functions:</td><td>ulAIn(), ulAInScan(), ulAInLoadQueue(), ulAInScanStatus(), ulAInScanStop(),
+	ulAInScanWait(), ulAInSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- AO ==================================================================================-->
+<h2 class="subsystem">Analog Output</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 1</td></tr>
+<tr><td>Ranges:</td><td> ::BIP10VOLTS </td></tr>
+<tr><td>Scan options:</td><td> ::SO_DEFAULTIO,::SO_BLOCKIO, ::SO_CONTINUOUS</td></tr>
+<tr><td>Scan rates:</td><td>0.59604 to 1,000,000 </td></tr>
+<tr><td>Functions:</td><td>ulAOut(), ulAOutArray(), ulAOutScan(), ulAOutScanStatus(), ulAOutScanStop(),
+	ulAOutScanWait()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get/Set): ::AO_CFG_CHAN_SENSE_MODE</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td> ::AUXPORT0, ::AUXPORT1</td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut()<td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, 
+	::DE_ON_INPUT_SCAN_ERROR, ::DE_ON_END_OF_OUTPUT_SCAN, ::DE_ON_OUTPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!-- DIO32HS ==================================================================================-->
+/* USB- DIO32HS */
+/** \page dio32hs USB-DIO32HS
+*
+The USB-DIO32HS supports the following UL for Linux capabilities.
+
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td> ::AUXPORT0, ::AUXPORT1</td></tr>
+<tr><td>Bits:</td><td>0 to 15</td></tr>
+<tr><td>Scan options:</td><td> ::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS, ::SO_EXTCLOCK, 
+	::SO_EXTTRIGGER, ::SO_RETRIGGER 
+</td></tr>
+<tr><td>Scan rates:</td><td>0.02235 to 800,000 S/s </td></tr>
+<tr><td>Trigger types:</td><td>  ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE, ::TRIG_PATTERN_EQ, 
+::TRIG_PATTERN_NE, ::TRIG_PATTERN_ABOVE, ::TRIG_PATTERN_BELOW</td></tr>
+<tr><td>Functions:</td><td> ulDIn(), ulDInArray(), ulDOut(), ulDOutArray(), ulDBitIn(), ulDBitOut(), 
+	ulDConfigPort(), ulDConfigBit(), ulDInScan(), ulDOutScan(), ulDInScanStatus(), ulDOutScanStatus(), 
+	ulDInScanStop(), ulDOutScanStop(), ulDInScanWait(), ulDOutScanWait(), ulDInSetTrigger(), ulDOutSetTrigger(), 
+	ulDIOGetConfig()<td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK </td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, 
+	::DE_ON_INPUT_SCAN_ERROR, ::DE_ON_END_OF_OUTPUT_SCAN, ::DE_ON_OUTPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—CTR0x ==================================================================================================-->
+/* USB-CTR Series */
+/** \page ctr0x USB-CTR04, USB-CTR08
+*
+The USB-CTR Series includes the following devices:
+- USB-CTR04, CTR04-OEM
+- USB-CTR08, CTR08-OEM
+
+The USB-CTR Series supports the following UL for Linux capabilities. Unless otherwise indicated, OEM versions 
+support the same capabilities as the equivalent standard versions.
+
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+	::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER</td></tr>
+<tr><td>Scan rate:</td><td>0.02235 to 4,000,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td> ::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Functions:</td><td> ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), ulDInScan(), ulDInScanStatus(), 
+	ulDInScanStop(), ulDInScanWait(), ulDInSetTrigger(), ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>USB-CTR04:0 to 3<br>USB-CTR08: 0 to 7</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+	::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_RETRIGGER</td></tr>
+<tr><td>Scan rates:</td><td>16-bit counter: 0.02235 to 4,000,000 S/s
+	<br>32-bit counter: 0.02235 to 2,000,000 S/s
+	<br>64-bit counter: 0.02235 to 1,000,000 S/s</td></tr>
+<tr><td>Scan flags:</td><td>::CINSCAN_FF_DEFAULT, ::CINSCAN_FF_CTR16_BIT, ::CINSCAN_FF_CTR32_BIT, ::CINSCAN_FF_CTR64_BIT, 
+	::CINSCAN_FF_NOCLEAR
+<tr><td>Trigger types:</td><td>::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Counter measurement types:</td><td> ::CMT_COUNT, ::CMT_PERIOD, ::CMT_PULSE_WIDTH, ::CMT_TIMING</td></tr>
+<tr><td>Counter measurement modes:</td><td>CMT_COUNT: ::CMM_CLEAR_ON_READ, ::CMM_NO_RECYCLE, ::CMM_COUNT_DOWN, ::CMM_RANGE_LIMIT_ON,
+	::CMM_GATING_ON, ::CMM_INVERT_GATE, ::CMM_GATE_CONTROLS_DIR, ::CMM_GATE_CLEARS_CTR, ::CMM_GATE_TRIG_SRC, ::CMM_OUTPUT_ON, 
+	::CMM_OUTPUT_INITIAL_STATE_HIGH 
+	<br>CMT_PERIOD: ::CMM_PERIOD_X1, ::CMM_PERIOD_X10, ::CMM_PERIOD_X100, ::CMM_PERIOD_X1000, ::CMM_PERIOD_GATING_ON, ::CMM_PERIOD_INVERT_GATE 
+	<br>CMT_PULSE_WIDTH: ::CMM_PULSE_WIDTH_GATING_ON, ::CMM_PULSE_WIDTH_INVERT_GATE
+	<br>CMT_TIMING: ::CMM_TIMING_MODE_INVERT_GATE<br></td></tr>
+<tr><td>Tick sizes:</td><td> ::CTS_TICK_20PT83ns, ::CTS_TICK_208PT3ns, ::CTS_TICK_2083PT3ns, ::CTS_TICK_20833PT3ns</td></tr>
+<tr><td>Register types:</td><td> ::CRT_COUNT, ::CRT_LOAD, ::CRT_MIN_LIMIT, ::CRT_MAX_LIMIT, ::CRT_OUTPUT_VAL0, 
+	::CRT_OUTPUT_VAL1</td></tr>
+<tr><td>Debounce times:</td><td>::CDT_DEBOUNCE_500ns, ::CDT_DEBOUNCE_1500ns, ::CDT_DEBOUNCE_3500ns, ::CDT_DEBOUNCE_7500ns, 
+	::CDT_DEBOUNCE_15500ns, ::CDT_DEBOUNCE_31500ns, ::CDT_DEBOUNCE_63500ns, ::CDT_DEBOUNCE_127500ns, ::CDT_DEBOUNCE_100us, 
+	::CDT_DEBOUNCE_300us, ::CDT_DEBOUNCE_700us, ::CDT_DEBOUNCE_1500us, ::CDT_DEBOUNCE_3100us, ::CDT_DEBOUNCE_6300us, 
+	::CDT_DEBOUNCE_12700us, ::CDT_DEBOUNCE_25500us</td></tr>
+<tr><td>Functions:</td><td> ulCIn(), ulCRead(), ulCLoad(), ulCClear(), ulCConfigScan(), ulCInScan(), ulCInSetTrigger(), 
+	ulCInScanStatus(), ulCInScanStop(), ulCInScanWait()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Timer ==================================================================================-->
+<h2 class="subsystem">Timer</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Timer argument:</td><td>0 to 3</td></tr>
+<tr><td>Options:</td><td>::PO_DEFAULT</td></tr>
+<tr><td>Frequency:</td><td>0.02235 to 48,000,000 Hz</td></tr>
+<tr><td>Functions:</td><td>ulTmrPulseOutStart(), ulTmrPulseOutStop()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DAQI ==================================================================================-->
+<h2 class="subsystem">DAQI</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channel types:</td><td> ::DAQI_DIGITAL, ::DAQI_CTR16, ::DAQI_CTR32, ::DAQI_CTR48</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS, ::SO_EXTCLOCK, ::SO_EXTTRIGGER, 
+	::SO_RETRIGGER</td></tr>	
+<tr><td>Scan rates:</td><td>0. 02235 to 4,000,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td>::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Functions:</td><td>ulDaqInScan(), ulDaqInScanStatus(), ulDaqInScanStop(), ulDaqInScanWait(), ulDaqInSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, ::DE_ON_INPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—quad08 ==================================================================================================-->
+/* USB-QUAD08 */
+/** \page quad08 USB-QUAD08
+The USB-QUAD08 supports the following UL for Linux capabilities. 
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td> ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), 
+	ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0 to 7</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_BLOCKIO, ::SO_CONTINUOUS, 
+	::SO_EXTCLOCK, ::SO_EXTTRIGGER</td></tr>
+<tr><td>Scan rates:</td><td>16-bit counter: 0.000011 to 8,000,000 S/s
+	<br>32-bit counter: 0.000011 to 2,000,000 S/s
+	<br>48-bit counter: 0.000011 to 1,000,000 S/s</td></tr>
+<tr><td>Scan flags:</td><td>::CINSCAN_FF_DEFAULT, ::CINSCAN_FF_CTR16_BIT, ::CINSCAN_FF_CTR32_BIT, ::CINSCAN_FF_CTR48_BIT</td></tr>
+<tr><td>Trigger types:</td><td>::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Counter measurement types:</td><td> ::CMT_COUNT, ::CMT_PERIOD, ::CMT_PULSE_WIDTH, ::CMT_ENCODER</td></tr>
+<tr><td>Counter measurement modes:</td><td>CMT_COUNT: ::CMM_CLEAR_ON_READ, ::CMM_NO_RECYCLE, ::CMM_RANGE_LIMIT_ON, ::CMM_GATING_ON, ::CMM_GATE_CONTROLS_DIR
+<br>
+	CMT_PERIOD: ::CMM_PERIOD_X1, ::CMM_PERIOD_X10, ::CMM_PERIOD_X100, ::CMM_PERIOD_X1000, ::CMM_PERIOD_GATING_ON 
+<br>
+	CMT_PULSE_WIDTH: ::CMM_PULSE_WIDTH_GATING_ON<br>	
+	CMT_ENCODER: ::CMM_ENCODER_X1, ::CMM_ENCODER_X2, ::CMM_ENCODER_X4, ::CMM_ENCODER_LATCH_ON_Z, ::CMM_ENCODER_CLEAR_ON_Z, ::CMM_ENCODER_NO_RECYCLE, ::CMM_ENCODER_RANGE_LIMIT_ON<br></td></tr>
+<tr><td>Tick sizes:</td><td> ::CTS_TICK_20PT83ns, ::CTS_TICK_208PT3ns, ::CTS_TICK_2083PT3ns, ::CTS_TICK_20833PT3ns</td></tr>
+<tr><td>Register types:</td><td> ::CRT_COUNT, ::CRT_LOAD, ::CRT_MAX_LIMIT</td></tr>
+<tr><td>Debounce Times:</td><td>::CDT_DEBOUNCE_500ns, ::CDT_DEBOUNCE_1500ns, ::CDT_DEBOUNCE_3500ns, ::CDT_DEBOUNCE_7500ns, ::CDT_DEBOUNCE_15500ns, 	::CDT_DEBOUNCE_31500ns, ::CDT_DEBOUNCE_63500ns, ::CDT_DEBOUNCE_127500ns, ::CDT_DEBOUNCE_100us, ::CDT_DEBOUNCE_300us,  ::CDT_DEBOUNCE_700us, ::CDT_DEBOUNCE_1500us, ::CDT_DEBOUNCE_3100us, ::CDT_DEBOUNCE_6300us, ::CDT_DEBOUNCE_12700us, ::CDT_DEBOUNCE_25500us</td></tr>
+<tr><td>Functions:</td><td> ulCIn(), ulCRead(), ulCLoad(), ulCClear(), ulCConfigScan(), ulCInScan(), ulCInSetTrigger(), ulCInScanStatus(), ulCInScanStop(),  ulCInScanWait()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Timer ==================================================================================-->
+<h2 class="subsystem">Timer</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Timer argument:</td><td>0 to 1</td></tr>
+<tr><td>Options:</td><td>::PO_DEFAULT, ::PO_EXTTRIGGER, ::PO_RETRIGGER</td></tr>
+<tr><td>Frequency:</td><td>0.0111 to 24,000,000 Hz </td></tr>
+<tr><td>Functions:</td><td>ulTmrPulseOutStart(), ulTmrPulseOutStop(), ulTmrPulseOutStatus()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, ::DE_ON_INPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—1024ls ==================================================================================-->
+/* USB-1024LS Series */
+/** \page 1024ls USB-1024LS, USB-1024HLS
+*
+The USB-1024LS Series includes the following devices:
+- USB-1024LS
+- USB-1024HLS
+
+The USB-1024LS Series supports the following UL for Linux capabilities.
+
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td> ::FIRSTPORTA, ::FIRSTPORTB, ::FIRSTPORTCL, ::FIRSTPORTCH</td></tr>
+<tr><td>Bits:</td><td> FIRSTPORTA: 0 to 7<br>FIRSTPORTB: 0 to 7<br>FIRSTPORTCL: 0 to 3
+	<br>FIRSTPORTCH: 0 to 3</td></tr>
+<tr><td>Functions:</td><td> ulDIn(), ulDInArray(), ulDOut(), ulDOutArray(), ulDBitIn(), ulDBitOut(), 
+	ulDConfigPort(), ulDIOGetConfig(), ulDIOSetConfig()<td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK 
+	<br>Config Item (Set): ::DIO_CFG_PORT_INITIAL_OUTPUT_VAL (USB-1024HLS only)</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—dio24 ==================================================================================-->
+/* USB-DIO24 Series */
+/** \page dio24 USB-DIO24/37, USB-DIO24H/37
+*
+The USB-DIO24 Series includes the following devices:
+- USB-DIO24/37
+- USB-DIO24H/37
+
+The USB-DIO24 Series supports the following UL for Linux capabilities.
+
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td> ::FIRSTPORTA, ::FIRSTPORTB, ::FIRSTPORTCL, ::FIRSTPORTCH</td></tr>
+<tr><td>Bits:</td><td> FIRSTPORTA: 0 to 7<br>FIRSTPORTB: 0 to 7<br>FIRSTPORTCL: 0 to 3
+	<br>FIRSTPORTCH: 0 to 3</td></tr>
+<tr><td>Functions:</td><td> ulDIn(), ulDInArray(), ulDOut(), ulDOutArray(), ulDBitIn(), ulDBitOut(),
+	ulDConfigPort(), ulDIOGetConfig(), ulDIOSetConfig()<td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK 
+	<br>Config Item (Set): ::DIO_CFG_PORT_INITIAL_OUTPUT_VAL (USB-DIO24H/37 only)</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+USB-DIO96H Series
+<!—dio96h ==================================================================================-->
+/* USB-DIO96H Series */
+/** \page dio96h USB-DIO96H, USB-DIO96H/50
+*
+The USB-DIO96H Series includes the following devices:
+- USB-DIO96H
+- USB-DIO96H/50
+
+The USB-DIO96H and DIO96H/50 support the following UL for Linux capabilities.
+
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td> ::FIRSTPORTA, ::FIRSTPORTB, ::FIRSTPORTCL, ::FIRSTPORTCH,
+	<br>::SECONDPORTA, ::SECONDPORTB, ::SECONDPORTCL, ::SECONDPORTCH, 
+	<br>::THIRDPORTA, ::THIRDPORTB, ::THIRDPORTCL, ::THIRDPORTCH,
+	<br>::FOURTHPORTA, ::FOURTHPORTB, ::FOURTHPORTCL, ::FOURTHPORTCH</td></tr>
+<tr><td>Bits:</td><td> PORTA: 0 to 7<br>PORTB: 0 to 7<br>PORTCL: 0 to 3<br>	PORTCH: 0 to 3</td></tr>
+<tr><td>Functions:</td><td> ulDIn(), ulDInArray(), ulDOut(), ulDOutArray(), ulDBitIn(), ulDBitOut(), 
+	ulDConfigPort(), ulDIOGetConfig(), ulDIOSetConfig()<td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK
+	<br>Config Item (Set): ::DIO_CFG_PORT_INITIAL_OUTPUT_VAL</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter (USB-DIO96H only)</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+USB-ERB Series
+<!—erb ==================================================================================-->
+/* USB-ERB Series */
+/** \page erb USB-ERB08, USB-ERB24
+*
+
+The USB-ERB Series includes the following devices:
+- USB-ERB08
+- USB-ERB24
+
+The USB-ERB08 Series supports the following UL for Linux capabilities.
+
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>USB-ERB08: ::FIRSTPORTCL, ::FIRSTPORTCH 
+	<br>USB-ERB24: ::FIRSTPORTA, ::FIRSTPORTB, ::FIRSTPORTCL, ::FIRSTPORTCH </td></tr>
+<tr><td>Bits:</td><td> FIRSTPORTA and FIRSTPORTB: 0 to 7
+	<br> FIRSTPORTCL and FIRSTPORTCH:0 to 3</td></tr>
+<tr><td>Functions:</td><td> ulDIn(), ulDInArray(), ulDOut(), ulDOutArray(), 
+	ulDBitIn(), ulDBitOut(), ulDIOGetConfig()<td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_LOGIC </td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—ssr ==================================================================================-->
+/* USB-SSR Series */
+/** \page ssr USB-SSR08, USB-SSR24
+*
+
+The USB-SSR Series includes the following devices:
+- USB-SSR08
+- USB-SSR24
+
+The USB-SSR Series supports the following UL for Linux capabilities.
+
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>USB-SSR08: ::FIRSTPORTCL, ::FIRSTPORTCH 
+	<br>USB-SSR24: ::FIRSTPORTA, ::FIRSTPORTB, ::FIRSTPORTCL, ::FIRSTPORTCH</td></tr>
+<tr><td>Bits:</td><td> FIRSTPORTA and FIRSTPORTB: 0 to 7
+	<br>FIRSTPORTCL and FIRSTPORTCH: 0 to 3</td></tr>
+<tr><td>Functions:</td><td> ulDIn(), ulDInArray(), ulDOut(), ulDOutArray(), ulDBitIn(), ulDBitOut(), 
+	ulDIOGetConfig()<td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK, 
+	::DIO_CFG_PORT_LOGIC </td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—pdiso8 ==================================================================================-->
+/* USB-PDISO8 Series */
+/** \page pdiso8 USB-PDISO8, USB-PDISO8/40
+*
+The USB-PDISO8 Series includes the following devices:
+- USB-PDISO8
+- USB-PDISO8/40
+
+The USB-PDISO8 Series supports the following UL for Linux capabilities.
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td> ::AUXPORT0, ::AUXPORT1</td></tr>
+<tr><td>Bits:</td><td> 0 to 7</td></tr>
+<tr><td>Functions:</td><td> ulDIn(), ulDOut(),ulDBitIn(), ulDBitOut(), ulDIOGetConfig(), ulDIOSetConfig()<td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK, 
+	<br>Config Item (Get/Set): ::DIO_CFG_PORT_ISO_FILTER_MASK </td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—- 310x ==================================================================================================-->
+/* USB-3100 Series */
+/** \page 310x USB-3100 Series
+*
+
+The USB-3100 Series includes the following devices:
+- USB-3101
+- USB-3102
+- USB-3104
+- USB-3105
+- USB-3106
+- USB-3110
+- USB-3112
+- USB-3114
+
+The USB-3100 Series supports the following UL for Linux capabilities.
+<!-- AO ==================================================================================-->
+<h2 class="subsystem">Analog Output</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td> USB-3101, USB-3102 and USB-3110: 0 to 3
+	<br>USB-3103, USB-3104 and USB-3112: 0 to 7<br>USB-3105, USB-3106 and USB-3114: 0 to 15</td></tr>
+<tr><td>Ranges:</td><td> USB-3101, USB-3103, USB-3105, USB-3110, USB-3112, 
+	USB-3114: ::BIP10VOLTS, ::UNI10VOLTS
+	<br> USB-3102, USB-3104, USB-3106: ::BIP10VOLTS, ::UNI10VOLTS, ::MA0TO20</td></tr>
+<tr><td>Functions:</td><td> ulAOut(), ulAOutArray(), ulAOGetConfig(), ulAOSetConfig()</td></tr>
+<tr><td>Configuration:</td><td> Config Item (Get/Set): ::AO_CFG_SYNC_MODE</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—2001-TC ==================================================================================================-->
+/* USB-2001-TC  */
+/** \page 2001tc USB-2001-TC
+*
+USB-2001-TC supports the following UL for Linux capabilities. 
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0</td></tr>
+<tr><td>Functions:</td><td> ulTIn(), ulAIGetConfig(), ulAISetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get/Set): ::AI_CFG_CHAN_TC_TYPE </td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—USB-TC ==================================================================================================-->
+/* USB-TC  */
+/** \page tc USB-TC
+*
+The USB-TC supports the following UL for Linux capabilities. 
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td> ulTIn(), ulTInArray(), ulAIGetConfig(), ulAISetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get/Set): ::AI_CFG_CHAN_TC_TYPE </td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—USB-TC-AI ==================================================================================================-->
+/* USB-TC-AI */
+/** \page tcai USB-TC-AI
+*
+The USB-TC-AI supports the following UL for Linux capabilities. 
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>Temperature: 0 to 3<br>Voltage: 4 to 7</td></tr>
+<tr><td>Input modes:</td><td>::AI_DIFFERENTIAL, ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td>single-ended: ::BIP10VOLTS, ::BIP5VOLTS, ::BIP2PT5VOLTS,  ::BIP1PT25VOLTS<br>
+	differential: ::BIP10VOLTS, ::BIP5VOLTS, ::BIP2PT5VOLTS,  ::BIP1PT25VOLTS, ::BIPPT078VOLTS</td></tr>
+<tr><td>Functions:</td><td> ulTIn(), ulTInArray(), ulAIn(), ulAIGetConfig(), ulAISetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get/Set): ::AI_CFG_CHAN_TC_TYPE </td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—USB-TEMP ==================================================================================================-->
+/* USB-TEMP */
+/** \page temp USB-TEMP
+*
+The USB-TEMP supports the following UL for Linux capabilities. 
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td> ulTIn(), ulTInArray(), ulAIGetConfig(), ulAISetConfig(), 
+	ulAIGetConfigStr()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Set): ::AI_CFG_CHAN_TC_TYPE, ::AI_CFG_CHAN_TYPE, 
+	::AI_CFG_CHAN_SENSOR_CONNECTION_TYPE <br>Config Item (Get): ::AI_CFG_CHAN_COEFS_STR 
+	<br>InstaCal is required to configure RTD, thermistor, and semiconductor sensor options.</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!—USB-TEMP-AI ==================================================================================================-->
+/* USB-TEMP-AI */
+/** \page tempai USB-TEMP-AI
+*
+The USB-TEMP-AI supports the following UL for Linux capabilities. 
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>Temperature: 0 to 3<br>Voltage: 4 to 7</td></tr>
+<tr><td>Input modes:</td><td>::AI_DIFFERENTIAL, ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td>single-ended: ::BIP10VOLTS, ::BIP5VOLTS, ::BIP2PT5VOLTS,  ::BIP1PT25VOLTS<br>
+	differential: ::BIP10VOLTS, ::BIP5VOLTS, ::BIP2PT5VOLTS,  ::BIP1PT25VOLTS, ::BIPPT078VOLTS</td></tr>
+<tr><td>Functions:</td><td> ulTIn(), ulTInArray(), ulAIn(), ulAIGetConfig(),  ulAISetConfig(), ulAIGetConfigStr()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Set): ::AI_CFG_CHAN_TC_TYPE, ::AI_CFG_CHAN_TYPE, 
+	::AI_CFG_CHAN_SENSOR_CONNECTION_TYPE <br>Config Item (Get): ::AI_CFG_CHAN_COEFS_STR
+	<br>InstaCal is required to configure RTD, thermistor, and semiconductor sensor options.</td></tr></table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+<!-- SC-1608 ==================================================================================================-->
+/* SC-1608G Series */
+/** \page sc1608g SC-1608G Series
+*
+The SC-1608G Series includes the following devices:
+- SC-1608-USB; this board is functionally equivalent to the USB-1608G
+- SC-1608GX; this board is functionally equivalent to the USB-1608GX 
+- SC-1608GX-2AO; this board is functionally equivalent to the USB-1608G-2AO
+
+Refer to the <a href="1608g.html">USB-1608 Series</a> topic for supporting UL for Linux capabilities applicable 
+to the SC-1608G Series.
+*/
+
+<!—dt9837 ==================================================================================================-->
+/* DT9837 Series */
+/** \page dt9837 DT9837A, DT9837B, DT9837C
+*
+The DT9837 Series includes the following devices:
+- DT9837A
+- DT9837B
+- DT9837C
+
+The DT9837 Series supports the following UL for Linux capabilities. Unless otherwise indicated, OEM versions support the same capabilities as the equivalent standard versions.
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 3</td></tr>
+<tr><td>Input modes:</td><td>::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td>::BIP10VOLTS, ::BIP1VOLTS</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+::SO_EXTCLOCK, ::SO_EXTTRIGGER, ::SO_EXTTIMEBASE, ::SO_TIMEBASEOUT </td></tr>
+<tr><td>Scan rates:</td><td>DT9837A: 195.313 to 52,734 S/s <br> DT9837B: 195.313 to 105,469 S/s
+	<br> DT9837C: 195.313 to 105,469 S/s </td></tr>
+<tr><td>Trigger types:</td><td>DT9837A: ::TRIG_POS_EDGE, ::TRIG_RISING<br>DT9837B: ::TRIG_POS_EDGE, ::TRIG_RISING
+	<br>DT9837C: ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE, ::TRIG_RISING, ::TRIG_FALLING </td></tr>
+<tr><td>Functions:</td><td> ulAIn(), ulAInScan(), ulAInLoadQueue(), ulAInScanStatus(), ulAInScanStop(),
+	ulAInScanWait(), ulAInSetTrigger(), ulAIGetConfig(), ulAISetConfig(),  ulAIGetConfigDbl(), ulAISetConfigDbl()</td></tr>
+<tr><td>Configuration:</td><td> Config Item (Get/Set) <sup>1</sup>: ::AI_CFG_CHAN_IEPE_MODE, ::AI_CFG_CHAN_COUPLING_MODE,
+	::AI_CFG_CHAN_SENSOR_SENSITIVITY</td></tr>
+</table>
+<sup>1</sup> For additional information, refer to the *Using UL for Linux* section in Appendix D of the 
+	<a href="https://www.mccdaq.com/GetPDF.aspx?t=/PDFs/manuals/UM9837.pdf">DT9837 Series User's Manual</a>.
+<!-- AO ==================================================================================-->
+<h2 class="subsystem">Analog Output (DT9837A and DT9837C only)</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0</td></tr>
+<tr><td>Ranges:</td><td> DT9837A: ::BIP10VOLTS <br> DT9837C: ::BIP3VOLTS </td></tr>
+<tr><td>Scan options:</td><td> ::SO_DEFAULTIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,	::SO_EXTTRIGGER</td></tr>
+<tr><td>Scan rates:</td><td> DT9837A: 10,000 to 52,734 S/s <br> DT9837C: 10,000 to 96,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td> ::TRIG_POS_EDGE, ::TRIG_RISING</td></tr>
+<tr><td>Functions:</td><td> ulAOut(), ulAOutScan(), ulAOutScanStatus(), ulAOutScanStop(),
+	ulAOutScanWait(), ulAOutSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter (DT9837A and DT9837B only)</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0 to 2</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+	::SO_EXTTRIGGER, ::SO_EXTTIMEBASE, ::SO_TIMEBASEOUT </td></tr>
+<tr><td>Scan rates:</td><td> DT9837A: 195.313 to 52,734 S/s <br> DT9837B: 195.313 to 10,546 S/s </td></tr>
+<tr><td>Scan flags:</td><td>::CINSCAN_FF_DEFAULT, ::CINSCAN_FF_CTR32_BIT, ::CINSCAN_FF_NOCLEAR
+<tr><td>Trigger types:</td><td> ::TRIG_POS_EDGE, ::TRIG_RISING</td></tr>
+<tr><td>Counter measurement types:</td><td>Counter 0 to Counter 2: ::CMT_COUNT, ::CMT_PERIOD
+	<br>Counter 1 and Counter 2 also support ::CMT_PULSE_WIDTH</td></tr>
+<tr><td>Counter measurement modes:</td><td>CMT_COUNT: ::CMM_DEFAULT<br>CMT_PERIOD: ::CMM_PERIOD_X1 
+	<br>CMT_PULSE_WIDTH: ::CMM_PULSE_WIDTH_DEFAULT</td></tr>
+<tr><td>Functions:</td><td> ulCInScan(), ulCInSetTrigger(), ulCInScanStatus(), ulCInScanStop(), 
+	ulCInScanWait(), ulCtrGetConfig(), ulCtrSetConfig()<td></tr>
+<tr><td>Configuration:</td><td>Config item (Get/Set): ::CTR_CFG_REG <sup>2</sup></td></tr>
+</table>
+<sup>2</sup> For additional information, refer to the *Using UL for Linux* section in Appendix D of the 
+	<a href="https://www.mccdaq.com/GetPDF.aspx?t=/PDFs/manuals/UM9837.pdf">DT9837 Series User's Manual</a>.
+<!-- DAQI ==================================================================================-->
+<h2 class="subsystem">DAQI</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channel types:</td><td> DT9837A: ::DAQI_ANALOG_SE, ::DAQI_CTR32, ::DAQI_DAC
+	<br>DT9837B: ::DAQI_ANALOG_SE, ::DAQI_CTR32<br> DT9837C: ::DAQI_ANALOG_SE <td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_SINGLEIO, ::SO_BLOCKIO, ::SO_CONTINUOUS, 
+	::SO_EXTTRIGGER, ::SO_EXTTIMEBASE, ::SO_TIMEBASEOUT </td></tr>
+<tr><td>Scan rates:</td><td>DT9837A: 195.313 to 52,734 S/s<br>DT9837B: 195.313 to 105,469 S/s
+	<br>DT9837C: 195.313 to 105,469 S/s</td></tr>
+<tr><td>Trigger types:</td><td>DT9837A: ::TRIG_POS_EDGE, ::TRIG_RISING<br>DT9837B: ::TRIG_POS_EDGE, 
+	::TRIG_RISING<br>DT9837C: ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE, ::TRIG_RISING, ::TRIG_FALLING </td></tr><tr><td>
+Functions:</td><td>ulDaqInScan(), ulDaqInScanStatus(), ulDaqInScanStop(), ulDaqInScanWait(), 
+	ulDaqInSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, ::DE_ON_INPUT_SCAN_ERROR, ::DE_ON_END_OF_OUTPUT_SCAN, 
+	::DE_ON_OUTPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+*/
+
+
+/** \mainpage
+ * <h1>Introduction</h1>
+ * <p>UL for Linux is used to access and control supported Measurement Computing DAQ devices over the Linux platform. The UL for Linux binary name is libuldaq.</p>
+ * <p>Refer to the <a href="uldaq_8h.html">API File Reference</a> for the data structures and enumerations included in the library.</p>
+
+ * <h2>Requirements</h2>
+ * <ul>
+ *     <li>C, C++ compilers and Make tool</li>
+ *     <li>Development package for libusb
+ *     <br>UL for Linux uses the libusb C library to access MCC devices.
+ *     Refer to <a href="http://libusb.info/">http://libusb.info/</a> for more information about libusb, including download locations.
+ *     </li>
+ * </ul>
+ *
+ * <h2>Installation</h2>
+ * <p>Refer to the README file on <a href="https://github.com/mccdaq/uldaq">GitHub</a> for information about how to download the
+ * UL for Linux package and install the library.</p>
+
+ * <h2>Getting Started</h2>
+ * <p>The <a href="mods.html">Modules</a> page provides links to the different categories of libuldaq functionality, and is a good place to start
+ * reading about the API documentation.</p>
+
+ * <h2>Error Handling</h2>
+ * <p>Most UL for Linux functions return 0 on success, or a numeric value &gt;0 (or non-zero) on failure. The error codes relate to UlError enumerations.</p>
+ *
+ * <h2>Supported Hardware</h2>
+ * <p>Refer to the <a href="hwref.html#hwlist">Hardware supported by UL for Linux software</a> section for a list of all supported
+ * Measurement Computing devices with links to supported UL for Linux capabilities.</p>
+ *
+ * <h2>Support</h2>
+ * <p>Measurement Computing Corporation
+ * <br>508-946-5100
+ * <br>Technical Support: <a href="https://www.mccdaq.com/support.aspx">www.mccdaq.com/support</a>
+ * <br>Knowledgebase: <a href="http://kb.mccdaq.com/Default.aspx">kb.mccdaq.com</a>
+ * <br><a href="https://www.mccdaq.com">www.mccdaq.com</a></p>
+*/
+
+/** \page mods Modules
+* Subsystems and utilities with links to supported functions:
+<hr>
+<div class="indent">
+<table class="directory">
+<tr><td colspan="2"><b>Subsystems</b></td></tr>
+<tr class="even"><td class="entry">@ref AnalogInput</td><td class="desc">Configure the analog input subsystem and acquire data</td></tr>
+<tr><td class="entry">@ref AnalogOutput</td><td class="desc">Configure the analog output subsystem and generate data</td></tr>
+<tr class="even"><td class="entry">@ref DigitalIO</td><td class="desc">Configure the digital I/O subsystem and acquire or generate data</td></tr>
+<tr ><td class="entry">@ref CounterInput</td><td class="desc">Configure the counter input subsystem and acquire data</td></tr>
+<tr class="even"><td class="entry">@ref TimerOutput</td><td class="desc">Configure the timer output subsystem</td></tr>
+<tr ><td class="entry">@ref SyncIo</td><td class="desc">Configure the DAQ I/O subsystem to acquire or generate data</td></tr>
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr><td colspan="2"><b>Utilities</b></td></tr>
+<tr class="even"><td class="entry">@ref DeviceDiscovery</td><td class="desc">Manage the MCC devices that are available to the system</td></tr>
+<tr><td class="entry">@ref Misc</td><td class="desc">Miscellaneous functions</td></tr>
+<tr class="even"><td class="entry">@ref DeviceInfo</td><td class="desc">Retrieve device information</td></tr>
+</table>
+</div><!-- indent -->
+<hr>
+*/
+
+ /** \page examples Example Projects
+UL for Linux includes example projects you can run with MCC hardware.
+
+UL for Linux example projects are installed into into an &quot;examples&quot; 
+folder as part of the project make and are ready to run.<br>
+Connect a supported Measurement Computing DAQ device to your system before running an example.
+Perform the following steps to run a UL for Linux example from a terminal window:
+
+<ol>
+<li>Open a terminal window in the UL for Linux examples folder directory.</li>
+<li>Enter <span style="font-family:courier">./filename</span>. \n For example, enter  <span style="font-family:courier">./AIn</span>
+to run the analog input example.</li>
+</ol>
+<p>Users can also choose to import the example code into an IDE, such as Eclipse, and run the examples from that environment.</p>
+
+<!-- Example programs ==================================================================================-->
+<p>The UL for Linux package includes the following example projects:</p>
+<table class="doxtable" width="70%">
+<tr><td width="20%"><strong>UL for Linux Example</strong></td><td><strong>Description</strong></td></tr>
+<tr><td>AIn</td><td>Reads an A/D input channel. Demonstrates the use of ulAIn().</td></tr>
+<tr><td>AInScan</td><td>Scans a range of A/D input channels, and stores the data in an array. Demonstrates the use of ulAInScan()
+and ulAInScanStop().</td></tr>
+<tr><td>AInScanWithEvents</td><td>Performs an A/D scan using events to determine when data is available or when
+the acquisition is complete. The example also demonstrates how to retrieve the data when it becomes
+available. Demonstrates the use of ulEnableEvent(), ulAInScanWait(), and ulAInScanStop().</td></tr>
+<tr><td>AInScanWithQueue</td><td>Creates a queue that sets individual channel ranges for an A/D scan. Demonstrates the
+use of ulAInLoadQueue(), ulAInScan(), and ulAInScanStop().</td></tr>
+<tr><td>AInScanWithTrigger</td><td>Scans a range of A/D channels when a trigger is received, and stores the data in an array. This
+ example shows how to obtain and configure trigger options. Demonstrates the use of ulAInScan() and ulAInScanStop().</td></tr>
+<tr><td>AInScanIepe</td><td>Enables IEPE mode for a range of A/D input channels, and scans the specified A/D input channels. Demonstrates the use of ulAInScan()
+and ulAInScanStop().</td></tr>
+<tr><td>AOut</td><td>Writes a specified value to a D/A output channel. Demonstrates the use of ulAOut().</td></tr>
+<tr><td>AOutScan</td><td>Performs a D/A scan. Data can be viewed with an oscilloscope or meter.
+Demonstrates the use of ulAOutScan() and ulAOutScanStop().</td></tr>
+<tr><td>CIn</td><td>Sets the initial value of a counter and counts events. Demonstrates the use of ulCIn() and ulCClear().</td></tr>
+<tr><td>CInScan</td><td>Scans a range of counter channels. Demonstrates the use of ulCInScan() and ulCInScanStop().</td></tr>
+<tr><td>CInScanWithEncoder</td><td>Scans a range of encoder channels. Demonstrates the use of ulCInScan(), ulCConfigScan(), and ulCInScanStop().</td></tr>
+<tr><td>DaqInScan</td><td>Simultaneously acquires analog, digital, and counter data. Demonstrates the use of ulDaqInScan() and
+ulDaqInScanStop().</td></tr>
+<tr><td>DaqInScanWithTrigger</td><td>Sets up a trigger function, and simultaneously acquires analog, digital, and counter data when the
+trigger is received. Demonstrates the use of ulDaqInScan() and ulDaqInScanStop().</td></tr>
+<tr><td>DaqOutScan</td><td>Simultaneously outputs analog and digital data.
+Demonstrates the use of ulDaqOutScan().</td></tr>
+<tr><td>DBitIn</td><td>Configures multiple digital bits for input and reads the bit values. Demonstrates the use of ulDConfigBit() and
+ulDBitIn().</td></tr>
+<tr><td>DBitOut</td><td>Writes a specified value to multiple digital output bits. Demonstrates the use of ulDConfigBit() and ulDBitOut().</td></tr>
+<tr><td>DIn</td><td>Configures a port for input and reads the port value. Demonstrates the use of ulDConfigPort() and ulDIn().</td></tr>
+<tr><td>DInScan</td><td>Configures a port for input and continuously reads it. Demonstrates the use of ulDConfigPort(), ulDIn(), and
+ulDInScanStop().</td></tr>
+<tr><td>DOut</td><td>Configures a port for output and writes a specified value. Demonstrates the use of ulDConfigPort() and ulDOut().</td></tr>
+<tr><td>DOutScan</td><td>Configures the port direction and outputs digital data. Demonstrates the use of ulDConfigPort(), ulDOutScan(), and ulDOutScanStop().</td></tr>
+<tr><td>TIn</td><td>Reads a temperature input channel. Demonstrates the use of ulTIn().</td></tr>
+<tr><td>TmrPulseOut</td><td>Generates an output pulse at a specified duty cycle and frequency. Demonstrates the use of ulTmrPulseOutStart() and ulTmrPulseOutStop().</td></tr>
+</table>
+<br>
+*/
+
+

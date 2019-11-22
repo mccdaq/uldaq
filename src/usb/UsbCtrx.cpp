@@ -31,7 +31,7 @@ UsbCtrx::UsbCtrx(const DaqDeviceDescriptor& daqDeviceDescriptor, std::string fpg
 	setScanRunningBitMask(SD_OUTPUT, 0x0008);
 	setScanDoneBitMask(0x40);
 
-	mDaqDeviceInfo.setEventTypes(DE_ON_DATA_AVAILABLE | DE_ON_END_OF_INPUT_SCAN | DE_ON_INPUT_SCAN_ERROR | DE_ON_END_OF_OUTPUT_SCAN | DE_ON_OUTPUT_SCAN_ERROR);
+	mDaqDeviceInfo.setEventTypes(DE_ON_DATA_AVAILABLE | DE_ON_END_OF_INPUT_SCAN | DE_ON_INPUT_SCAN_ERROR);
 
 	setMultiCmdMem(false);
 	setMemUnlockAddr(0x8000);

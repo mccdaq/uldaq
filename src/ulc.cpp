@@ -2651,6 +2651,45 @@ UlError ulDevGetInfo(DaqDeviceHandle daqDeviceHandle, DevInfoItem infoItem, unsi
 	return error;
 }
 
+UlError ulDevGetConfig(DaqDeviceHandle daqDeviceHandle, DevConfigItem configItem, unsigned int index, long long* configValue)
+{
+	FnLog log("ulDevGetConfig()");
+
+	UlError error = ERR_NO_ERROR;
+
+	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
+
+	if(pDaqDevice)
+	{
+		try
+		{
+			UlDaqDeviceConfig& devConfig = pDaqDevice->getDevConfig();
+
+			switch(configItem)
+			{
+			case DEV_CFG_HAS_EXP:
+				*configValue = devConfig.hasExp() ? 1 : 0;
+				break;
+
+			default:
+				error = ERR_BAD_CONFIG_ITEM;
+			}
+		}
+		catch(UlException& e)
+		{
+			error = e.getError();
+		}
+		catch(...)
+		{
+			error = ERR_UNHANDLED_EXCEPTION;
+		}
+	}
+	else
+		error = ERR_BAD_DEV_HANDLE;
+
+	return error;
+}
+
 UlError ulDevGetConfigStr(DaqDeviceHandle daqDeviceHandle, DevConfigItemStr configItem, unsigned int index, char* configStr, unsigned int* maxConfigLen)
 {
 	FnLog log("ulDevGetConfigStr()");
@@ -2801,7 +2840,7 @@ UlError ulAIGetConfig(DaqDeviceHandle daqDeviceHandle, AiConfigItem configItem, 
 						*configValue = aiConfig.getAutoZeroMode();
 						break;
 					case AI_CFG_CAL_DATE:
-						*configValue = aiConfig.getCalDate();
+						*configValue = aiConfig.getCalDate(index);
 						break;
 					case AI_CFG_CHAN_IEPE_MODE:
 						*configValue = aiConfig.getChanIepeMode(index);
@@ -2979,7 +3018,7 @@ UlError ulAIGetConfigStr(DaqDeviceHandle daqDeviceHandle, AiConfigItemStr config
 				switch(configItem)
 				{
 				case AI_CFG_CAL_DATE_STR:
-					aiConfig.getCalDateStr(configStr, maxConfigLen);
+					aiConfig.getCalDateStr(index, configStr, maxConfigLen);
 					break;
 				case AI_CFG_CHAN_COEFS_STR:
 					aiConfig.getChanCoefsStr(index, configStr, maxConfigLen);
@@ -3195,10 +3234,12 @@ UlError ulAOSetConfig(DaqDeviceHandle daqDeviceHandle, AoConfigItem configItem, 
 				case AO_CFG_SYNC_MODE:
 					aoConfig.setSyncMode((AOutSyncMode) configValue);
 					break;
+				case AO_CFG_CHAN_SENSE_MODE:
+					aoConfig.setSenseMode(index, (AOutSenseMode) configValue);
+					break;
 				default:
 					error = ERR_BAD_CONFIG_ITEM;
 				}
-
 			}
 			else
 				error = ERR_BAD_DEV_TYPE;
@@ -3244,10 +3285,13 @@ UlError ulAOGetConfig(DaqDeviceHandle daqDeviceHandle, AoConfigItem configItem, 
 					case AO_CFG_SYNC_MODE:
 						*configValue = aoConfig.getSyncMode();
 						break;
+					case AO_CFG_CHAN_SENSE_MODE:
+						*configValue = aoConfig.getSenseMode(index);
+					break;
+
 					default:
 						error = ERR_BAD_CONFIG_ITEM;
 					}
-
 				}
 				else
 					error = ERR_BAD_DEV_TYPE;

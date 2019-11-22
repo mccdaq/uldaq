@@ -1,8 +1,7 @@
 /*
  * UsbScanTransferIn.cpp
  *
- *  Created on: Sep 18, 2015
- *      Author: root
+ *      Author: Measurement Computing Corporation
  */
 #include <cstring>
 #include <unistd.h>
@@ -268,7 +267,7 @@ void UsbScanTransferIn::startXferStateThread()
 		status = pthread_create(&mXferStateThreadHandle, &attr, &xferStateThread, this);
 
 #ifndef __APPLE__
-		pthread_setname_np(mXferStateThreadHandle, "xfer_state_td");
+		pthread_setname_np(mXferStateThreadHandle, "xfer_in_state_td");
 #endif
 
 		if(status)

@@ -1,8 +1,7 @@
 /*
  * CtrUsb9837x.h
  *
- *  Created on: Dec 27, 2018
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef USB_CTR_CTRUSB9837X_H_

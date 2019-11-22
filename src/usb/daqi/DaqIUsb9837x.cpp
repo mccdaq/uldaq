@@ -1,8 +1,7 @@
 /*
  * DaqIUsb9837x.cpp
  *
- *  Created on: Dec 26, 2018
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #include "DaqIUsb9837x.h"
@@ -118,7 +117,9 @@ void DaqIUsb9837x::initialize()
 
 double DaqIUsb9837x::daqInScan(FunctionType functionType, DaqInChanDescriptor chanDescriptors[], int numChans, int samplesPerChan, double rate, ScanOption options, DaqInScanFlag flags, void* data)
 {
-	check_DaqInScan_Args(functionType, chanDescriptors, numChans, samplesPerChan, rate, options, flags, data);
+	UlLock lock(mIoDeviceMutex);
+
+	check_DaqInScan_Args_(functionType, chanDescriptors, numChans, samplesPerChan, rate, options, flags, data);
 
 	resetScanErrorFlag();
 	mOverrunOccurred = false;
@@ -143,6 +144,7 @@ double DaqIUsb9837x::daqInScan(FunctionType functionType, DaqInChanDescriptor ch
 
 		setScanInfo(functionType, chanCount, samplesPerChan, sampleSize, aiResolution, options, flags, calCoefs, customScales, data);
 
+		// coverity[sleep]
 		configureScan(functionType, chanDescriptors, numChans, rate, options);
 		configureFifoPacketSize(epAddr, rate, chanCount, samplesPerChan, options);
 
@@ -169,7 +171,7 @@ double DaqIUsb9837x::daqInScan(FunctionType functionType, DaqInChanDescriptor ch
 	return actualScanRate();
 }
 
-void DaqIUsb9837x::check_DaqInScan_Args(FunctionType functionType, DaqInChanDescriptor chanDescriptors[], int numChans, int samplesPerChan, double rate, ScanOption options, DaqInScanFlag flags, void* data) const
+void DaqIUsb9837x::check_DaqInScan_Args_(FunctionType functionType, DaqInChanDescriptor chanDescriptors[], int numChans, int samplesPerChan, double rate, ScanOption options, DaqInScanFlag flags, void* data) const
 {
 	DaqIDevice::check_DaqInScan_Args(chanDescriptors, numChans, samplesPerChan, rate, options, flags, data);
 

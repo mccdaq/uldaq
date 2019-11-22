@@ -1,8 +1,7 @@
 /*
  * DaqIUsb9837x.h
  *
- *  Created on: Dec 26, 2018
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef USB_DAQI_DAQIUSB9837X_H_
@@ -39,7 +38,7 @@ public:
 
 
 protected:
-	virtual void check_DaqInScan_Args(FunctionType functionType, DaqInChanDescriptor chanDescriptors[], int numChans, int samplesPerChan, double rate, ScanOption options, DaqInScanFlag flags, void* data) const;
+	void check_DaqInScan_Args_(FunctionType functionType, DaqInChanDescriptor chanDescriptors[], int numChans, int samplesPerChan, double rate, ScanOption options, DaqInScanFlag flags, void* data) const;
 	virtual void check_DaqInSetTrigger_Args(TriggerType type, DaqInChanDescriptor trigChanDesc, double level, double variance, unsigned int retriggerCount) const;
 	//void loadScanConfigs(DaqInChanDescriptor chanDescriptors[], int numChans) const;
 	std::vector<CalCoef> getScanCalCoefs(DaqInChanDescriptor chanDescriptors[], int numChans, DaqInScanFlag flags) const;

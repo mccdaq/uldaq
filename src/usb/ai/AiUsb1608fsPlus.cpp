@@ -70,6 +70,8 @@ void AiUsb1608fs_Plus::initialize()
 
 double AiUsb1608fs_Plus::aIn(int channel, AiInputMode inputMode, Range range, AInFlag flags)
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AIn_Args(channel, inputMode, range, flags);
 
 	double data = 0.0;
@@ -90,6 +92,8 @@ double AiUsb1608fs_Plus::aIn(int channel, AiInputMode inputMode, Range range, AI
 
 double AiUsb1608fs_Plus::aInScan(int lowChan, int highChan, AiInputMode inputMode, Range range, int samplesPerChan, double rate, ScanOption options, AInScanFlag flags, double data[])
 {
+	UlLock lock(mIoDeviceMutex);
+
 	int chanCount = queueEnabled() ? queueLength() :  highChan - lowChan + 1;
 	long long totalCount = (long long) samplesPerChan * chanCount;
 

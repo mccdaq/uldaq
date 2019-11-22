@@ -159,7 +159,7 @@ int main(void)
 	// allocate a buffer to receive the data
 	buffer = (unsigned long long*) malloc(encoderCount * samplesPerCounter * sizeof(unsigned long long));
 
-	if(buffer == 0)
+	if(buffer == NULL)
 	{
 		printf("\nOut of memory, unable to create scan buffer\n");
 		goto end;

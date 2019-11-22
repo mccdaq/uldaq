@@ -1,7 +1,6 @@
 /*
  * Endian.cpp
  *
- *  Created on: Dec 4, 2015
  *     Author: Measurement Computing Corporation
  */
 

@@ -1,7 +1,6 @@
 /*
  * DaqDeviceInternal.h
  *
- *  Created on: Jul 29, 2015
  *     Author: Measurement Computing Corporation
  */
 
@@ -120,7 +119,7 @@ public:
 	bool hasExp() const { return mHasExp;}
 
 	//////////////////////          Configuration functions          /////////////////////////////////
-	void getCfg_FwVersionStr(char* fpgaVerStr, unsigned int* maxStrLen) const;
+	void getCfg_FwVersionStr(DevVersionType verType, char* fpgaVerStr, unsigned int* maxStrLen) const;
 	void getCfg_FpgaVersionStr(char* fpgaVerStr, unsigned int* maxStrLen) const;
 	void getCfg_RadioVersionStr(char* fpgaVerStr, unsigned int* maxStrLen) const;
 
@@ -148,6 +147,8 @@ protected:
 	unsigned short mRawFwVersion;
 	unsigned short mRawFpgaVersion;
 	unsigned short mRawRadioVersion;
+	unsigned short mRawFwMeasurementVersion;
+	unsigned short mRawFwExpMeasurementVersion;
 
 	mutable unsigned long long mCurrentSuspendCount;
 

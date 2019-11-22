@@ -159,7 +159,7 @@ void UsbDInScan::setScanState(ScanStatus state)
 	daqDev().dioDevice()->setScanState(SD_INPUT, state);
 }
 
-UlError UsbDInScan::getStatus(ScanStatus* status, TransferStatus* xferStatus)
+UlError UsbDInScan::getInputStatus(ScanStatus* status, TransferStatus* xferStatus)
 {
 	UlError err = ERR_NO_ERROR;
 

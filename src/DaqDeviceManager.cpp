@@ -1,7 +1,6 @@
 /*
  * DaqDeviceManager.cpp
  *
- *  Created on: Jul 30, 2015
  *     Author: Measurement Computing Corporation
  */
 
@@ -58,6 +57,16 @@ void DaqDeviceManager::addSupportedDaqDevice()
 	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_CTR08, "USB-CTR08"));
 
 	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_QUAD08, "USB-QUAD08"));
+
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_2001_TC, "USB-2001-TC"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_2416, "USB-2416"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_2416_4AO, "USB-2416-4AO"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_2408, "USB-2408"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_2408_2AO, "USB-2408-2AO"));
+
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_2020, "USB-2020"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_1608HS, "USB-1608HS"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_1608HS_2AO, "USB-1608HS-2AO"));
 
 	// HID devices
 	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_DIO96H, "USB-DIO96H"));

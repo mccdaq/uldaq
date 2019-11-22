@@ -64,6 +64,8 @@ void AoUsb1208hs::initialize()
 
 void AoUsb1208hs::aOut(int channel, Range range, AOutFlag flags, double dataValue)
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AOut_Args(channel, range, flags, dataValue);
 
 	unsigned short calData = calibrateData(channel, range, flags, dataValue);
@@ -73,6 +75,8 @@ void AoUsb1208hs::aOut(int channel, Range range, AOutFlag flags, double dataValu
 
 double AoUsb1208hs::aOutScan(int lowChan, int highChan, Range range, int samplesPerChan, double rate, ScanOption options, AOutScanFlag flags, double data[])
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AOutScan_Args(lowChan, highChan, range, samplesPerChan, rate, options, flags, data);
 
 	UlLock trigCmdLock(daqDev().getTriggerCmdMutex());

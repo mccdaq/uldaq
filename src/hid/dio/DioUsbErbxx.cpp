@@ -13,17 +13,17 @@ DioUsbErbxx::DioUsbErbxx(const HidDaqDevice& daqDevice) : DioHidBase(daqDevice)
 {
 	if(daqDevice.getDeviceType() == DaqDeviceId::USB_ERB08)
 	{
-		mDioInfo.addPort(0, FIRSTPORTCL, 4, DPIOT_NONCONFIG);
-		mDioInfo.addPort(1, FIRSTPORTCH, 4, DPIOT_NONCONFIG);
+		mDioInfo.addPort(0, FIRSTPORTCL, 4, DPIOT_OUT);
+		mDioInfo.addPort(1, FIRSTPORTCH, 4, DPIOT_OUT);
 
 		mPortOffset = 2;
 	}
 	else
 	{
-		mDioInfo.addPort(0, FIRSTPORTA, 8, DPIOT_NONCONFIG);
-		mDioInfo.addPort(1, FIRSTPORTB, 8, DPIOT_NONCONFIG);
-		mDioInfo.addPort(2, FIRSTPORTCL, 4, DPIOT_NONCONFIG);
-		mDioInfo.addPort(3, FIRSTPORTCH, 4, DPIOT_NONCONFIG);
+		mDioInfo.addPort(0, FIRSTPORTA, 8, DPIOT_OUT);
+		mDioInfo.addPort(1, FIRSTPORTB, 8, DPIOT_OUT);
+		mDioInfo.addPort(2, FIRSTPORTCL, 4, DPIOT_OUT);
+		mDioInfo.addPort(3, FIRSTPORTCH, 4, DPIOT_OUT);
 
 		mPortOffset = 0;
 	}

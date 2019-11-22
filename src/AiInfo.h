@@ -1,8 +1,7 @@
 /*
  * AiInfo.h
  *
- *  Created on: Sep 24, 2015
- *      Author: root
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef AIINFO_H_

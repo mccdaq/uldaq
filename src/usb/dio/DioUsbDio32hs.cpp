@@ -251,17 +251,17 @@ double DioUsbDio32hs::dOutScan(DigitalPortType lowPort, DigitalPortType highPort
 UlError DioUsbDio32hs::getStatus(ScanDirection direction, ScanStatus* status, TransferStatus* xferStatus)
 {
 	if(direction == SD_INPUT)
-		return mDInScanDev->getStatus(status, xferStatus);
+		return mDInScanDev->getInputStatus(status, xferStatus);
 	else
-		return mDOutScanDev->getStatus(status, xferStatus);
+		return mDOutScanDev->getOutputStatus(status, xferStatus);
 }
 
 UlError DioUsbDio32hs::waitUntilDone(ScanDirection direction, double timeout)
 {
 	if(direction == SD_INPUT)
-		return ((IoDevice*)mDInScanDev)->waitUntilDone(timeout);
+		return mDInScanDev->waitUntilDone(timeout);
 	else
-		return ((IoDevice*)mDOutScanDev)->waitUntilDone(timeout);
+		return mDOutScanDev->waitUntilDone(timeout);
 }
 
 

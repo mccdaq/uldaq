@@ -1,8 +1,7 @@
 /*
  * TmrUsbQuad08.h
  *
- *  Created on: Nov 12, 2018
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef USB_TMR_TMRUSBQUAD08_H_

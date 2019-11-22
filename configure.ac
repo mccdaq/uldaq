@@ -1,6 +1,6 @@
 m4_define([LIBUL_MAJOR],   1)
 m4_define([LIBUL_MINOR],   1)
-m4_define([LIBUL_MICRO], 1)
+m4_define([LIBUL_MICRO], 2)
 m4_define([LIBUL_RC],)
 
 AC_INIT([libuldaq],[LIBUL_MAJOR[.]LIBUL_MINOR[.]LIBUL_MICRO[]LIBUL_RC],[info@mccdaq.com],[libuldaq],[http://www.mccdaq.com])
@@ -10,7 +10,7 @@ AC_INIT([libuldaq],[LIBUL_MAJOR[.]LIBUL_MINOR[.]LIBUL_MICRO[]LIBUL_RC],[info@mcc
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
 # http://sourceware.org/autobook/autobook/autobook_91.html
 lt_current=2
-lt_revision=1
+lt_revision=2
 lt_age=1
 LTLDFLAGS="-version-info ${lt_current}:${lt_revision}:${lt_age}"
 
@@ -69,17 +69,33 @@ AM_CONDITIONAL(OS_LINUX, test "x$os" = xlinux)
 AM_CONDITIONAL(OS_DARWIN, test "x$os" = xdarwin)
 
 # Examples build
-AC_ARG_ENABLE([disable-examples-build], [AS_HELP_STRING([--disable-examples-build],
-	[disable building example applications [default=no]])],
-	[disable_build_examples=$enableval],
-	[disable_build_examples=no])
-AM_CONDITIONAL(BUILD_EXAMPLES, test "x$disable_build_examples" != xyes)
+AC_ARG_ENABLE([examples], AS_HELP_STRING([--disable-examples], [disable building example applications [default=no]]))
+AM_CONDITIONAL(BUILD_EXAMPLES, test "x$enable_examples" != xno)
+
 # Debug enable
-AC_ARG_ENABLE([debug], [AS_HELP_STRING([--debug],
-	[turn on debugging [default=no]])],
-	[debug=$enableval],
-	[debug=no])
-AM_CONDITIONAL(DEBUG, test "x$debug" != xno)
+AC_ARG_ENABLE([debug], AS_HELP_STRING([--enable-debug], [turn on debugging [default=no]]))
+AM_CONDITIONAL(DEBUG, test "x$enable_debug" = xyes)
+
+if test "$enable_debug" = "yes"; then
+	CFLAGS="-DDEBUG -O0 -g3"
+	CXXFLAGS="-DDEBUG -O0 -g3"
+
+	AC_MSG_NOTICE([---------------- Debug mode enabled -----------------])
+fi
+
+# Check if g++ supports -Wno-psabi flag
+if test "$os" = "linux"; then
+	AC_LANG_PUSH([C++])
+	original_CXXFLAGS="$CXXFLAGS"
+	CXXFLAGS="$CXXFLAGS -Wno-psabi"
+	AC_MSG_CHECKING([if g++ supports -Wno-psabi flag])
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[])],[flag_supported=yes],[flag_supported=no])
+	AC_MSG_RESULT($flag_supported)
+	if test "$flag_supported" = "no"; then
+	    CXXFLAGS="$original_CXXFLAGS"
+	fi
+	AC_LANG_POP([C++])
+fi
 
 AC_SUBST(LTLDFLAGS)
 

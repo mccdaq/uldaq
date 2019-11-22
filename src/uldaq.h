@@ -1173,6 +1173,18 @@ typedef enum
 	AOSM_MASTER	= 1
 }AOutSyncMode;
 
+/** Use with #AoConfigItem to set configuration options at runtime. */
+typedef enum
+{
+	/** Sense mode is disabled. */
+	AOSM_DISABLED	= 1,
+
+	/** Sense mode is enable. */
+	AOSM_ENABLED		= 2
+}AOutSenseMode;
+
+
+
 /** Use as the \p flags argument value for ulCInScan() to set counter properties. */
 typedef enum
 {
@@ -1747,7 +1759,18 @@ typedef enum
 	DEV_INFO_MEM_REGIONS = 9
 }DevInfoItem;
 
-/** Use with ulDevGetConfigStr() as an \p infoItem argument value to obtain information for the specified device. */
+/** Use with ulDevGetConfig() as a \p configItem argument value to get the current configuration
+ * of the specified the specified device.
+ */
+typedef enum
+{
+	/** Returns a non-zero value to \p configValue if an expansion board is attached; otherwise, returns zero. */
+	DEV_CFG_HAS_EXP = 1
+}DevConfigItem;
+
+/** Use with ulDevGetConfigStr() as a \p configItem argument value to get the current configuration
+ * of the specified the specified device.
+ */
 typedef enum
 {
 	/** Returns the version of the device system defined by the #DevVersionType value of the \p index argument */
@@ -1764,7 +1787,13 @@ typedef enum
 	DEV_VER_FPGA = 1,
 
 	/** Radio firmware version installed on the current device is returned to the \p configStr argument. */
-	DEV_VER_RADIO = 2
+	DEV_VER_RADIO = 2,
+
+	/** Measurement firmware version installed on the current device is returned to the \p configStr argument. */
+	DEV_VER_FW_MEASUREMENT = 3,
+
+	/** Measurement firmware version installed on the expansion device attached to the current device is returned to the \p configStr argument. */
+	DEV_VER_FW_MEASUREMENT_EXP = 4
 }DevVersionType;
 
 /** Use with ulAIGetInfo() to obtain information about the analog input subsystem for the specified device
@@ -1872,7 +1901,9 @@ typedef enum
 	/** The auto zero mode. Set with #AutoZeroMode. */
 	AI_CFG_AUTO_ZERO_MODE = 6,
 
-	/** The date when the device was calibrated last in UNIX Epoch time. */
+	/** The date when the device was calibrated last in UNIX Epoch time. Set index to 0 for the factory calibration date,
+	* or 1 for the field calibration date.
+	* If the value read is not a valid date or the index is invalid, 0 (Unix Epoch) is returned. */
 	AI_CFG_CAL_DATE = 7,
 #endif /* doxy_skip */
 
@@ -1908,15 +1939,16 @@ typedef enum
 
 typedef enum
 {
-	/** Calibration date */
+	/** Returns the calibration date. Set index to 0 for the factory calibration date, or 1 for the field calibration date.
+	* If the value read is not a valid date or the index is invalid, Unix Epoch is returned. */
 	AI_CFG_CAL_DATE_STR = 2000,
 
-	/** The channel coefficients used for the configured sensor. */
+	/** Returns the channel coefficients used for the configured sensor. */
 	AI_CFG_CHAN_COEFS_STR = 2001
 }AiConfigItemStr;
 
 /** Use with ulAOGetInfo() to obtain information about the analog output subsystem for the specified device
- * as an \p infoItem argument value. */
+* as an \p infoItem argument value. */
 typedef enum
 {
 	/** Returns the D/A resolution in number of bits to the \p infoValue argument. Index is ignored. */
@@ -1963,7 +1995,10 @@ typedef enum
 typedef enum
 {
 	/** The sync mode. Set with #AOutSyncMode. */
-	AO_CFG_SYNC_MODE = 1
+	AO_CFG_SYNC_MODE = 1,
+
+	/** The sense mode for the specified channel. Set with #AOutSenseMode. */
+	AO_CFG_CHAN_SENSE_MODE = 2
 }AoConfigItem;
 
 /** Use with ulDIOGetInfo() to obtain information about the DIO subsystem for the specified device as an \p infoItem argument value. */
@@ -2417,7 +2452,7 @@ UlError ulTInArray(DaqDeviceHandle daqDeviceHandle, int lowChan, int highChan, T
 
 /** 
  * \defgroup AnalogOutput Analog Output
- * Configure the analog output subsystem and acquire data
+ * Configure the analog output subsystem and generate data
  * @{
  */
  
@@ -2506,7 +2541,7 @@ UlError ulAOutSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int 
 
 /** 
  * \defgroup DigitalIO Digital I/O
- * Configure the digital I/O subsystem and acquire data
+ * Configure the digital I/O subsystem and acquire or generate data
  * @{
  */
 
@@ -3107,6 +3142,17 @@ UlError ulDevGetInfo(DaqDeviceHandle daqDeviceHandle, DevInfoItem infoItem, unsi
  * Use with #DevConfigItemStr to retrieve the current configuration as a null-terminated string.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param configItem the configuration item to retrieve from the device
+ * @param index either ignored or an index into the \p configValue
+ * @param configValue the value to set the specified configuration item to
+ * @return The UL error code.
+ */
+UlError ulDevGetConfig(DaqDeviceHandle daqDeviceHandle, DevConfigItem configItem, unsigned int index, long long* configValue);
+
+
+/**
+ * Use with #DevConfigItemStr to retrieve the current configuration as a null-terminated string.
+ * @param daqDeviceHandle the handle to the DAQ device
+ * @param configItem the configuration item to retrieve from the device
  * @param index specifies the version type to return as an index into \p configItem (::DevVersionType)
  * @param configStr pointer to the buffer where the configuration string is copied
  * @param maxConfigLen pointer to the value specifying the size of \p configStr made available by the user;
@@ -3418,104 +3464,6 @@ UlError ulMemGetInfo(DaqDeviceHandle daqDeviceHandle, MemRegion memRegion, MemDe
 DaqDeviceHandle ulCreateDaqDevicePtr(DaqDeviceDescriptor* daqDevDescriptor);
 
 #endif /* doxy_skip */
-
-/** \mainpage
- * <h1>Introduction</h1>
- * <p>UL for Linux is used to access and control supported Measurement Computing DAQ devices over the Linux platform. The UL for Linux binary name is libuldaq.</p>
- * <p>Refer to the <a href="uldaq_8h.html">API File Reference</a> for the data structures and enumerations included in the library.</p>
-
- * <h2>Requirements</h2>
- * <ul>
- *     <li>C, C++ compilers and Make tool</li>
- *     <li>Development package for libusb
- *     <br>UL for Linux uses the libusb C library to access MCC devices.
- *     Refer to <a href="http://libusb.info/">http://libusb.info/</a> for more information about libusb, including download locations.
- *     </li>
- * </ul>
- *
- * <h2>Installation</h2>
- * <p>Refer to the README file on <a href="https://github.com/mccdaq/uldaq">GitHub</a> for information about how to download the
- * UL for Linux package and install the library.</p>
-
- * <h2>Getting Started</h2>
- * <p>The <a href="modules.html">Modules</a> page provides links to the different categories of libuldaq functionality, and is a good place to start
- * reading about the API documentation.</p>
-
- * <h2>Error Handling</h2>
- * <p>Most UL for Linux functions return 0 on success, or a numeric value &gt;0 (or non-zero) on failure. The error codes relate to UlError enumerations.</p>
- *
- * <h2>Supported Hardware</h2>
- * <p>Refer to <a href="https://www.mccdaq.com/Linux">www.mccdaq.com/Linux</a> for the Measurement Computing devices that support UL for Linux.</p>
- *
-
- * <h2>Support</h2>
- * <p>Measurement Computing Corporation
- * <br>508-946-5100
- * <br>Technical Support: <a href="https://www.mccdaq.com/support.aspx">www.mccdaq.com/support</a>
- * <br>Knowledgebase: <a href="http://kb.mccdaq.com/Default.aspx">kb.mccdaq.com</a>
- * <br><a href="https://www.mccdaq.com">www.mccdaq.com</a></p>
-*/
-
-/** \page api API file reference
- * uldaq.h
- */
-
- /** \page examples Example Projects
- * UL for Linux includes example projects you can run with MCC hardware
- *
-<p>UL for Linux example projects are installed into into an &quot;examples&quot; folder as part of the project make and are ready to run.<br>
-Connect a supported Measurement Computing DAQ device to your system before running an example.</p>
-<p>Perform the following steps to run a UL for Linux example from a terminal window:<p>
-
-<ol>
-<li>Open a terminal window in the UL for Linux examples folder directory.</li>
-<li>Enter <span style="font-family:courier">./filename</span>. \n For example, enter  <span style="font-family:courier">./AIn</span>
-to run the analog input example.</li>
-</ol>
-<p>Users can also choose to import the example code into an IDE, such as Eclipse, and run the examples from that environment.</p>
-
-<!-- Example programs ==================================================================================-->
-<p>The UL for Linux package includes the following example projects:</p>
-<table class="doxtable" width="70%">
-<tr><td width="20%"><strong>UL for Linux Example</strong></td><td><strong>Description</strong></td></tr>
-<tr><td>AIn</td><td>Reads an A/D input channel. Demonstrates the use of ulAIn().</td></tr>
-<tr><td>AInScan</td><td>Scans a range of A/D input channels, and stores the data in an array. Demonstrates the use of ulAInScan()
-and ulAInScanStop().</td></tr>
-<tr><td>AInScanWithEvents</td><td>Performs an A/D scan using events to determine when data is available or when
-the acquisition is complete. The example also demonstrates how to retrieve the data when it becomes
-available. Demonstrates the use of ulEnableEvent(), ulAInScanWait(), and ulAInScanStop().</td></tr>
-<tr><td>AInScanWithQueue</td><td>Creates a queue that sets individual channel ranges for an A/D scan. Demonstrates the
-use of ulAInLoadQueue(), ulAInScan(), and ulAInScanStop().</td></tr>
-<tr><td>AInScanWithTrigger</td><td>Scans a range of A/D channels when a trigger is received, and stores the data in an array. This
- example shows how to obtain and configure trigger options. Demonstrates the use of ulAInScan() and ulAInScanStop().</td></tr>
-<tr><td>AInScanIepe</td><td>Enables IEPE mode for a range of A/D input channels, and scans the specified A/D input channels. Demonstrates the use of ulAInScan()
-and ulAInScanStop().</td></tr>
-<tr><td>AOut</td><td>Writes a specified value to a D/A output channel. Demonstrates the use of ulAOut().</td></tr>
-<tr><td>AOutScan</td><td>Performs a D/A scan. Data can be viewed with an oscilloscope or meter.
-Demonstrates the use of ulAOutScan() and ulAOutScanStop().</td></tr>
-<tr><td>CIn</td><td>Sets the initial value of a counter and counts events. Demonstrates the use of ulCIn() and ulCClear().</td></tr>
-<tr><td>CInScan</td><td>Scans a range of counter channels. Demonstrates the use of ulCInScan() and ulCInScanStop().</td></tr>
-<tr><td>CInScanWithEncoder</td><td>Scans a range of encoder channels. Demonstrates the use of ulCInScan(), ulCConfigScan(), and ulCInScanStop().</td></tr>
-<tr><td>DaqInScan</td><td>Simultaneously acquires analog, digital, and counter data. Demonstrates the use of ulDaqInScan() and
-ulDaqInScanStop().</td></tr>
-<tr><td>DaqInScanWithTrigger</td><td>Sets up a trigger function, and simultaneously acquires analog, digital, and counter data when the
-trigger is received. Demonstrates the use of ulDaqInScan() and ulDaqInScanStop().</td></tr>
-<tr><td>DaqOutScan</td><td>Simultaneously outputs analog and digital data.
-Demonstrates the use of ulDaqOutScan().</td></tr>
-<tr><td>DBitIn</td><td>Configures multiple digital bits for input and reads the bit values. Demonstrates the use of ulDConfigBit() and
-ulDBitIn().</td></tr>
-<tr><td>DBitOut</td><td>Writes a specified value to multiple digital output bits. Demonstrates the use of ulDConfigBit() and ulDBitOut().</td></tr>
-<tr><td>DIn</td><td>Configures a port for input and reads the port value. Demonstrates the use of ulDConfigPort() and ulDIn().</td></tr>
-<tr><td>DInScan</td><td>Configures a port for input and continuously reads it. Demonstrates the use of ulDConfigPort(), ulDIn(), and
-ulDInScanStop().</td></tr>
-<tr><td>DOut</td><td>Configures a port for output and writes a specified value. Demonstrates the use of ulDConfigPort() and ulDOut().</td></tr>
-<tr><td>DOutScan</td><td>Configures the port direction and outputs digital data. Demonstrates the use of ulDConfigPort(), ulDOutScan(), and ulDOutScanStop().</td></tr>
-<tr><td>TIn</td><td>Reads a temperature input channel. Demonstrates the use of ulTIn().</td></tr>
-<tr><td>TmrPulseOut</td><td>Generates an output pulse at a specified duty cycle and frequency. Demonstrates the use of ulTmrPulseOutStart() and ulTmrPulseOutStop().</td></tr>
-</table>
-<br>
-*/
-
 
 #ifdef __cplusplus
 }

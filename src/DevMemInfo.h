@@ -1,7 +1,6 @@
 /*
  * DevMemInfo.h
  *
- *  Created on: Jan 18, 2018
  *     Author: Measurement Computing Corporation
  */
 

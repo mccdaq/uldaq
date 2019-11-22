@@ -1,7 +1,6 @@
 /*
  * UsbDOutScan.cpp
  *
- *  Created on: Jan 25, 2018
  *     Author: Measurement Computing Corporation
  */
 
@@ -175,7 +174,7 @@ int UsbDOutScan::getScanEndpointAddr() const
 	return mScanEndpointAddr;
 }
 
-UlError UsbDOutScan::getStatus(ScanStatus* status, TransferStatus* xferStatus)
+UlError UsbDOutScan::getOutputStatus(ScanStatus* status, TransferStatus* xferStatus)
 {
 	UlError err = ERR_NO_ERROR;
 

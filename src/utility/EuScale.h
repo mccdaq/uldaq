@@ -1,8 +1,7 @@
 /*
  * EuScale.h
  *
- *  Created on: Oct 12, 2015
- *      Author: root
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef UTILITY_EUSCALE_H_

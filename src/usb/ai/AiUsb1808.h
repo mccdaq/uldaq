@@ -66,7 +66,7 @@ private:
 	} TADCCONFIG;
 #pragma pack()
 
-	mutable TADCCONFIG* mAdcConfig;
+	mutable TADCCONFIG mAdcConfig[8];
 };
 
 } /* namespace ul */

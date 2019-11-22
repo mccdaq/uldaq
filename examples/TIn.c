@@ -25,6 +25,8 @@
 #define MAX_DEV_COUNT  100
 #define MAX_STR_LENGTH 64
 
+void configureChannels(DaqDeviceHandle daqDeviceHandle, int lowChan, int highChan);
+
 int main(void)
 {
 	int descriptorIndex = 0;
@@ -42,6 +44,7 @@ int main(void)
 
 	int hasAI = 0;
 	int hasTempChan = 0;
+	int numberOfChannels = 0;
 
 	char chanTypeStr[MAX_STR_LENGTH];
 	char sensorStr[MAX_STR_LENGTH];
@@ -88,12 +91,15 @@ int main(void)
 	}
 
 	// verify the specified DAQ device has temperature channels
-	err = getAiInfoHasTempChan(daqDeviceHandle, &hasTempChan);
+	err = getAiInfoHasTempChan(daqDeviceHandle, &hasTempChan, &numberOfChannels);
 	if (!hasTempChan)
 	{
 		printf("\nThe specified DAQ device does not have a temperature channel\n");
 		goto end;
 	}
+
+	if (highChan >= numberOfChannels)
+		highChan = numberOfChannels - 1;
 
 	printf("\nConnecting to device %s - please wait ...\n", devDescriptors[descriptorIndex].devString);
 
@@ -106,6 +112,9 @@ int main(void)
 	printf("\n%s ready\n", devDescriptors[descriptorIndex].devString);
 	printf("    Function demonstrated: ulTIn()\n");
 	printf("    Channels: %d - %d\n", lowChan, highChan);
+
+	// configure the analog input channels if required
+	configureChannels(daqDeviceHandle, lowChan, highChan);
 
 	for (chan = lowChan; chan <= highChan; chan++)
 	{
@@ -162,5 +171,30 @@ end:
 	}
 
 	return 0;
+}
+
+void configureChannels(DaqDeviceHandle daqDeviceHandle, int lowChan, int highChan)
+{
+	UlError err = ERR_NO_ERROR;
+	int chan;
+
+	const int USB_2416_ID = 0xd0;
+	const int USB_2416_4AO_ID = 0xd1;
+	const int USB_2408_ID = 0xfd;
+	const int USB_2408_2AO_ID = 0xfe;
+
+	DaqDeviceDescriptor devDescriptor;
+	err = ulGetDaqDeviceDescriptor(daqDeviceHandle, &devDescriptor);
+
+	// set the specified analog channels to TC type if the specified DAQ device is a USB-2408 or USB-2416 device
+	
+	if(devDescriptor.productId == USB_2416_ID || devDescriptor.productId == USB_2416_4AO_ID || 
+	   devDescriptor.productId == USB_2408_ID || devDescriptor.productId == USB_2408_2AO_ID)
+	{	
+		for(chan = lowChan; chan <= highChan; chan++)
+		{
+			err = ulAISetConfig(daqDeviceHandle, AI_CFG_CHAN_TYPE, chan, AI_TC);
+		}
+	}
 }
 

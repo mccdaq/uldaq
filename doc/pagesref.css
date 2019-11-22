@@ -1,0 +1,46 @@
+/* The custom CSS for UL for Linux HW Reference */
+
+.subsystem {
+	border-bottom: 1px solid #879ECB;
+	color: #354C7B;
+	font-size: 100%;
+	font-weight: bold;
+	margin-top: .5em;
+	padding: 3px;
+	
+	width: 90%;
+}
+
+/* old subsystem styling 
+.subsystem {
+	color: #FFFFFF;
+	background-color: #616161;
+	padding: 6px;
+	font-size: 95%;
+}
+*/
+
+table.hwdoxtable {
+	border-collapse: collapse;
+	width:90%;	
+}
+
+table.hwdoxtable td {
+	border: none;
+	padding-left: 25px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color: #616161;
+	font-size: 90%;
+	vertical-align: top;
+}
+
+.indent{
+	margin-left: 20px;
+}
+
+@media print{
+	.subsystem .hwdoxtable td {
+	color: black;
+	background-color: White;
+}
+}

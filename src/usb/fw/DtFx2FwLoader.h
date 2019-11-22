@@ -1,8 +1,7 @@
 /*
  * DtFx2FwLoader.h
  *
- *  Created on: Nov 13, 2018
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef USB_FW_DTFX2FWLOADER_H_

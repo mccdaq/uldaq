@@ -53,17 +53,11 @@ AiUsb1808::AiUsb1808(const UsbDaqDevice& daqDevice) : AiUsbBase(daqDevice)
 	mAiInfo.setSampleSize(4);
 
 	addSupportedRanges();
-	//addSupportedTriggerTypes();
 	addQueueInfo();
-
-	//setScanEndpointAddr(0x86);
-
-	//setScanStopCmd(CMD_AINSTOP);
-
 
 	initCustomScales();
 
-	mAdcConfig = new TADCCONFIG[mAiInfo.getNumChans()];
+	memset(mAdcConfig, 0, sizeof(mAdcConfig));
 
 	for(int chan = 0; chan < mAiInfo.getNumChans(); chan++)
 	{
@@ -74,10 +68,7 @@ AiUsb1808::AiUsb1808(const UsbDaqDevice& daqDevice) : AiUsbBase(daqDevice)
 
 AiUsb1808::~AiUsb1808()
 {
-	if(mAdcConfig)
-		delete [] mAdcConfig;
 
-	mAdcConfig = NULL;
 }
 
 void AiUsb1808::initialize()
@@ -114,6 +105,8 @@ void AiUsb1808::disconnect()
 
 double AiUsb1808::aIn(int channel, AiInputMode inputMode, Range range, AInFlag flags)
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AIn_Args(channel, inputMode, range, flags);
 
 	double data = 0.0;
@@ -141,6 +134,8 @@ double AiUsb1808::aIn(int channel, AiInputMode inputMode, Range range, AInFlag f
 
 double AiUsb1808::aInScan(int lowChan, int highChan, AiInputMode inputMode, Range range, int samplesPerChan, double rate, ScanOption options, AInScanFlag flags, double data[])
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AInScan_Args(lowChan, highChan, inputMode, range, samplesPerChan, rate, options, flags, data);
 
 	double actualRate = 0;
@@ -179,7 +174,7 @@ double AiUsb1808::aInScan(int lowChan, int highChan, AiInputMode inputMode, Rang
 
 void AiUsb1808::writeAInConfigs() const
 {
-	daqDev().sendCmd(CMD_ADC_SETUP, 0, 0, (unsigned char*) mAdcConfig, sizeof(TADCCONFIG) * mAiInfo.getNumChans());
+	daqDev().sendCmd(CMD_ADC_SETUP, 0, 0, (unsigned char*) mAdcConfig, sizeof(mAdcConfig));
 }
 
 void AiUsb1808::resetAInConfigs() const

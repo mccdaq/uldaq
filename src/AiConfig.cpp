@@ -127,14 +127,14 @@ double AiConfig::getChanOffset(int channel)
 	return mAiDevice.getCfg_ChanOffset(channel);
 }
 
-unsigned long long AiConfig::getCalDate()
+unsigned long long AiConfig::getCalDate(int calTableIndex)
 {
-	return mAiDevice.getCfg_CalDate();
+	return mAiDevice.getCfg_CalDate(calTableIndex);
 }
 
-void AiConfig::getCalDateStr(char* calDate, unsigned int* maxStrLen)
+void AiConfig::getCalDateStr(int calTableIndex, char* calDate, unsigned int* maxStrLen)
 {
-	return mAiDevice.getCfg_CalDateStr(calDate, maxStrLen);
+	return mAiDevice.getCfg_CalDateStr(calTableIndex, calDate, maxStrLen);
 }
 
 void AiConfig::getChanCoefsStr(int channel, char* coefs, unsigned int* maxStrLen)

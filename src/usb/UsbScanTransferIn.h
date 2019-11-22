@@ -1,8 +1,7 @@
 /*
  * UsbScanTransferIn.h
  *
- *  Created on: Sep 18, 2015
- *      Author: root
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef USBSCANTRANSFERIN_H_

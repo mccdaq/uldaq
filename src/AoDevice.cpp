@@ -418,5 +418,15 @@ AOutSyncMode AoDevice::getCfg_SyncMode() const
 	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
 }
 
+void AoDevice::setCfg_SenseMode(int channel, AOutSenseMode mode)
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+
+AOutSenseMode AoDevice::getCfg_SenseMode(int channel) const
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+
 
 } /* namespace ul */

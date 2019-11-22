@@ -1,8 +1,7 @@
 /*
  * CtrUsbDio24.h
  *
- *  Created on: Oct 10, 2018
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef HID_CTR_CTRUSBDIO24_H_

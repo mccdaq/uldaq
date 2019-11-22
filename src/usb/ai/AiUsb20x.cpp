@@ -79,6 +79,8 @@ void AiUsb20x::initialize()
 
 double AiUsb20x::aIn(int channel, AiInputMode inputMode, Range range, AInFlag flags)
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AIn_Args(channel, inputMode, range, flags);
 
 	double data = 0.0;
@@ -100,6 +102,8 @@ double AiUsb20x::aIn(int channel, AiInputMode inputMode, Range range, AInFlag fl
 
 double AiUsb20x::aInScan(int lowChan, int highChan, AiInputMode inputMode, Range range, int samplesPerChan, double rate, ScanOption options, AInScanFlag flags, double data[])
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AInScan_Args(lowChan, highChan, inputMode, range, samplesPerChan, rate, options, flags, data);
 
 	int epAddr = getScanEndpointAddr();

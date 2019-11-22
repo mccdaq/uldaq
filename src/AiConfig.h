@@ -52,8 +52,8 @@ public:
 	virtual void setChanOffset(int channel, double offset);
 	virtual double getChanOffset(int channel);
 
-	virtual unsigned long long getCalDate(); // returns number of seconds since unix epoch
-	virtual void getCalDateStr(char* calDate, unsigned int* maxStrLen);
+	virtual unsigned long long getCalDate(int calTableIndex); // returns number of seconds since unix epoch
+	virtual void getCalDateStr(int calTableIndex, char* calDate, unsigned int* maxStrLen);
 
 	virtual void getChanCoefsStr(int channel, char* coefs, unsigned int* maxStrLen);
 	virtual SensorConnectionType getChanSensorConnectionType(int channel);

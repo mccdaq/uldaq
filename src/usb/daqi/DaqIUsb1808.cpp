@@ -1,7 +1,6 @@
 /*
  * DaqIUsb1808.cpp
  *
- *  Created on: Nov 14, 2017
  *     Author: Measurement Computing Corporation
  */
 
@@ -56,6 +55,8 @@ DaqIUsb1808::~DaqIUsb1808()
 
 double DaqIUsb1808::daqInScan(FunctionType functionType, DaqInChanDescriptor chanDescriptors[], int numChans, int samplesPerChan, double rate, ScanOption options, DaqInScanFlag flags, void* data)
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_DaqInScan_Args(chanDescriptors, numChans, samplesPerChan, rate, options, flags, data);
 
 	UlLock trigCmdLock(daqDev().getTriggerCmdMutex());

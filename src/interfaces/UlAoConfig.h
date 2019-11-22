@@ -19,6 +19,9 @@ public:
 
 	virtual void setSyncMode(AOutSyncMode mode) = 0;
 	virtual AOutSyncMode getSyncMode() = 0;
+
+	virtual void setSenseMode(int channel, AOutSenseMode mode) = 0;
+	virtual AOutSenseMode getSenseMode(int channel) const = 0;
 };
 
 } /* namespace ul */

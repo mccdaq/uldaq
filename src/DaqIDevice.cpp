@@ -1,7 +1,6 @@
 /*
  * DaqIDevice.cpp
  *
- *  Created on: Nov 14, 2017
  *     Author: Measurement Computing Corporation
  */
 
@@ -81,7 +80,7 @@ UlError DaqIDevice::waitUntilDone(FunctionType functionType, double timeout)
 
 void DaqIDevice::stopBackground(FunctionType functionType)
 {
-	if(mScanInfo.functionType == functionType)
+	if(mScanInfo.functionType == functionType || mScanInfo.functionType == 0)
 	{
 		stopBackground();
 	}

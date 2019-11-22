@@ -1,7 +1,6 @@
 /*
  * CtrInfo.h
  *
- *  Created on: Nov 8, 2017
  *     Author: Measurement Computing Corporation
  */
 

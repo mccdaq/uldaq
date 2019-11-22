@@ -1,8 +1,7 @@
 /*
  * AoUsb9837x.cpp
  *
- *  Created on: Jan 4, 2019
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #include "AoUsb9837x.h"
@@ -84,6 +83,8 @@ void AoUsb9837x::initialize()
 
 void AoUsb9837x::aOut(int channel, Range range, AOutFlag flags, double dataValue)
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AOut_Args(channel, range, flags, dataValue);
 
 	unsigned int calData = calibrateData(channel, range, flags, dataValue);
@@ -94,9 +95,9 @@ void AoUsb9837x::aOut(int channel, Range range, AOutFlag flags, double dataValue
 
 double AoUsb9837x::aOutScan(int lowChan, int highChan, Range range, int samplesPerChan, double rate, ScanOption options, AOutScanFlag flags, double data[])
 {
-	check_AOutScan_Args(lowChan, highChan, range, samplesPerChan, rate, options, flags, data);
+	UlLock lock(mIoDeviceMutex);
 
-	//UlLock trigCmdLock(daqDev().getTriggerCmdMutex());
+	check_AOutScan_Args(lowChan, highChan, range, samplesPerChan, rate, options, flags, data);
 
 	if(rate < mAoInfo.getMinScanRate())
 		rate = mAoInfo.getMinScanRate();
@@ -133,6 +134,7 @@ double AoUsb9837x::aOutScan(int lowChan, int highChan, Range range, int samplesP
 
 	daqDev().scanTranserOut()->initilizeTransfers(this, epAddr, stageSize);
 
+	// coverity[sleep]
 	usleep(1000);
 
 	try

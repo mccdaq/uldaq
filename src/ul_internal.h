@@ -22,7 +22,7 @@
 namespace ul
 {
 
-#define UL_VERSION		"0.03"
+#define UL_VERSION		"1.1.2"
 
 #ifdef DEBUG
 	//#define TRACE
@@ -46,8 +46,9 @@ static inline char *time_now();
 
 static inline char *time_now()
 {
-    static char buffer[100];
-    static char buffer_msec[100];
+	const int buffer_size = 100;
+    static char buffer[buffer_size];
+    static char buffer_msec[buffer_size];
     struct tm *timeinfo;
 
     timeval now;
@@ -56,9 +57,9 @@ static inline char *time_now()
 
     timeinfo = localtime(&now.tv_sec);
 
-    strftime(buffer, 100, "%Y-%b-%d %H:%M:%S", timeinfo);
+    strftime(buffer, buffer_size, "%Y-%b-%d %H:%M:%S", timeinfo);
 
-    sprintf(buffer_msec, "[%s:%06d]", buffer, micro_sec);
+    snprintf(buffer_msec, buffer_size, "[%s:%06d]", buffer, micro_sec);
 
     return buffer_msec;
 }

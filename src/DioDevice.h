@@ -1,7 +1,6 @@
 /*
  * DioDevice.h
  *
- *  Created on: Oct 19, 2017
  *     Author: Measurement Computing Corporation
  */
 
@@ -49,7 +48,9 @@ public:
 	virtual void stopBackground();
 
 	virtual UlError wait(ScanDirection direction, WaitType waitType, long long waitParam, double timeout);
+	virtual UlError wait(WaitType waitType, long long waitParam, double timeout) { return IoDevice::wait(waitType, waitParam, timeout); }
 	virtual UlError waitUntilDone(ScanDirection direction, double timeout);
+	virtual UlError waitUntilDone(double timeout) { return IoDevice::waitUntilDone(timeout); }
 
 	void setTrigger(ScanDirection direction, TriggerType type, int trigChan, double level, double variance, unsigned int retriggerCount);
 

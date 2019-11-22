@@ -38,6 +38,8 @@ DaqDevice::DaqDevice(const DaqDeviceDescriptor& daqDeviceDescriptor): mDaqDevice
 	mRawFwVersion = 0;
 	mRawFpgaVersion = 0;
 	mRawRadioVersion = 0;
+	mRawFwMeasurementVersion = 0;
+	mRawFwExpMeasurementVersion = 0;
 
 	mMemUnlockAddr = -1;
 	mMemUnlockCode = 0;
@@ -527,13 +529,20 @@ void DaqDevice::flashLed(int flashCount) const
 
 //////////////////////          Configuration functions          /////////////////////////////////
 
-void DaqDevice::getCfg_FwVersionStr(char* fwVerStr, unsigned int* maxStrLen) const
+void DaqDevice::getCfg_FwVersionStr(DevVersionType verType, char* fwVerStr, unsigned int* maxStrLen) const
 {
+	unsigned short rawFwVer = mRawFwVersion;
+
+	if(verType ==DEV_VER_FW_MEASUREMENT)
+		rawFwVer = mRawFwMeasurementVersion;
+	else if(verType ==DEV_VER_FW_MEASUREMENT_EXP)
+		rawFwVer = mRawFwExpMeasurementVersion;
+
 	if(fwVerStr)
 		fwVerStr[0] = '\0';
 
 	std::stringstream stream;
-	stream << std::hex << mRawFwVersion;
+	stream << std::hex << rawFwVer;
 	std::string verStr( stream.str());
 
 	while(verStr.length() < 3)
@@ -542,7 +551,7 @@ void DaqDevice::getCfg_FwVersionStr(char* fwVerStr, unsigned int* maxStrLen) con
 	// fw version is stored in two bytes (Each nibble represents one digit)
 	verStr.insert(verStr.end() - 2, '.');
 
-	if(mRawFwVersion == 0)
+	if(rawFwVer == 0)
 		verStr = "";
 
 	unsigned int len = verStr.size() + 1;

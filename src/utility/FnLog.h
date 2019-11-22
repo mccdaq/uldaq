@@ -1,7 +1,6 @@
 /*
  * FLog.h
  *
- *  Created on: Aug 15, 2015
  *     Author: Measurement Computing Corporation
  */
 

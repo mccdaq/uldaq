@@ -196,7 +196,7 @@ void DaqEventHandler::startEventThread()
 		status = pthread_create(&mEventThreadHandle, &attr, &eventThread, this);
 
 #ifndef __APPLE__
-		pthread_setname_np(mEventThreadHandle, "xfer_state_td");
+		pthread_setname_np(mEventThreadHandle, "event_td");
 #endif
 
 		if(status)

@@ -1,8 +1,7 @@
 /*
  * CtrConfig.cpp
  *
- *  Created on: Jan 16, 2019
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 #include "CtrDevice.h"
 #include "CtrConfig.h"

@@ -1,8 +1,7 @@
 /*
  * UsbDtDevice.cpp
  *
- *  Created on: Nov 13, 2018
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #include "UsbDtDevice.h"
@@ -28,12 +27,6 @@ UsbDtDevice::UsbDtDevice(const DaqDeviceDescriptor& daqDeviceDescriptor) : UsbDa
 UsbDtDevice::~UsbDtDevice()
 {
 	FnLog log("UsbDtDevice::~UsbDtDevice");
-
-	if(mConnected)
-	{
-		stopMsgReader();
-	}
-
 }
 
 void UsbDtDevice::readSerialNumber(libusb_device *dev, libusb_device_descriptor descriptor, char* serialNum)

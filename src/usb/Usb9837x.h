@@ -1,8 +1,7 @@
 /*
  * Usb9837x.h
  *
- *  Created on: Nov 13, 2018
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef USB_USB9837X_H_
@@ -23,6 +22,8 @@ class UL_LOCAL Usb9837x: public UsbDtDevice
 public:
 	Usb9837x(const DaqDeviceDescriptor& daqDeviceDescriptor);
 	virtual ~Usb9837x();
+
+	virtual void disconnect();
 
 	static void readIdentifier(libusb_device* dev, libusb_device_descriptor descriptor, unsigned int* identifier);
 	static void readSerialNumber(libusb_device* dev, libusb_device_descriptor descriptor, char* serialNum);

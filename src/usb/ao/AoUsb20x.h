@@ -20,6 +20,9 @@ public:
 
 	virtual void aOut(int channel, Range range, AOutFlag flags, double dataValue);
 
+	virtual UlError getStatus(ScanStatus* status, TransferStatus* xferStatus) { return ERR_BAD_DEV_TYPE; }
+	virtual void stopBackground() { throw UlException(ERR_BAD_DEV_TYPE); }
+
 protected:
 	virtual int getCalCoefIndex(int channel, Range range) const { return -1;}
 

@@ -25,7 +25,9 @@ void DaqDeviceConfig::getVersionStr(DevVersionType verType, char* verStr, unsign
 	switch(verType)
 	{
 		case DEV_VER_FW_MAIN:
-			mDaqDevice.getCfg_FwVersionStr(verStr, maxStrLen);
+		case DEV_VER_FW_MEASUREMENT:
+		case DEV_VER_FW_MEASUREMENT_EXP:
+			mDaqDevice.getCfg_FwVersionStr(verType, verStr, maxStrLen);
 		break;
 		case DEV_VER_FPGA:
 			mDaqDevice.getCfg_FpgaVersionStr(verStr, maxStrLen);
@@ -37,6 +39,11 @@ void DaqDeviceConfig::getVersionStr(DevVersionType verType, char* verStr, unsign
 		default:
 			break;
 	}
+}
+
+bool DaqDeviceConfig::hasExp()
+{
+	return mDaqDevice.hasExp();
 }
 
 } /* namespace ul */

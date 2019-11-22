@@ -60,7 +60,7 @@ int main(void)
 	DigitalPortType portType;
 
 	int chanCount = 1;
-	unsigned long long* buffer;
+	unsigned long long* buffer = NULL;
 	UlError err = ERR_NO_ERROR;
 
 	int i = 0;
@@ -130,7 +130,7 @@ int main(void)
 	// allocate a buffer for the output data
 	buffer = (unsigned long long*) malloc(chanCount * samplesPerPort * sizeof(unsigned long long));
 
-	if(buffer == 0)
+	if(buffer == NULL)
 	{
 		printf("\nOut of memory, unable to create scan buffer\n");
 		goto end;
@@ -196,6 +196,10 @@ end:
 
 	// release the handle to the DAQ device
 	ulReleaseDaqDevice(daqDeviceHandle);
+
+	// release the scan buffer
+	if(buffer)
+		free(buffer);
 
 	if(err != ERR_NO_ERROR)
 	{

@@ -1,8 +1,7 @@
 /*
  * UlCtrConfig.h
  *
- *  Created on: Jan 16, 2019
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef INTERFACES_ULCTRCONFIG_H_

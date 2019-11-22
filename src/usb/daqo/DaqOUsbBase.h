@@ -1,7 +1,6 @@
 /*
  * DaqOUsbBase.h
  *
- *  Created on: Dec 19, 2017
  *     Author: Measurement Computing Corporation
  */
 

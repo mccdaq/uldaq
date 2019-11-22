@@ -11,7 +11,7 @@ namespace ul
 
 DioUsbPdiso8::DioUsbPdiso8(const HidDaqDevice& daqDevice) : DioHidBase(daqDevice)
 {
-	mDioInfo.addPort(0, AUXPORT0, 8, DPIOT_NONCONFIG);
+	mDioInfo.addPort(0, AUXPORT0, 8, DPIOT_OUT);
 	mDioInfo.addPort(1, AUXPORT1, 8, DPIOT_IN);
 
 }

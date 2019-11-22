@@ -18,6 +18,7 @@ public:
 	virtual ~UlDaqDeviceConfig() {};
 
 	virtual void getVersionStr(DevVersionType verType, char* verStr, unsigned int* maxStrLen) = 0;
+	virtual bool hasExp() = 0;
 };
 
 } /* namespace ul */

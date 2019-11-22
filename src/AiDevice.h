@@ -70,8 +70,8 @@ public:
 	virtual void setCfg_ChanOffset(int channel, double offset);
 	virtual double getCfg_ChanOffset(int channel);
 
-	virtual unsigned long long getCfg_CalDate();
-	virtual void getCfg_CalDateStr(char* calDate, unsigned int* maxStrLen);
+	virtual unsigned long long getCfg_CalDate(int calTableIndex);
+	virtual void getCfg_CalDateStr(int calTableIndex, char* calDate, unsigned int* maxStrLen);
 
 	virtual SensorConnectionType getCfg_SensorConnectionType(int channel) const;
 	virtual void getCfg_ChanCoefsStr(int channel, char* coefsStr, unsigned int* len) const;
@@ -125,6 +125,7 @@ protected:
 	//std::vector<TempUnit> mScanChanTempUnit;
 
 	unsigned long long mCalDate; // cal date in sec
+	unsigned long long mFieldCalDate; // cal date in sec
 
 private:
 	bool mCalModeEnabled;

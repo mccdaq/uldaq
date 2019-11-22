@@ -1,7 +1,6 @@
 /*
  * CtrUsbCtrx.h
  *
- *  Created on: Jan 29, 2018
  *     Author: Measurement Computing Corporation
  */
 

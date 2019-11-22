@@ -102,6 +102,8 @@ void AiUsb26xx::initialize()
 
 double AiUsb26xx::aIn(int channel, AiInputMode inputMode, Range range, AInFlag flags)
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AIn_Args(channel, inputMode, range, flags);
 
 	double data = 0.0;
@@ -122,6 +124,8 @@ double AiUsb26xx::aIn(int channel, AiInputMode inputMode, Range range, AInFlag f
 
 double AiUsb26xx::aInScan(int lowChan, int highChan, AiInputMode inputMode, Range range, int samplesPerChan, double rate, ScanOption options, AInScanFlag flags, double data[])
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AInScan_Args(lowChan, highChan, inputMode, range, samplesPerChan, rate, options, flags, data);
 
 	UlLock trigCmdLock(daqDev().getTriggerCmdMutex());
@@ -140,7 +144,6 @@ double AiUsb26xx::aInScan(int lowChan, int highChan, AiInputMode inputMode, Rang
 
 	loadAInConfigs(range, lowChan, highChan, queueEnabled());
 
-	//daqDev().clearFifo(epAddr);
 	daqDev().clearHalt(epAddr);
 
 	daqDev().sendCmd(CMD_AINSCAN_CLEAR_FIFO);

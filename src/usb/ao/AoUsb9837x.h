@@ -1,8 +1,7 @@
 /*
  * AoUsb9837x.h
  *
- *  Created on: Jan 4, 2019
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef USB_AO_AOUSB9837X_H_

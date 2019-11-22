@@ -1,7 +1,6 @@
 /*
  * DaqDeviceManager.h
  *
- *  Created on: Jul 30, 2015
  *     Author: Measurement Computing Corporation
  */
 

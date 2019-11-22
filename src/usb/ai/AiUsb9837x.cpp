@@ -1,8 +1,7 @@
 /*
  * AiUsb9837x.cpp
  *
- *  Created on: Nov 20, 2018
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #include "AiUsb9837x.h"
@@ -19,7 +18,7 @@ AiUsb9837x::AiUsb9837x(const Usb9837x& daqDevice) : AiUsbBase(daqDevice)
 	mAiInfo.setAInFlags(AIN_FF_NOSCALEDATA);
 	mAiInfo.setAInScanFlags(AINSCAN_FF_NOSCALEDATA);
 
-	mAiInfo.setScanOptions(SO_DEFAULTIO|SO_CONTINUOUS|SO_EXTTRIGGER|SO_SINGLEIO|SO_BLOCKIO|SO_EXTTIMEBASE|SO_TIMEBASEOUT/* |SO_RETRIGGER*/);
+	mAiInfo.setScanOptions(SO_DEFAULTIO|SO_CONTINUOUS|SO_EXTTRIGGER|SO_SINGLEIO|SO_BLOCKIO|SO_EXTTIMEBASE|SO_TIMEBASEOUT);
 	mAiInfo.setTriggerTypes(TRIG_POS_EDGE | TRIG_RISING);
 
 	if(daqDev().getDeviceType() == DaqDeviceId::UL_DT9837_C)
@@ -118,6 +117,8 @@ void AiUsb9837x::initialize()
 
 double AiUsb9837x::aIn(int channel, AiInputMode inputMode, Range range, AInFlag flags)
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AIn_Args(channel, inputMode, range, flags);
 
 	// calling AIn will change the clock rate to 50KHz therefore DaqI object need to be notified to apply the scan rate for next scan
@@ -130,6 +131,7 @@ double AiUsb9837x::aIn(int channel, AiInputMode inputMode, Range range, AInFlag 
 		// running aIn while the the device is in slave mode will result in device not responding error
 		if(daqIDev->syncMode() == DaqIUsb9837x::SYNC_MODE_SLAVE)
 		{
+			// coverity[sleep]
 			daqIDev->resetSyncMode();
 		}
 	}
@@ -150,15 +152,15 @@ double AiUsb9837x::aIn(int channel, AiInputMode inputMode, Range range, AInFlag 
 
 	data = customScale.slope * data + customScale.offset;
 
-	//if(daqDev().getDeviceType() == DaqDeviceId::UL_DT9837_C)
-		setCurrentChanRange(channel, range);
-
+	setCurrentChanRange(channel, range);
 
 	return data;
 }
 
 double AiUsb9837x::aInScan(int lowChan, int highChan, AiInputMode inputMode, Range range, int samplesPerChan, double rate, ScanOption options, AInScanFlag flags, double data[])
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AInScan_Args(lowChan, highChan, inputMode, range, samplesPerChan, rate, options, flags, data);
 
 	double actualRate = 0;

@@ -1,7 +1,6 @@
 /*
  * DaqDeviceId.h
  *
- *  Created on: Jul 30, 2015
  *     Author: Measurement Computing Corporation
  */
 
@@ -33,6 +32,7 @@ public:
 		USB_DIO24H = 0x94,
 		USB_DIO96H_50 = 0x95,
 		USB_PDISO8_40 = 0x96,
+		USB_1608HS_2AO = 0x99,
 		USB_3101 =	0x9a,
 		USB_3102 =	0x9b,
 		USB_3103 =	0x9c,
@@ -44,6 +44,7 @@ public:
 		USB_3114 =	0xa4,
 		USB_TC_AI = 0xbb,
 		USB_TEMP_AI = 0xbc,
+		USB_1608HS = 0xbd,
 
 
 		USB_1208HS = 0xc4,

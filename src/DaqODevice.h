@@ -1,7 +1,6 @@
 /*
  * DaqODevice.h
  *
- *  Created on: Dec 18, 2017
  *     Author: Measurement Computing Corporation
  */
 
@@ -31,6 +30,7 @@ public:
 	virtual void stopBackground();
 	virtual void stopBackground(FunctionType functionType);
 	UlError waitUntilDone(FunctionType functionType, double timeout);
+	virtual UlError waitUntilDone(double timeout) { return IoDevice::waitUntilDone(timeout); }
 
 	virtual double daqOutScan(FunctionType functionType, DaqOutChanDescriptor chanDescriptors[], int numChans, int samplesPerChan, double rate, ScanOption options, DaqOutScanFlag flags, void* data);
 

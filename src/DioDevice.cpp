@@ -226,11 +226,11 @@ void DioDevice::check_DIn_Args(DigitalPortType portType)
 	if(mDioInfo.isPortSupported(portType) == false)
 		throw UlException(ERR_BAD_PORT_TYPE);
 
-	unsigned int portNum = mDioInfo.getPortNum(portType);
+	/*unsigned int portNum = mDioInfo.getPortNum(portType);
 	DigitalPortIoType  ioType = mDioInfo.getPortIoType(portNum);
 
 	if(ioType == DPIOT_OUT)
-		throw UlException(ERR_WRONG_DIG_CONFIG);
+		throw UlException(ERR_WRONG_DIG_CONFIG);*/
 
 	if(!mDaqDevice.isConnected())
 		throw UlException(ERR_NO_CONNECTION_ESTABLISHED);
@@ -274,11 +274,11 @@ void DioDevice::check_DInArray_Args(DigitalPortType lowPort, DigitalPortType hig
 	if(lowPortNum > highPortNum )
 			throw UlException(ERR_BAD_PORT_TYPE);
 
-	for(unsigned int portNum = lowPortNum; portNum <=highPortNum; portNum++)
+	/*for(unsigned int portNum = lowPortNum; portNum <=highPortNum; portNum++)
 	{
 		if(mDioInfo.getPortIoType(portNum) == DPIOT_OUT)
 				throw UlException(ERR_WRONG_DIG_CONFIG);
-	}
+	}*/
 
 	if(data == NULL)
 		throw UlException(ERR_BAD_BUFFER);
@@ -394,11 +394,11 @@ void DioDevice::check_DInScan_Args(DigitalPortType lowPort, DigitalPortType high
 	if(lowPortNum > highPortNum )
 		throw UlException(ERR_BAD_PORT_TYPE);
 
-	for(unsigned int portNum = lowPortNum; portNum <=highPortNum; portNum++)
+	/*for(unsigned int portNum = lowPortNum; portNum <=highPortNum; portNum++)
 	{
 		if(mDioInfo.getPortIoType(portNum) == DPIOT_OUT)
 				throw UlException(ERR_WRONG_DIG_CONFIG);
-	}
+	}*/
 
 	if(data == NULL)
 		throw UlException(ERR_BAD_BUFFER);

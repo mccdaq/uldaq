@@ -1,8 +1,7 @@
 /*
  * CtrUsbDio24.cpp
  *
- *  Created on: Oct 10, 2018
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #include "CtrUsbDio24.h"

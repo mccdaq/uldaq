@@ -8,7 +8,7 @@ if BUILD_EXAMPLES
 SUBDIRS += examples
 endif
 
-EXTRA_DIST = doc/Doxyfile
+EXTRA_DIST = doc/Doxyfile doc/DoxygenLayout.xml doc/pagesref.css doc/pagesref.txt
 
 dist_doc_DATA = README.md
 

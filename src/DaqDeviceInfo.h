@@ -1,7 +1,7 @@
 /*
  * DaqDeviceInfo.h
  *
- *      Author: root
+ *      Author: Measurement Computing Corporation
  */
 
 #ifndef DAQDEVICEINFO_H_

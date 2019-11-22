@@ -1,7 +1,6 @@
 /*
  * UsbScanTransferOut.h
  *
- *  Created on: Oct 31, 2017
  *     Author: Measurement Computing Corporation
  */
 

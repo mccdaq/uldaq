@@ -1,7 +1,6 @@
 /*
  * UsbFpgaDevice.cpp
  *
- *  Created on: Oct 16, 2017
  *     Author: Measurement Computing Corporation
  */
 
@@ -62,7 +61,7 @@ int UsbFpgaDevice::sendCmd(uint8_t request, uint16_t wValue, uint16_t wIndex, un
 	return UsbDaqDevice::sendCmd(request, wValue, wIndex, buff, buffLen, timeout);
 }
 
-int UsbFpgaDevice::queryCmd(uint8_t request, uint16_t wValue, uint16_t wIndex, unsigned char *buff, uint16_t buffLen, unsigned int timeout) const
+int UsbFpgaDevice::queryCmd(uint8_t request, uint16_t wValue, uint16_t wIndex, unsigned char *buff, uint16_t buffLen, unsigned int timeout, bool checkReplySize) const
 {
 	//FnLog log("UsbDaqDevice::queryCmd");
 

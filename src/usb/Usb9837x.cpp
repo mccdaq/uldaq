@@ -1,8 +1,7 @@
 /*
  * Usb9837x.cpp
  *
- *  Created on: Nov 13, 2018
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #include "Usb9837x.h"
@@ -56,6 +55,23 @@ Usb9837x::~Usb9837x()
 {
 	FnLog log("UsbQuadxx::~UsbQuadxx");
 
+	if(mConnected)
+	{
+		disconnect();
+	}
+
+}
+
+void Usb9837x::disconnect()
+{
+	FnLog log("UsbDaqDevice::disconnect");
+
+	if(mConnected)
+	{
+		stopMsgReader();
+
+		UsbDtDevice::disconnect();
+	}
 }
 
 void Usb9837x::initilizeHardware() const

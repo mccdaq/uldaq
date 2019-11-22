@@ -1,7 +1,6 @@
 /*
  * UsbDaqDevice.h
  *
- *  Created on: Jul 29, 2015
  *     Author: Measurement Computing Corporation
  */
 
@@ -27,11 +26,11 @@ class UsbScanTransferOut;
 
 class UL_LOCAL UsbDaqDevice: public DaqDevice
 {
-	friend class Usb9171;
 public:
 	enum {MCC_USB_VID = 0x09db, DT_USB_VID = 0x0867};
 	typedef enum {CMD_FLASH_LED_KEY = 1, CMD_RESET_KEY = 2, CMD_STATUS_KEY = 3, CMD_SERIAL_NUM_KEY = 4,
-		  	  	  CMD_MEM_KEY = 10, CMD_MEM_ADDR_KEY = 11, CMD_MEM_CAL_KEY = 12, CMD_MEM_USER_KEY = 13, CMD_MEM_SETTINGS_KEY = 14, CMD_MEM_RESERVED_KEY = 15} CmdKey;
+		  	  	  CMD_MEM_KEY = 10, CMD_MEM_ADDR_KEY = 11, CMD_MEM_CAL_KEY = 12, CMD_MEM_USER_KEY = 13,
+				  CMD_MEM_SETTINGS_KEY = 14, CMD_MEM_RESERVED_KEY = 15} CmdKey;
 
 	enum {MAX_CMD_READ_TRANSFER = 256, MAX_CMD_WRITE_TRANSFER = 256};
 

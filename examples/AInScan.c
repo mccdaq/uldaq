@@ -45,7 +45,7 @@ int main(void)
 	AiInputMode inputMode;
 	Range range;
 	int samplesPerChannel = 10000;
-	double rate = 1000;
+	double rate = 100;
 	ScanOption scanOptions = (ScanOption) (SO_DEFAULTIO | SO_CONTINUOUS);
 	AInScanFlag flags = AINSCAN_FF_DEFAULT;
 
@@ -127,7 +127,7 @@ int main(void)
 	// allocate a buffer to receive the data
 	buffer = (double*) malloc(chanCount * samplesPerChannel * sizeof(double));
 
-	if(buffer == 0)
+	if(buffer == NULL)
 	{
 		printf("\nOut of memory, unable to create scan buffer\n");
 		goto end;

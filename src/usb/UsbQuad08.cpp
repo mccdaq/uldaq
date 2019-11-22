@@ -39,7 +39,8 @@ void UsbQuad08::flashLed(int flashCount) const
 		{
 			mDioDevice->dIn(AUXPORT);
 
-			usleep(200000);
+			if(i != (flashCount - 1))
+				usleep(200000);
 		}
 	}
 }

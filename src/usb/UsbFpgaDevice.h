@@ -1,7 +1,6 @@
 /*
  * UsbFpgaDevice.h
  *
- *  Created on: Oct 16, 2017
  *     Author: Measurement Computing Corporation
  */
 
@@ -20,7 +19,7 @@ public:
 	virtual ~UsbFpgaDevice();
 
 	virtual int sendCmd(uint8_t request, uint16_t wValue, uint16_t wIndex, unsigned char *buff, uint16_t buffLen, unsigned int timeout = 1000) const;
-	virtual int queryCmd(uint8_t request, uint16_t wValue, uint16_t wIndex, unsigned char *buff, uint16_t buffLen, unsigned int timeout = 1000) const;
+	virtual int queryCmd(uint8_t request, uint16_t wValue, uint16_t wIndex, unsigned char *buff, uint16_t buffLen, unsigned int timeout = 1000, bool checkReplySize = true) const;
 
 private:
 	virtual void initilizeHardware() const;

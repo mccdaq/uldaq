@@ -1,7 +1,6 @@
 /*
  * Usb1808.h
  *
- *  Created on: Nov 15, 2017
  *     Author: Measurement Computing Corporation
  */
 

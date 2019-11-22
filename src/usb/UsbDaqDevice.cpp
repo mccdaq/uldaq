@@ -280,6 +280,7 @@ void UsbDaqDevice::establishConnection()
 
 					if(mRawFwVersion < mMinRawFwVersion)
 					{
+						libusb_free_device_list(devs, 1);
 						throw UlException(ERR_INCOMPATIBLE_FIRMWARE);
 					}
 
@@ -357,14 +358,11 @@ void UsbDaqDevice::establishConnection()
 	else
 		UL_LOG("No USB device found!");
 
-	if(!found)
-	{
-		libusb_free_device_list(devs, 1);
-
-		throw UlException(ERR_DEV_NOT_FOUND);
-	}
 
 	libusb_free_device_list(devs, 1);
+
+	if(!found)
+		throw UlException(ERR_DEV_NOT_FOUND);
 
 #ifdef __APPLE__
 	usleep(100000);
@@ -403,23 +401,11 @@ int UsbDaqDevice::sendCmd(uint8_t request, uint16_t wValue, uint16_t wIndex, uns
 
 	UlError err = send(request, wValue, wIndex, buff, buffLen, &sent, timeout);
 
-	/*if(err)
-	{
-		if(err == ERR_DEV_NOT_FOUND && mConnected)
-		{
-			err = restablishConnection();
-
-			if(!err)
-				err = send(request, wValue, wIndex, buff, buffLen, &sent, timeout);
-		}
-	}*/
-
 	if(err)
 		throw UlException(err);
 
 	return sent;
 }
-
 
 // this function is not thread safe. Always use sendCmd
 UlError UsbDaqDevice::send(uint8_t request, uint16_t wValue, uint16_t wIndex, unsigned char *buff, uint16_t buffLen, int* sent, unsigned int timeout) const
@@ -469,17 +455,6 @@ int UsbDaqDevice::queryCmd(uint8_t request, uint16_t wValue, uint16_t wIndex, un
 	UlLock lock(mIoMutex);
 
 	UlError err = query(request, wValue, wIndex, buff, buffLen, &received, timeout, checkReplySize);
-
-	/*if(err)
-	{
-		if(err == ERR_DEV_NOT_FOUND && mConnected)
-		{
-			err = restablishConnection();
-
-			if(!err)
-				err = query(request, wValue, wIndex, buff, buffLen, &received, timeout);
-		}
-	}*/
 
 	if(err)
 		throw UlException(err);
@@ -723,7 +698,6 @@ int UsbDaqDevice::memWrite_SingleCmd(MemoryType memType, MemRegion memRegionType
 	return totalBytesWritten;
 }
 
-
 int UsbDaqDevice::memRead_MultiCmd(MemoryType memType, MemRegion memRegionType, unsigned int address, unsigned char* buffer, unsigned int count) const
 {
 	check_MemRW_Args(memRegionType, MA_READ, address, buffer, count, false);
@@ -865,7 +839,7 @@ void UsbDaqDevice::registerHotplugCallBack()
 
 	if(libusb_has_capability(LIBUSB_CAP_HAS_HOTPLUG))
 	{
-		int status = libusb_hotplug_register_callback(NULL, (libusb_hotplug_event) (LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED | LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT),
+		int status = libusb_hotplug_register_callback(mLibUsbContext, (libusb_hotplug_event) (LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED | LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT),
 												  	  (libusb_hotplug_flag)0, MCC_USB_VID, LIBUSB_HOTPLUG_MATCH_ANY, LIBUSB_HOTPLUG_MATCH_ANY,
 												  	  hotplugCallback, NULL, &mHotplugHandle);
 		if (status != LIBUSB_SUCCESS)
@@ -1228,18 +1202,24 @@ bool UsbDaqDevice::isHidDevice(libusb_device* dev)
 	bool hidDevice = false;
 	struct libusb_config_descriptor *conf_desc = NULL;
 
-	libusb_get_config_descriptor(dev, 0, &conf_desc);
-	if (conf_desc && conf_desc->bNumInterfaces > 0)
-	{
-		const struct libusb_interface *intf = &conf_desc->interface[0];
+	int status = libusb_get_config_descriptor(dev, 0, &conf_desc);
 
-		if(intf->num_altsetting > 0)
+	if (status == LIBUSB_SUCCESS)
+	{
+		if (conf_desc->bNumInterfaces > 0)
 		{
-			const struct libusb_interface_descriptor *intf_desc;
-			intf_desc = &intf->altsetting[0];
-			if (intf_desc->bInterfaceClass == LIBUSB_CLASS_HID)
-				hidDevice = true;
+			const struct libusb_interface *intf = &conf_desc->interface[0];
+
+			if(intf->num_altsetting > 0)
+			{
+				const struct libusb_interface_descriptor *intf_desc;
+				intf_desc = &intf->altsetting[0];
+				if (intf_desc->bInterfaceClass == LIBUSB_CLASS_HID)
+					hidDevice = true;
+			}
 		}
+
+		libusb_free_config_descriptor(conf_desc);
 	}
 
 	return hidDevice;

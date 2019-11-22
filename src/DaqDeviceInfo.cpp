@@ -1,7 +1,7 @@
 /*
  * DaqDeviceInfo.cpp
  *
- *      Author: root
+ *      Author: Measurement Computing Corporation
  */
 
 #include "DaqDeviceInfo.h"

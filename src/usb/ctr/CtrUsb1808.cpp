@@ -1,7 +1,6 @@
 /*
  * CtrUsb1808.cpp
  *
- *  Created on: Dec 7, 2017
  *     Author: Measurement Computing Corporation
  */
 

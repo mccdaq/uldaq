@@ -23,6 +23,9 @@ public:
 	virtual void setSyncMode(AOutSyncMode mode);
 	virtual AOutSyncMode getSyncMode();
 
+	virtual void setSenseMode(int channel, AOutSenseMode mode);
+	virtual AOutSenseMode getSenseMode(int channel) const;
+
 private:
 	AoDevice& mAoDevice;
 };

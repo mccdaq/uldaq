@@ -80,6 +80,8 @@ void AiUsb1208hs::initialize()
 
 double AiUsb1208hs::aIn(int channel, AiInputMode inputMode, Range range, AInFlag flags)
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AIn_Args(channel, inputMode, range, flags);
 
 	double data = 0.0;
@@ -105,6 +107,8 @@ double AiUsb1208hs::aIn(int channel, AiInputMode inputMode, Range range, AInFlag
 
 double AiUsb1208hs::aInScan(int lowChan, int highChan, AiInputMode inputMode, Range range, int samplesPerChan, double rate, ScanOption options, AInScanFlag flags, double data[])
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AInScan_Args(lowChan, highChan, inputMode, range, samplesPerChan, rate, options, flags, data);
 
 	UlLock trigCmdLock(daqDev().getTriggerCmdMutex());
@@ -123,7 +127,6 @@ double AiUsb1208hs::aInScan(int lowChan, int highChan, AiInputMode inputMode, Ra
 
 	loadAInConfigs(inputMode, range, lowChan, highChan, queueEnabled());
 
-	//daqDev().clearFifo(epAddr);
 	daqDev().clearHalt(epAddr);
 
 	daqDev().sendCmd(CMD_AINSCAN_CLEAR_FIFO);
@@ -282,7 +285,8 @@ void AiUsb1208hs::loadAInConfigs(AiInputMode inputMode, Range range, int lowChan
 	int chan;
 	int adcChan;
 
-	memset(&mAInConfig, 0, sizeof(mAInConfig));
+	// commented out, becasue if this function is called from AIn the following line changes the range for all channels
+	//memset(&mAInConfig, 0, sizeof(mAInConfig));
 
 	if(!queueEnabled)
 	{

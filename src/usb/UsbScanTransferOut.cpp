@@ -1,7 +1,6 @@
 /*
  * UsbScanTransferOut.cpp
  *
- *  Created on: Oct 31, 2017
  *     Author: Measurement Computing Corporation
  */
 
@@ -223,7 +222,7 @@ void UsbScanTransferOut::startXferStateThread()
 		status = pthread_create(&mXferStateThreadHandle, &attr, &xferStateThread, this);
 
 #ifndef __APPLE__
-		pthread_setname_np(mXferStateThreadHandle, "xfer_state_td");
+		pthread_setname_np(mXferStateThreadHandle, "xfer_out_state_td");
 #endif
 
 		if(status)

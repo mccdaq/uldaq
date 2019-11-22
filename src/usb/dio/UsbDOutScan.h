@@ -20,7 +20,7 @@ public:
 
 	virtual double dOutScan(DigitalPortType lowPort, DigitalPortType highPort, int samplesPerPort, double rate, ScanOption options, DOutScanFlag flags, unsigned long long data[]);
 
-	virtual UlError getStatus(ScanStatus* status, TransferStatus* xferStatus);
+	virtual UlError getOutputStatus(ScanStatus* status, TransferStatus* xferStatus);
 	virtual void stopBackground();
 	virtual UlError terminateScan();
 	virtual UlError checkScanState(bool* scanDone) const;

@@ -33,6 +33,10 @@
 #include "./usb/fw/DtFx2FwLoader.h"
 #include "./usb/UsbQuad08.h"
 #include "./usb/Usb9837x.h"
+#include "./usb/Usb2001tc.h"
+#include "./usb/Usb24xx.h"
+#include "./usb/Usb2020.h"
+#include "./usb/Usb1608hs.h"
 
 #include <iostream>
 #include <cstring>
@@ -196,6 +200,25 @@ UlDaqDevice& UlDaqDeviceManager::createDaqDevice(const DaqDeviceDescriptor& daqD
 			daqDev = new Usb9837x(daqDevDescriptor);
 		break;
 
+		case DaqDeviceId::USB_2001_TC:
+			daqDev = new Usb2001tc(daqDevDescriptor);
+		break;
+
+		case DaqDeviceId::USB_2408:
+		case DaqDeviceId::USB_2408_2AO:
+		case DaqDeviceId::USB_2416:
+		case DaqDeviceId::USB_2416_4AO:
+			daqDev = new Usb24xx(daqDevDescriptor);
+		break;
+
+		case DaqDeviceId::USB_2020:
+			daqDev = new Usb2020(daqDevDescriptor, "usb_2020.bin");
+		break;
+
+		case DaqDeviceId::USB_1608HS:
+		case DaqDeviceId::USB_1608HS_2AO:
+			daqDev = new Usb1608hs(daqDevDescriptor);
+		break;
 		}
 
 		if(daqDev)

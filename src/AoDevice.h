@@ -1,7 +1,6 @@
 /*
  * AoDevice.h
  *
- *  Created on: Oct 26, 2017
  *     Author: Measurement Computing Corporation
  */
 
@@ -38,6 +37,9 @@ public:
 	//////////////////////          Configuration functions          /////////////////////////////////
 	virtual void setCfg_SyncMode(AOutSyncMode mode);
 	virtual AOutSyncMode getCfg_SyncMode() const;
+
+	virtual void setCfg_SenseMode(int channel, AOutSenseMode mode);
+	virtual AOutSenseMode getCfg_SenseMode(int channel) const;
 
 protected:
 	virtual void loadDacCoefficients() = 0;

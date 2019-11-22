@@ -1,7 +1,6 @@
 /*
  * UsbDInScan.h
  *
- *  Created on: Jan 25, 2018
  *     Author: Measurement Computing Corporation
  */
 
@@ -21,7 +20,7 @@ public:
 
 	virtual double dInScan(DigitalPortType lowPort, DigitalPortType highPort, int samplesPerPort, double rate, ScanOption options, DInScanFlag flags, unsigned long long data[]);
 
-	virtual UlError getStatus(ScanStatus* status, TransferStatus* xferStatus);
+	virtual UlError getInputStatus(ScanStatus* status, TransferStatus* xferStatus);
 	virtual void stopBackground();
 	virtual UlError terminateScan();
 	virtual UlError checkScanState(bool* scanDone = NULL) const;

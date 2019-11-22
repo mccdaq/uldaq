@@ -1,8 +1,7 @@
 /*
  * CtrUsb9837x.cpp
  *
- *  Created on: Dec 27, 2018
- *      Author: mcc
+ *      Author: Measurement Computing Corporation
  */
 
 #include "CtrUsb9837x.h"

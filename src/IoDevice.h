@@ -61,7 +61,7 @@ public:
 protected:
 	void setScanInfo(FunctionType functionType, int chanCount, int samplesPerChanCount, int sampleSize, unsigned int analogResolution, ScanOption options, long long flags, std::vector<CalCoef> calCoefs, std::vector<CustomScale> customScales, void* dataBuffer);
 	void setScanInfo(FunctionType functionType, int chanCount, int samplesPerChanCount, int sampleSize, unsigned int analogResolution, ScanOption options, long long flags, std::vector<CalCoef> calCoefs, void* dataBuffer);
-	virtual unsigned int calcPacerPeriod(double rate, ScanOption options);
+	unsigned int calcPacerPeriod(double rate, ScanOption options);
 
 protected:
 	const DaqDevice& mDaqDevice;

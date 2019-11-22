@@ -82,6 +82,8 @@ void AiUsb1208fs_Plus::initialize()
 
 double AiUsb1208fs_Plus::aIn(int channel, AiInputMode inputMode, Range range, AInFlag flags)
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AIn_Args(channel, inputMode, range, flags);
 
 	double data = 0.0;
@@ -105,6 +107,8 @@ double AiUsb1208fs_Plus::aIn(int channel, AiInputMode inputMode, Range range, AI
 
 double AiUsb1208fs_Plus::aInScan(int lowChan, int highChan, AiInputMode inputMode, Range range, int samplesPerChan, double rate, ScanOption options, AInScanFlag flags, double data[])
 {
+	UlLock lock(mIoDeviceMutex);
+
 	check_AInScan_Args(lowChan, highChan, inputMode, range, samplesPerChan, rate, options, flags, data);
 
 	int epAddr = getScanEndpointAddr();
