@@ -15,7 +15,7 @@
 #include "UsbFpgaDevice.h"
 #include "../utility/UlLock.h"
 
-#define FPGA_FILES_PATH		"/etc/uldaq/fpga/"
+#define FPGA_FILES_PATH		"/usr/share/uldaq/fpga/"
 
 namespace ul
 {

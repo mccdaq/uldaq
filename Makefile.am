@@ -15,7 +15,7 @@ dist_doc_DATA = README.md
 pkgconfigdir=$(libdir)/pkgconfig
 dist_pkgconfig_DATA=libuldaq.pc
 
-fpgadatadir=/etc/uldaq/fpga
+fpgadatadir=/usr/share/uldaq/fpga
 dist_fpgadata_DATA=fpga/USB_1208HS.rbf\
 fpga/USB_1608G_2.rbf\
 fpga/USB_1608G.rbf\
