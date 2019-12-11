@@ -1,0 +1,19 @@
+diff --git a/Makefile.am b/Makefile.am
+index 077347c..a67e77c 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -42,14 +42,6 @@ dist-up: dist
+ 	mkdir -p $(reldir)
+ 	cp $(distdir).tar.bz2 $(reldir)
+ 
+-if OS_LINUX
+-install-data-hook:
+-	udevadm control --reload-rules && \
+-	test -f "/etc/redhat-release" && echo "/usr/local/lib" > /etc/ld.so.conf.d/uldaq.conf || echo "" && \
+-	test -f "/etc/arch-release" && echo "/usr/local/lib" > /etc/ld.so.conf.d/uldaq.conf || echo "" && \
+-	ldconfig
+-endif
+-
+ if OS_LINUX
+ uninstall-hook:
+ 	test -f "/etc/ld.so.conf.d/uldaq.conf" &&  rm "/etc/ld.so.conf.d/uldaq.conf" || echo ""
