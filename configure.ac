@@ -1,6 +1,6 @@
 m4_define([LIBUL_MAJOR],   1)
-m4_define([LIBUL_MINOR],   1)
-m4_define([LIBUL_MICRO], 2)
+m4_define([LIBUL_MINOR],   2)
+m4_define([LIBUL_MICRO], 0)
 m4_define([LIBUL_RC],)
 
 AC_INIT([libuldaq],[LIBUL_MAJOR[.]LIBUL_MINOR[.]LIBUL_MICRO[]LIBUL_RC],[info@mccdaq.com],[libuldaq],[http://www.mccdaq.com])
@@ -9,9 +9,9 @@ AC_INIT([libuldaq],[LIBUL_MAJOR[.]LIBUL_MINOR[.]LIBUL_MICRO[]LIBUL_RC],[info@mcc
 # These numbers should be tweaked on every release. Read carefully:
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
 # http://sourceware.org/autobook/autobook/autobook_91.html
-lt_current=2
-lt_revision=2
-lt_age=1
+lt_current=3
+lt_revision=0
+lt_age=2
 LTLDFLAGS="-version-info ${lt_current}:${lt_revision}:${lt_age}"
 
 CFLAGS='-O3'

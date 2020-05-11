@@ -94,6 +94,17 @@ void DaqDeviceManager::addSupportedDaqDevice()
 	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_TC, "USB-TC"));
 	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_TEMP_AI, "USB-TEMP_AI"));
 	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_TC_AI, "USB-TC_AI"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::USB_TC_32, "TC32"));
+
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::E_1608, "E-1608"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::E_DIO24, "E-DIO24"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::E_TC, "E-TC"));
+	mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::E_TC_32, "TC32"));
+
+
+
+	//mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::E_1808, "E-1808"));
+	//mSupportedDevices.insert(std::pair<int, std::string>(DaqDeviceId::E_1808X, "E-1808X"));
 
 
 	// DT devices
@@ -186,7 +197,7 @@ void DaqDeviceManager::releaseDevice(long long deviceNumber)
 
 DaqDevice* DaqDeviceManager::getActualDeviceHandle(long long deviceNumber)
 {
-	FnLog log("DaqDeviceManager::getActualDeviceHandle");
+	//FnLog log("DaqDeviceManager::getActualDeviceHandle");
 
 	DaqDevice* daqDevice = NULL;
 
@@ -229,15 +240,20 @@ void DaqDeviceManager::releaseDevices()
 	else
 		UL_LOG("No lingering device found");
 
-	//for(unsigned int i = 0; i < mCreatedDevicesMap.size(); i++)
-	//	delete mCreatedDevicesMap[i];
+	std::vector<DaqDevice*> createdDevList;
 
-	for(std::map<long long, DaqDevice*>::iterator itr = mCreatedDevicesMap.begin(); itr != mCreatedDevicesMap.end(); itr++)
-		delete itr->second;
+	// Do not delete the device objects in the following loop, because when a device object is deleted, it removes itself
+	// from mCreatedDevicesMap in the DaqDevice destructor which results in changing the size of mCreatedDevicesMap.
+	// To avoid this problem copy the device pointers to a temporary list
+	// and removed them later
 
-	// when a device object is deleted, it removes itself from mCreatedDevices list in the DaqDevice destructor
-	// so there is no need to removed it from the list here. This approach prevents deleting the device again if the users used delete
-	// instead of DaqDeviceManager::releaseDaqDevice to free DaqDevice objects.2
+	for(unsigned int i = 0; i < mCreatedDevicesMap.size(); i++)
+		createdDevList.push_back(mCreatedDevicesMap[i]);
+
+	for(unsigned int i = 0; i < createdDevList.size(); i++)
+		delete createdDevList[i];
+
+	createdDevList.clear();
 }
 
 } /* namespace ul */

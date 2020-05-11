@@ -30,6 +30,7 @@ public:
 	static unsigned int getVirtualProductId(libusb_device* dev, libusb_device_descriptor descriptor);
 
 	bool isPowerAlwaysOn() const;
+	void writePowerAlwaysOnToEeprom() const;
 	void cmdPowerDevice( bool bPowerOn ) const;
 
 	virtual void messageHandler(const unsigned char* messageBuffer);
@@ -55,8 +56,8 @@ public:
 	//void Cmd_SimStartSubsystem (pSUBSYSTEM_INFO pSubsystemInfo) const;
 	void Cmd_StopSubsystem (Usb9837xDefs::pSUBSYSTEM_INFO pSubsystemInfo) const;
 
-	void Cmd_ReadDevMultipleRegs( unsigned char DevAddress, unsigned char NumReads, unsigned char *pRegisters, unsigned char *pData ) const;
-	//void Cmd_WriteDevMultipleRegs( unsigned char NumRegs, pWRITE_I2C_BYTE_INFO pByteInfo ) const;
+	void Cmd_ReadDevMultipleRegs( unsigned char DevAddress, unsigned char NumRegs, unsigned char *pRegisters, unsigned char *pData ) const;
+	void Cmd_WriteDevMultipleRegs( unsigned char DevAddress, unsigned char NumRegs, unsigned char *pRegisters, unsigned char *pData ) const;
 	void Cmd_WriteMultiplePLLReg(Usb9837xDefs::SUBSYSTEM_TYPE  SubsystemType, unsigned char DevAddress, unsigned char NumWrites, Usb9837xDefs::WRITE_BYTE_INFO* pWrite ) const;
 
 	void Cmd_WriteSingleValue (Usb9837xDefs::pWRITE_SINGLE_VALUE_INFO pPutSingleValueInfo) const;

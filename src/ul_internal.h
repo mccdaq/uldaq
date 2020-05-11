@@ -22,10 +22,10 @@
 namespace ul
 {
 
-#define UL_VERSION		"1.1.2"
+#define UL_VERSION		"1.2.0"
 
 #ifdef DEBUG
-	//#define TRACE
+//	#define TRACE
 #endif
 
 #ifndef _WIN32
@@ -47,21 +47,21 @@ static inline char *time_now();
 static inline char *time_now()
 {
 	const int buffer_size = 100;
-    static char buffer[buffer_size];
-    static char buffer_msec[buffer_size];
-    struct tm *timeinfo;
+	    static char buffer[buffer_size];
+	    static char buffer_msec[buffer_size];
+	    struct tm *timeinfo;
 
-    timeval now;
-    gettimeofday(&now, NULL);
-    int micro_sec = now.tv_usec;
+	    timeval now;
+	    gettimeofday(&now, NULL);
+	    int micro_sec = now.tv_usec;
 
-    timeinfo = localtime(&now.tv_sec);
+	    timeinfo = localtime(&now.tv_sec);
 
-    strftime(buffer, buffer_size, "%Y-%b-%d %H:%M:%S", timeinfo);
+	    strftime(buffer, buffer_size, "%Y-%b-%d %H:%M:%S", timeinfo);
 
-    snprintf(buffer_msec, buffer_size, "[%s:%06d]", buffer, micro_sec);
+	    snprintf(buffer_msec, buffer_size, "[%s:%06d]", buffer, micro_sec);
 
-    return buffer_msec;
+	    return buffer_msec;
 }
 
 

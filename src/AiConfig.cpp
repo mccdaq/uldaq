@@ -164,4 +164,44 @@ OtdMode AiConfig::getChanOpenTcDetectionMode(int channel)
 	return mAiDevice.getCfg_ChanOpenTcDetectionMode(channel);
 }
 
+void AiConfig::setOpenTcDetectionMode(int dev, OtdMode mode)
+{
+	mAiDevice.setCfg_OpenTcDetectionMode(dev, mode);
+}
+OtdMode AiConfig::getOpenTcDetectionMode(int dev)
+{
+	return mAiDevice.getCfg_OpenTcDetectionMode(dev);
+}
+
+void AiConfig::setCalTableType(int dev, AiCalTableType calTableType)
+{
+	mAiDevice.setCfg_CalTableType(dev, calTableType);
+}
+
+AiCalTableType AiConfig::getCalTableType(int dev)
+{
+	return mAiDevice.getCfg_CalTableType(dev);
+}
+
+void AiConfig::setRejectFreqType(int dev, AiRejectFreqType rejectFreqType)
+{
+	mAiDevice.setCfg_RejectFreqType(dev, rejectFreqType);
+}
+
+AiRejectFreqType AiConfig::getRejectFreqType(int dev)
+{
+	return mAiDevice.getCfg_RejectFreqType(dev);
+}
+
+unsigned long long AiConfig::getExpCalDate(int calTableIndex)
+{
+	return mAiDevice.getCfg_ExpCalDate(calTableIndex);
+}
+
+void AiConfig::getExpCalDateStr(int calTableIndex, char* calDate, unsigned int* maxStrLen)
+{
+	return mAiDevice.getCfg_ExpCalDateStr(calTableIndex, calDate, maxStrLen);
+}
+
+
 } /* namespace ul */

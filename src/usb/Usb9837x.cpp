@@ -76,6 +76,14 @@ void Usb9837x::disconnect()
 
 void Usb9837x::initilizeHardware() const
 {
+
+	/*Note: On Windows 10 systems, if powerAlwaysOn flag is not set in EEPROM then calling cmdPowerDevice(true) will result in
+	 * device reset, as a workaround the windows kernel driver was modified to set the powerAlwaysOn flag in EEPROM before the power on
+	 * command is sent. If the same behavior is experienced on Linux systems then uncomment the following code */
+
+	/*if(!isPowerAlwaysOn())
+		writePowerAlwaysOnToEeprom();*/
+
 	cmdPowerDevice( true );
 
 	usleep(100000);
@@ -88,7 +96,6 @@ void Usb9837x::readIdentifier(libusb_device *dev, libusb_device_descriptor descr
 	libusb_device_handle* devHandle = NULL;
 
 	int status = libusb_open(dev, &devHandle);
-
 
 	if (status == LIBUSB_SUCCESS)
 	{
@@ -326,6 +333,14 @@ bool Usb9837x::isPowerAlwaysOn() const
 		bAlwaysOn = true;
 
 	return bAlwaysOn;
+}
+
+void Usb9837x::writePowerAlwaysOnToEeprom() const
+{
+	unsigned char alwaysOn = 1;
+	unsigned char address = Usb9837xDefs::EEPROM_OFFSET_POWER_OVERRIDE_REG;
+
+	Cmd_WriteDevMultipleRegs(Usb9837xDefs::EEPROM_DEV_ADR, 1, &address, &alwaysOn);
 }
 
 void Usb9837x::cmdPowerDevice( bool bPowerOn ) const
@@ -921,22 +936,22 @@ void Usb9837x::Cmd_ReadSingleValue (Usb9837xDefs::pREAD_SINGLE_VALUE_INFO pReadS
 }
 
 
-void Usb9837x::Cmd_ReadDevMultipleRegs( unsigned char DevAddress, unsigned char NumReads, unsigned char *pRegisters, unsigned char *pData ) const
+void Usb9837x::Cmd_ReadDevMultipleRegs( unsigned char DevAddress, unsigned char NumRegs, unsigned char *pRegisters, unsigned char *pData ) const
 {
-	if (NumReads > Usb9837xDefs::MAX_NUM_MULTI_BYTE_WRTS)
+	if (NumRegs > Usb9837xDefs::MAX_NUM_MULTI_BYTE_WRTS)
 	{
-		std::cout << "ERROR! NumReads="<< NumReads << "too large" << std::endl;
+		std::cout << "ERROR! NumRegs="<< NumRegs << "too large" << std::endl;
 	}
 
 	Usb9837xDefs::USB_CMD	Cmd;
 	memset(&Cmd, 0, sizeof(Cmd));
 
 	Cmd.CmdCode = Usb9837xDefs::R_MULTI_BYTE_I2C_REG;
-	Cmd.d.ReadI2CMultiInfo.NumReads = NumReads;
+	Cmd.d.ReadI2CMultiInfo.NumReads = NumRegs;
 
 	Usb9837xDefs::pREAD_I2C_BYTE_INFO pReadDevByteInfo = Cmd.d.ReadI2CMultiInfo.Read;
 
-	for (int i = 0; i < NumReads; i++)
+	for (int i = 0; i < NumRegs; i++)
 	{
 		pReadDevByteInfo->DevAddress = DevAddress;
 		pReadDevByteInfo->Register = *pRegisters;
@@ -958,53 +973,50 @@ void Usb9837x::Cmd_ReadDevMultipleRegs( unsigned char DevAddress, unsigned char 
 	{
 		transferred = 0;
 
-		err = syncBulkTransfer(inEndpoint, pData, NumReads, &transferred, 1000);
+		err = syncBulkTransfer(inEndpoint, pData, NumRegs, &transferred, 1000);
 	}
 
 	if(err)
 		throw UlException(err);
 }
 
-/*
-OLSTATUS
-CDt9837aDevice::Cmd_WriteDevMultipleRegs( BYTE NumRegs, pWRITE_I2C_BYTE_INFO pByteInfo ) const
+void Usb9837x::Cmd_WriteDevMultipleRegs( unsigned char DevAddress, unsigned char NumRegs, unsigned char *pRegisters, unsigned char *pData ) const
 {
-	t << "CDt9837aDevice::Cmd_WriteDevMultipleRegs() Entry\n";
-
-	OLSTATUS olStat = OLGENERALFAILURE;
-
-
-	if (NumRegs > MAX_NUM_MULTI_BYTE_WRTS)
+	if (NumRegs > Usb9837xDefs::MAX_NUM_MULTI_BYTE_WRTS)
 	{
-		t << "Too many Entries requested (" << NumRegs << ")\n";
-		return (OLGENERALFAILURE);
+		std::cout << "Too many Entries requested NumRegs="<< NumRegs << "too large" << std::endl;
 	}
 
 	Usb9837xDefs::USB_CMD	Cmd;
-	Cmd.CmdCode = W_MULTI_BYTE_I2C_REG;
+	memset(&Cmd, 0, sizeof(Cmd));
+
+	Cmd.CmdCode = Usb9837xDefs::W_MULTI_BYTE_I2C_REG;
 	Cmd.d.WriteI2CMultiInfo.NumWrites = NumRegs;
 
-	for (int i=0; i < NumRegs; i++)
+	Usb9837xDefs::pWRITE_I2C_BYTE_INFO pWriteDevByteInfo = Cmd.d.WriteI2CMultiInfo.Write;
+
+	for (int i = 0; i < NumRegs; i++)
 	{
-		Cmd.d.WriteI2CMultiInfo.Write[i] = pByteInfo[i];
-		t << " ByteInfo[i].Address"<< Cmd.d.WriteI2CMultiInfo.Write[i].DevAddress<<"\n";
-		t << " ByteInfo[i].Register"<< Cmd.d.WriteI2CMultiInfo.Write[i].Register<<"\n";
-		t << " ByteInfo[i].DataVal"<< Cmd.d.WriteI2CMultiInfo.Write[i].DataVal<<"\n";
+		pWriteDevByteInfo->DevAddress = DevAddress;
+		pWriteDevByteInfo->Register = *pRegisters;
+		pWriteDevByteInfo->DataVal = *pData;
+		pWriteDevByteInfo++;
+		pRegisters++;
+		pData++;
 	}
 
-	ULONG ulBytesSent = 0;
+	UlError err = ERR_NO_ERROR;
+	int transferred = 0;
 
-   if ( !NT_SUCCESS(WriteData( (BYTE*)&Cmd, sizeof (Usb9837xDefs::USB_CMD), &ulBytesSent, m_Pipe[WRITE_CMD_PIPE] ) ) )
-	{
-		t << " ERROR! CDt9837aDevice::Cmd_WriteDevMultipleRegs() (WriteData) failed\n";
-		olStat = OLGENERALFAILURE;
-	}
-	else
+	unsigned char outEndpoint = getCmdOutEndpointAddr();
 
-      olStat = OLSUCCESS;
+	UlLock lock(mIoMutex);
 
-	return olStat;
-}*/
+	err = syncBulkTransfer(outEndpoint, (unsigned char*)&Cmd, sizeof (Usb9837xDefs::USB_CMD), &transferred, 1000);
+
+	if(err)
+		throw UlException(err);
+}
 
 void Usb9837x::CmdSetAnalogTriggerThreshold( double volts) const
 {

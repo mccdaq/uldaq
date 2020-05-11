@@ -107,7 +107,23 @@ ErrorMap::ErrorMap()
 	mErrMap.insert(std::pair<int, std::string>(ERR_TRIG_THRESHOLD_OUT_OF_RANGE, "Trigger threshold is out of range"));  // 92
 	mErrMap.insert(std::pair<int, std::string>(ERR_INCOMPATIBLE_FIRMWARE, "Incompatible firmware version, firmware update required"));  // 93
 
+	mErrMap.insert(std::pair<int, std::string>(ERR_BAD_NET_IFC, "Specified network interface is not available or disconnected"));   // 94
+	mErrMap.insert(std::pair<int, std::string>(ERR_BAD_NET_HOST, "Invalid host specified"));  // 95
+	mErrMap.insert(std::pair<int, std::string>(ERR_BAD_NET_PORT, "Invalid port specified"));  // 96
+	mErrMap.insert(std::pair<int, std::string>(ERR_NET_IFC_UNAVAILABLE, "Network interface used to obtain the device descriptor not available or disconnected"));  // 97
+	mErrMap.insert(std::pair<int, std::string>(ERR_NET_CONNECTION_FAILED, "Network connection failed"));  // 98
 
+	mErrMap.insert(std::pair<int, std::string>(ERR_BAD_CONNECTION_CODE, "Invalid connection code"));  // 99
+	mErrMap.insert(std::pair<int, std::string>(ERR_CONNECTION_CODE_IGNORED, "Connection code ignored"));  // 100
+	mErrMap.insert(std::pair<int, std::string>(ERR_NET_DEV_IN_USE, "Network device already in use"));  // 101
+	mErrMap.insert(std::pair<int, std::string>(ERR_BAD_NET_FRAME, "Invalid network frame"));  // 102
+	mErrMap.insert(std::pair<int, std::string>(ERR_NET_TIMEOUT, "Network device did not respond within expected time"));  // 103
+	mErrMap.insert(std::pair<int, std::string>(ERR_DATA_SOCKET_CONNECTION_FAILED, "Data socket connection failed")); //104
+	mErrMap.insert(std::pair<int, std::string>(ERR_PORT_USED_FOR_ALARM, "One or more bits on the specified port are used for alarm")); //105
+	mErrMap.insert(std::pair<int, std::string>(ERR_BIT_USED_FOR_ALARM, "The specified bit is used for alarm")); //106
+	mErrMap.insert(std::pair<int, std::string>(ERR_CMR_EXCEEDED, "Common-mode voltage range exceeded")); //107
+	mErrMap.insert(std::pair<int, std::string>(ERR_NET_BUFFER_OVERRUN, "Network buffer overrun, data was not transferred from buffer fast enough")); //108
+	mErrMap.insert(std::pair<int, std::string>(ERR_BAD_NET_BUFFER, "Invalid network buffer")); //109
 
 
 }

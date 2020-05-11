@@ -35,6 +35,7 @@ public:
 
 	virtual void connect()= 0;
 	virtual void disconnect() = 0;
+	virtual void connectionCode(long long code);
 
 	unsigned int getDeviceType() const { return mDaqDeviceDescriptor.productId; }
 	long long getDeviceNumber() const {return mDeviceNumber;}
@@ -122,6 +123,14 @@ public:
 	void getCfg_FwVersionStr(DevVersionType verType, char* fpgaVerStr, unsigned int* maxStrLen) const;
 	void getCfg_FpgaVersionStr(char* fpgaVerStr, unsigned int* maxStrLen) const;
 	void getCfg_RadioVersionStr(char* fpgaVerStr, unsigned int* maxStrLen) const;
+	virtual void getCfg_IpAddress(char* address, unsigned int* maxStrLen) const;
+	virtual void getCfg_NetIfcName(char* ifcName, unsigned int* maxStrLen) const;
+
+	virtual long long getCfg_ConnectionCode() const;
+	virtual void setCfg_ConnectionCode(long long code);
+	virtual long long getCfg_MemUnlockCode() const;
+	virtual void setCfg_MemUnlockCode(long long code);
+	virtual void setCfg_Reset();
 
 protected:
 	void setMinRawFwVersion(unsigned short ver) { mMinRawFwVersion = ver;}

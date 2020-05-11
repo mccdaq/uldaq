@@ -374,9 +374,55 @@ typedef enum
 	ERR_TRIG_THRESHOLD_OUT_OF_RANGE	= 92,
 
 	/** Incompatible firmware version, firmware update required */
-	ERR_INCOMPATIBLE_FIRMWARE 		= 93
+	ERR_INCOMPATIBLE_FIRMWARE 		= 93,
 
+	/** Specified network interface is not available or disconnected */
+	ERR_BAD_NET_IFC 				= 94,
 
+	/** Invalid host specified */
+	ERR_BAD_NET_HOST 				= 95,
+
+	/** Invalid port specified */
+	ERR_BAD_NET_PORT 				= 96,
+
+	/** Network interface used to obtain the device descriptor not available or disconnected */
+	ERR_NET_IFC_UNAVAILABLE			= 97,
+
+	/** Network connection failed */
+	ERR_NET_CONNECTION_FAILED		= 98,
+
+	/** Invalid connection code */
+	ERR_BAD_CONNECTION_CODE			= 99,
+
+	/** Connection code ignored */
+	ERR_CONNECTION_CODE_IGNORED		= 100,
+
+	/** Network device already in use */
+	ERR_NET_DEV_IN_USE				= 101,
+
+	/** Invalid network frame  */
+	ERR_BAD_NET_FRAME				= 102,
+
+	/** Network device did not respond within expected time */
+	ERR_NET_TIMEOUT					= 103,
+
+	/** Data socket connection failed */
+	ERR_DATA_SOCKET_CONNECTION_FAILED = 104,
+
+	/** One or more bits on the specified port are used for alarm */
+	ERR_PORT_USED_FOR_ALARM 		= 105,
+
+	/** The specified bit is used for alarm */
+	ERR_BIT_USED_FOR_ALARM 			= 106,
+
+	/** Common-mode voltage range exceeded */
+	ERR_CMR_EXCEEDED 				= 107,
+
+	/** Network buffer overrun, data was not transferred from buffer fast enough */
+	ERR_NET_BUFFER_OVERRUN 			= 108,
+
+	/** Invalid network buffer */
+	ERR_BAD_NET_BUFFER 				= 109
 } UlError;
 
 /** A/D channel input modes */
@@ -732,6 +778,27 @@ typedef enum
 	/** Channel numbers must be listed in contiguous order within the queue. */
 	CONSECUTIVE_CHAN = 1 << 2
 } AiChanQueueLimitation;
+
+/** Analog input calibration table types */
+typedef enum
+{
+	/** Factory calibration table */
+	AI_CTT_FACTORY		= 1,
+
+	/** Field calibration table */
+	AI_CTT_FIELD		= 2
+}AiCalTableType;
+
+/** Analog input rejection frequency types */
+typedef enum
+{
+	/** 60 Hz rejection frequency */
+	AI_RFT_60HZ		= 1,
+
+	/** 50 Hz rejection frequency */
+	AI_RFT_50HZ		= 2
+}AiRejectFreqType;
+
 
 /** Used with all digital I/O functions and with ulDIOGetInfo() as the \p infoValue argument value when used with ::DIO_INFO_PORT_IO_TYPE. */
 typedef enum
@@ -1125,6 +1192,9 @@ typedef enum
 {
 	/** Placeholder value. Standard functionality. */
 	TIN_FF_DEFAULT = 0,
+
+	/** Wait for new data before returning. */
+	TIN_FF_WAIT_FOR_NEW_DATA = 1
 }TInFlag;
 
 /** Use as the \p flags argument value for ulTInArray() to set the properties of data returned; reserved for future use. */
@@ -1132,6 +1202,9 @@ typedef enum
 {
 	/** Placeholder value. Standard functionality. */
 	TINARRAY_FF_DEFAULT = 0,
+
+	/** Wait for new data before returning. */
+	TINARRAY_FF_WAIT_FOR_NEW_DATA = 1
 }TInArrayFlag;
 
 /** Use as the \p flags argument value for ulAOut() to set the properties of data supplied to the function. */
@@ -1760,12 +1833,24 @@ typedef enum
 }DevInfoItem;
 
 /** Use with ulDevGetConfig() as a \p configItem argument value to get the current configuration
- * of the specified the specified device.
+ * of the specified device.
  */
 typedef enum
 {
 	/** Returns a non-zero value to \p configValue if an expansion board is attached; otherwise, returns zero. */
-	DEV_CFG_HAS_EXP = 1
+	DEV_CFG_HAS_EXP = 1,
+
+	/** The connection code stored in EEPROM. In order to modify the connection code, first the memory must be unlocked with #DEV_CFG_MEM_UNLOCK_CODE.
+	 * Note: when the connection code is modified, the DAQ device must be reset with #DEV_CFG_RESET for the change to take effect.
+	 */
+	DEV_CFG_CONNECTION_CODE = 2,
+
+	/** Memory unlock code. The unlock code is 0xAA55 */
+	DEV_CFG_MEM_UNLOCK_CODE = 3,
+
+	/** Resets the DAQ device, this causes the DAQ device to disconnect from the host, ulConnectDaqDevice() must be invoked to re-establish the connection*/
+	DEV_CFG_RESET = 4
+
 }DevConfigItem;
 
 /** Use with ulDevGetConfigStr() as a \p configItem argument value to get the current configuration
@@ -1774,7 +1859,13 @@ typedef enum
 typedef enum
 {
 	/** Returns the version of the device system defined by the #DevVersionType value of the \p index argument */
-	DEV_CFG_VER_STR = 2000
+	DEV_CFG_VER_STR = 2000,
+
+	/** Returns the IP address of the Ethernet DAQ device */
+	DEV_CFG_IP_ADDR_STR = 2001,
+
+	/** Returns the name of the network interface which is used to connect to the Ethernet DAQ device */
+	DEV_CFG_NET_IFC_STR = 2002
 }DevConfigItemStr;
 
 /** Used with ulDevGetConfigStr() as an \p index argument value with the \p infoItem argument set to ::DEV_CFG_VER_STR for the specified device. */
@@ -1917,7 +2008,24 @@ typedef enum
 	AI_CFG_CHAN_SENSOR_CONNECTION_TYPE = 10,
 
 	/** The open thermocouple detection mode for the specified channel. Set with #OtdMode. */
-	AI_CFG_CHAN_OTD_MODE = 11
+	AI_CFG_CHAN_OTD_MODE = 11,
+
+	/** The open thermocouple detection mode. Set with #OtdMode. */
+	AI_CFG_OTD_MODE = 12,
+
+	/** The calibration table type. Set with #AiCalTableType. */
+	AI_CFG_CAL_TABLE_TYPE = 13,
+
+	/** The rejection frequency type. Set with #AiRejectFreqType. */
+	AI_CFG_REJECT_FREQ_TYPE = 14,
+
+#ifndef doxy_skip
+	/** The date when the expansion board was calibrated last in UNIX Epoch time. Set index to 0 for the factory calibration date,
+	* or 1 for the field calibration date.
+	* If the value read is not a valid date or the index is invalid, 0 (Unix Epoch) is returned. */
+	AI_CFG_EXP_CAL_DATE = 15,
+#endif /* doxy_skip */
+
 }AiConfigItem;
 
 /** Use with ulAISetConfigDbl() and ulAIGetConfigDbl() to configure the AI subsystem. */
@@ -1936,6 +2044,7 @@ typedef enum
 	AI_CFG_CHAN_DATA_RATE = 1003
 }AiConfigItemDbl;
 
+/** Use with ulAIGetConfigStr() as a \p configItem argument value to get the current analog input configuration of the current device. */
 
 typedef enum
 {
@@ -1944,11 +2053,16 @@ typedef enum
 	AI_CFG_CAL_DATE_STR = 2000,
 
 	/** Returns the channel coefficients used for the configured sensor. */
-	AI_CFG_CHAN_COEFS_STR = 2001
+	AI_CFG_CHAN_COEFS_STR = 2001,
+
+	/** Returns the calibration date of expansion board. Set index to 0 for the factory calibration date, or 1 for the field calibration date.
+	* If the value read is not a valid date or the index is invalid, Unix Epoch is returned. */
+	AI_CFG_EXP_CAL_DATE_STR = 2002,
+
 }AiConfigItemStr;
 
 /** Use with ulAOGetInfo() to obtain information about the analog output subsystem for the specified device
-* as an \p infoItem argument value. */
+ * as an \p infoItem argument value. */
 typedef enum
 {
 	/** Returns the D/A resolution in number of bits to the \p infoValue argument. Index is ignored. */
@@ -2283,6 +2397,19 @@ typedef struct 	MemDescriptor MemDescriptor;
 UlError ulGetDaqDeviceInventory(DaqDeviceInterface interfaceTypes, DaqDeviceDescriptor daqDevDescriptors[], unsigned int* numDescriptors );
 
 /**
+ * Get the descriptor of the remote network DAQ device.
+ * @param host the remote device host name or IP address
+ * @param port the remote device port
+ * @param ifcName network interface name to be used for communication with the DAQ device (e.g. eth0, wlan0, ...);
+ * set to NULL to select the default network interface
+ * @param daqDevDescriptor DaqDeviceDescriptor struct containing fields that describe the device
+ * @param timeout the timeout value in seconds (s); set to -1 to wait indefinitely for discovery operation to end.
+ * @return The UL error code.
+ */
+
+UlError ulGetNetDaqDeviceDescriptor(const char* host, unsigned short port, const char* ifcName, DaqDeviceDescriptor* daqDevDescriptor, double timeout);
+
+/**
  * Create a device object within the Universal Library for the DAQ device specified by the descriptor.
  * @param daqDevDescriptor DaqDeviceDescriptor struct containing fields that describe the device
  * @return The device handle.
@@ -2326,6 +2453,15 @@ UlError ulReleaseDaqDevice(DaqDeviceHandle daqDeviceHandle);
  * @return The UL error code.
  */
 UlError ulIsDaqDeviceConnected(DaqDeviceHandle daqDeviceHandle, int* connected);
+
+/**
+ * Specifies connection code of a DAQ device. This function must be invoked before ulConnectDaqDevice().
+ * @param daqDeviceHandle the handle to the DAQ device
+ * @param code the connection code
+ * @return The UL error code.
+ */
+UlError ulDaqDeviceConnectionCode(DaqDeviceHandle daqDeviceHandle, long long code);
+
 
 /** @} */ 
 
@@ -2452,7 +2588,7 @@ UlError ulTInArray(DaqDeviceHandle daqDeviceHandle, int lowChan, int highChan, T
 
 /** 
  * \defgroup AnalogOutput Analog Output
- * Configure the analog output subsystem and generate data
+  * Configure the analog output subsystem and generate data
  * @{
  */
  
@@ -2541,7 +2677,7 @@ UlError ulAOutSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int 
 
 /** 
  * \defgroup DigitalIO Digital I/O
- * Configure the digital I/O subsystem and acquire or generate data
+  * Configure the digital I/O subsystem and acquire or generate data
  * @{
  */
 
@@ -2733,6 +2869,15 @@ UlError ulDOutScanWait(DaqDeviceHandle daqDeviceHandle, WaitType waitType, long 
  * @return The UL error code.
  */
 UlError ulDOutSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int trigChan, double level, double variance, unsigned int retriggerSampleCount);
+
+/**
+ * Clears the alarm state for specified bits when alarms are configured to latch. Once the alarm condition is resolved, this function can be used to clear the latched alarm.
+ * @param daqDeviceHandle the handle to the DAQ device
+ * @param portType the port containing the bit(s) to clear; the specified port must be configurable for alarm output.
+ * @param mask bit mask that specifies which bits to clear; set to all 1s to clear all bits in the port.
+ * @return The UL error code.
+ */
+UlError ulDClearAlarm(DaqDeviceHandle daqDeviceHandle, DigitalPortType portType, unsigned long long mask);
 
 /** @}*/ 
 
@@ -3098,7 +3243,7 @@ UlError ulGetErrMsg(UlError errCode, char errMsg[ERR_MSG_LEN]);
 
 #ifndef doxy_skip
 /**
- * Use with #UlInfoItemStr to retrieve device information as a null-terminated string.
+ * Use with #UlInfoItemStr to retrieve the library information as a null-terminated string.
  * @param infoItem the information to read from the device
  * @param index either ignored or an index into the infoStr
  * @param infoStr pointer to the buffer where the information string is copied
@@ -3109,7 +3254,7 @@ UlError ulGetInfoStr(UlInfoItemStr infoItem, unsigned int index, char* infoStr, 
 
 
 /**
- * Use with UlConfigItem to change device configuration options at runtime.
+ * Use with UlConfigItem to change the library configuration options at runtime.
  * @param configItem the type of information to write to the device
  * @param index either ignored or an index into the \p configValue
  * @param configValue the value to set the specified configuration item to
@@ -3119,7 +3264,7 @@ UlError ulSetConfig(UlConfigItem configItem, unsigned int index, long long confi
 
 
 /**
- * Returns a configuration option set for the device.<br>Use ulSetConfig() to change configuration options.
+ * Returns a configuration option set for the library.<br>Use ulSetConfig() to change configuration options.
  * @param configItem the configuration item to retrieve
  * @param index the index into the \p configItem
  * @param configValue the specified configuration value is returned to this variable
@@ -3139,7 +3284,17 @@ UlError ulGetConfig(UlConfigItem configItem, unsigned int index, long long* conf
 UlError ulDevGetInfo(DaqDeviceHandle daqDeviceHandle, DevInfoItem infoItem, unsigned int index, long long* infoValue);
 
 /**
- * Use with #DevConfigItemStr to retrieve the current configuration as a null-terminated string.
+ * Use with #DevConfigItem to set configuration options at runtime.
+ * @param daqDeviceHandle the handle to the DAQ device
+ * @param configItem the configuration item to set
+ * @param index either ignored or an index into the \p configValue
+ * @param configValue the value to set the specified configuration item to
+ * @return The UL error code.
+ */
+UlError ulDevSetConfig(DaqDeviceHandle daqDeviceHandle, DevConfigItem configItem, unsigned int index, long long configValue);
+
+/**
+ * Use with #DevConfigItem to retrieve the current configuration options set for a device.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param configItem the configuration item to retrieve from the device
  * @param index either ignored or an index into the \p configValue
@@ -3147,7 +3302,6 @@ UlError ulDevGetInfo(DaqDeviceHandle daqDeviceHandle, DevInfoItem infoItem, unsi
  * @return The UL error code.
  */
 UlError ulDevGetConfig(DaqDeviceHandle daqDeviceHandle, DevConfigItem configItem, unsigned int index, long long* configValue);
-
 
 /**
  * Use with #DevConfigItemStr to retrieve the current configuration as a null-terminated string.
@@ -3234,7 +3388,7 @@ UlError ulAIGetConfigDbl(DaqDeviceHandle daqDeviceHandle, AiConfigItemDbl config
 
 /**
  * \ingroup AnalogInput
- * Use with #DevConfigItemStr to retrieve configuration information as a null-terminated string.
+ * Use with #AiConfigItemStr to retrieve configuration options as a null-terminated string.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param configItem the configuration item to retrieve
  * @param index either ignored or an index into the configStr

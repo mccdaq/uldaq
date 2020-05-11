@@ -27,6 +27,7 @@ private:
 	void loadFpga() const;
 	bool isSpartanFpga() const;
 	void reverseFpgaBits(unsigned char* fpgaImage, unsigned long size) const;
+	void getFpgaImage(unsigned char** fpgaImage, unsigned int* size, unsigned char** bitReverseBuffer) const;
 
 	unsigned short getRawFpgaVersion();
 

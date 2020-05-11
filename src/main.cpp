@@ -30,10 +30,10 @@ void lib_load(void)
 
 	ErrorMap::init();
 
-	UsbDaqDevice::usb_init();
+	/*UsbDaqDevice::usb_init();
 	HidDaqDevice::hidapi_init();
 
-	SuspendMonitor::init();
+	SuspendMonitor::init();*/
 }
 
 

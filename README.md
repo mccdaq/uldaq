@@ -51,21 +51,21 @@ Building the **uldaq** package requires C/C++ compilers, make tool, and the deve
 
 ```
   Linux
-     $ wget -N https://github.com/mccdaq/uldaq/releases/download/v1.1.2/libuldaq-1.1.2.tar.bz2
+     $ wget -N https://github.com/mccdaq/uldaq/releases/download/v1.2.0/libuldaq-1.2.0.tar.bz2
 
   macOS
-     $ curl -L -O https://github.com/mccdaq/uldaq/releases/download/v1.1.2/libuldaq-1.1.2.tar.bz2
+     $ curl -L -O https://github.com/mccdaq/uldaq/releases/download/v1.2.0/libuldaq-1.2.0.tar.bz2
 ``` 
 2. Extract the tar file:
  
 ```
-  $ tar -xvjf libuldaq-1.1.2.tar.bz2
+  $ tar -xvjf libuldaq-1.2.0.tar.bz2
 ```
   
 3. Run the following commands to build and install the library:
 
 ```
-  $ cd libuldaq-1.1.2
+  $ cd libuldaq-1.2.0
   $ ./configure && make
   $ sudo make install
 ```

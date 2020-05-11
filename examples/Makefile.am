@@ -8,7 +8,8 @@ DaqInScan DaqInScanWithTrigger\
 DaqOutScan\
 DIn DBitIn DInScan DOut DBitOut DOutScan\
 TmrPulseOut\
-TIn
+TIn\
+RemoteNetDiscovery
 
 AIn_SOURCES = AIn.c utility.h
 AInScan_SOURCES = AInScan.c
@@ -37,6 +38,7 @@ DOutScan_LDADD = $(LDADD) -lm
 DOutScan_SOURCES = DOutScan.c
 TmrPulseOut_SOURCES = TmrPulseOut.c
 TIn_SOURCES = TIn.c
+RemoteNetDiscovery_SOURCES = RemoteNetDiscovery.c
 
 
 

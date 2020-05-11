@@ -527,6 +527,11 @@ void DaqDevice::flashLed(int flashCount) const
 	throw UlException(ERR_BAD_DEV_TYPE);
 }
 
+void DaqDevice::connectionCode(long long code)
+{
+	throw UlException(ERR_BAD_DEV_TYPE);
+}
+
 //////////////////////          Configuration functions          /////////////////////////////////
 
 void DaqDevice::getCfg_FwVersionStr(DevVersionType verType, char* fwVerStr, unsigned int* maxStrLen) const
@@ -631,6 +636,41 @@ void DaqDevice::getCfg_RadioVersionStr(char* fpgaVerStr, unsigned int* maxStrLen
 		throw UlException(ERR_BAD_BUFFER_SIZE);
 	}
 }
+
+long long DaqDevice::getCfg_ConnectionCode() const
+{
+	throw UlException(ERR_BAD_DEV_TYPE);
+}
+
+void DaqDevice::setCfg_ConnectionCode(long long code)
+{
+	throw UlException(ERR_BAD_DEV_TYPE);
+}
+
+long long DaqDevice::getCfg_MemUnlockCode() const
+{
+	throw UlException(ERR_BAD_DEV_TYPE);
+}
+
+void DaqDevice::setCfg_MemUnlockCode(long long code)
+{
+	throw UlException(ERR_BAD_DEV_TYPE);
+}
+
+void DaqDevice::setCfg_Reset()
+{
+	throw UlException(ERR_BAD_DEV_TYPE);
+}
+
+void DaqDevice::getCfg_IpAddress(char* address, unsigned int* maxStrLen) const
+{
+	throw UlException(ERR_BAD_DEV_TYPE);
+}
+void DaqDevice::getCfg_NetIfcName(char* ifcName, unsigned int* maxStrLen) const
+{
+	throw UlException(ERR_BAD_DEV_TYPE);
+}
+
 
 int DaqDevice::memRead(MemoryType memType, MemRegion memRegionType, unsigned int address, unsigned char* buffer, unsigned int count) const
 {

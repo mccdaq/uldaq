@@ -1321,4 +1321,27 @@ int enter_press()
     	flush_stdin();
     return stdin_value;
 }
+
+int selectDAQDevice(int numberOfDAQDevices)
+{
+	int daqDeviceIndex = 0;
+	int ret;
+	while(1)
+	{
+		printf("\nPlease select a DAQ device, enter a number between 0 and %d: ", numberOfDAQDevices - 1);
+		ret = scanf("%d",&daqDeviceIndex);
+		if(!ret || daqDeviceIndex < 0 || daqDeviceIndex >= numberOfDAQDevices)
+		{
+			printf("Invalid device number\n");
+		}
+		else
+		{
+			printf("\n");
+			break;
+		}
+		flush_stdin();
+	}
+
+	return 	daqDeviceIndex;
+}
 #endif /* UTILITY_H_ */

@@ -103,6 +103,8 @@ std::vector<DaqDeviceDescriptor> HidDaqDevice::findDaqDevices()
 				else
 					strcpy(daqDevDescriptor.uniqueId, NO_PERMISSION_STR);
 			}
+			else
+				strcpy(daqDevDescriptor.uniqueId, NO_PERMISSION_STR);
 
 			UL_LOG("-----------------------");
 			UL_LOG("Product ID : 0x" << std::hex << daqDevDescriptor.productId << std::dec);

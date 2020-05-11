@@ -29,6 +29,7 @@ public:
 
 	virtual void connect() = 0;
 	virtual void disconnect() = 0;
+	virtual void connectionCode(long long code) = 0;
 	virtual void flashLed(int flashCount) const = 0;
 	virtual const UlDaqDeviceInfo& getDevInfo() const = 0;
 	virtual UlDaqDeviceConfig& getDevConfig() = 0;

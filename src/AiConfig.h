@@ -64,6 +64,18 @@ public:
 	virtual void setChanOpenTcDetectionMode(int channel, OtdMode mode);
 	virtual OtdMode getChanOpenTcDetectionMode(int channel);
 
+	virtual void setOpenTcDetectionMode(int dev, OtdMode mode);
+	virtual OtdMode getOpenTcDetectionMode(int dev);
+
+	virtual void setCalTableType(int dev, AiCalTableType calTableType);
+	virtual AiCalTableType getCalTableType(int dev);
+
+	virtual void setRejectFreqType(int dev, AiRejectFreqType rejectFreqType);
+	virtual AiRejectFreqType getRejectFreqType(int dev);
+
+	virtual unsigned long long getExpCalDate(int calTableIndex); // returns number of seconds since unix epoch
+	virtual void getExpCalDateStr(int calTableIndex, char* calDate, unsigned int* maxStrLen);
+
 private:
 	AiDevice& mAiDevice;
 };

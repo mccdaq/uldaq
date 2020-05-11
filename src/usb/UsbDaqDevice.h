@@ -90,7 +90,7 @@ public:
 
 	static void usb_init();
 	static void usb_exit();
-	static libusb_context* getLibUsbContext() {return mLibUsbContext;}
+	static const libusb_context* getLibUsbContext() {return mLibUsbContext;}
 
 protected:
 	UlError restablishConnection() const;

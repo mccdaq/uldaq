@@ -368,6 +368,8 @@ unsigned char CtrUsbCtrx::getDebounceOptionCode(CounterDebounceMode debounceMode
 		options.time = debounceTime - CDT_DEBOUNCE_500ns;
 		options.mode = debounceMode - CDM_TRIGGER_AFTER_STABLE ;
 	}
+	else
+		options.optCode = 16; // disable
 
 	return options.optCode;
 }

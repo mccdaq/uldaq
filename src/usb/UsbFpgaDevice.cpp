@@ -11,11 +11,35 @@
 #include <errno.h>
 #include <sys/stat.h>
 
-
 #include "UsbFpgaDevice.h"
 #include "../utility/UlLock.h"
 
-#define FPGA_FILES_PATH		"/etc/uldaq/fpga/"
+extern unsigned char USB_1208HS_rbf[];
+extern unsigned int USB_1208HS_rbf_len;
+
+extern unsigned char USB_1608G_rbf[];
+extern unsigned int USB_1608G_rbf_len;
+
+extern unsigned char USB_1608G_2_rbf[];
+extern unsigned int USB_1608G_2_rbf_len;
+
+extern unsigned char USB_1808_bin[];
+extern unsigned int USB_1808_bin_len;
+
+extern unsigned char usb_2020_bin[];
+extern unsigned int usb_2020_bin_len;
+
+extern unsigned char USB_26xx_rbf[];
+extern unsigned int USB_26xx_rbf_len;
+
+extern unsigned char USB_CTR_bin[];
+extern unsigned int USB_CTR_bin_len;
+
+extern unsigned char USB_DIO32HS_bin[];
+extern unsigned int USB_DIO32HS_bin_len;
+
+
+//#define FPGA_FILES_PATH		"/etc/uldaq/fpga/"
 
 namespace ul
 {
@@ -92,6 +116,8 @@ bool UsbFpgaDevice::isFpgaLoaded() const
 	return loaded;
 }
 
+// loads fpga image from file
+/*
 void UsbFpgaDevice::loadFpga() const
 {
 	UlError __attribute__((unused)) error = ERR_NO_ERROR;
@@ -173,6 +199,141 @@ void UsbFpgaDevice::loadFpga() const
 		}
 		else
 			throw UlException(ERR_UNABLE_TO_READ_FPGA_FILE);
+	}
+}*/
+
+void UsbFpgaDevice::loadFpga() const
+{
+	UlError __attribute__((unused)) error = ERR_NO_ERROR;
+
+	unsigned int size = 0;
+	unsigned char* fpgaImage = NULL;
+	unsigned char* bitReverseBuffer = NULL;
+
+	getFpgaImage(&fpgaImage, &size, &bitReverseBuffer);
+
+	if(fpgaImage)
+	{
+		// enter config mode
+		unsigned char unlockCode = 0xAD;
+
+		try
+		{
+			unsigned long num_bytes = sizeof(unlockCode);
+			UsbDaqDevice::sendCmd(CMD_FPGA_CFG, 0, 0, &unlockCode, num_bytes);
+
+			// transfer data
+			int remaining = size;
+			unsigned char* ptr = fpgaImage;
+			do
+			{
+				if(remaining > 64)
+					num_bytes = 64;
+				else
+					num_bytes = remaining;
+
+				UsbDaqDevice::sendCmd(CMD_FPGA_DATA, 0, 0, ptr, num_bytes);
+
+				ptr += num_bytes;
+				remaining -= num_bytes;
+
+			} while (remaining > 0);
+
+			if(isSpartanFpga())
+			{
+				unsigned char dummyData[2] = {0 , 0};
+
+				UsbDaqDevice::sendCmd(CMD_FPGA_DATA, 0, 0, dummyData, sizeof(dummyData));
+			}
+		}
+		catch(UlException& e)
+		{
+			error = e.getError();
+		}
+		catch(...)
+		{
+			error = ERR_UNHANDLED_EXCEPTION;
+		}
+
+		if(bitReverseBuffer)
+			delete[] bitReverseBuffer;
+
+		if(error)
+			throw UlException(error);
+	}
+	else
+		std::cout << "**** the fpga image not included" << std::endl;
+}
+
+void UsbFpgaDevice::getFpgaImage(unsigned char** fpgaImage, unsigned int* size, unsigned char** bitReverseBuffer) const
+{
+	unsigned int devType = getDeviceType();
+	switch(devType)
+	{
+		case DaqDeviceId::USB_1208HS:
+		case DaqDeviceId::USB_1208HS_2AO:
+		case DaqDeviceId::USB_1208HS_4AO:
+			*fpgaImage = USB_1208HS_rbf;
+			*size = USB_1208HS_rbf_len;
+			break;
+
+		case DaqDeviceId::USB_1608G:
+		case DaqDeviceId::USB_1608GX:
+		case DaqDeviceId::USB_1608GX_2AO:
+			*fpgaImage = USB_1608G_rbf;
+			*size = USB_1608G_rbf_len;
+			break;
+		case DaqDeviceId::USB_1608G_2:
+		case DaqDeviceId::USB_1608GX_2:
+		case DaqDeviceId::USB_1608GX_2AO_2:
+			*fpgaImage = USB_1608G_2_rbf;
+			*size = USB_1608G_2_rbf_len;
+		break;
+
+		case DaqDeviceId::USB_1808:
+		case DaqDeviceId::USB_1808X:
+			*fpgaImage = USB_1808_bin;
+			*size = USB_1808_bin_len;
+		break;
+
+		case DaqDeviceId::USB_2623:
+		case DaqDeviceId::USB_2627:
+		case DaqDeviceId::USB_2633:
+		case DaqDeviceId::USB_2637:
+			*fpgaImage = USB_26xx_rbf;
+			*size = USB_26xx_rbf_len;
+		break;
+
+		case DaqDeviceId::USB_DIO32HS:
+			*fpgaImage = USB_DIO32HS_bin;
+			*size = USB_DIO32HS_bin_len;
+		break;
+
+		case DaqDeviceId::USB_CTR04:
+		case DaqDeviceId::USB_CTR08:
+			*fpgaImage = USB_CTR_bin;
+			*size = USB_CTR_bin_len;
+		break;
+		case DaqDeviceId::USB_2020:
+
+			// do not reverse the global image (usb_2020_bin[])
+			 *bitReverseBuffer = new unsigned char[usb_2020_bin_len];
+
+			 if(*bitReverseBuffer)
+			 {
+				 memcpy(*bitReverseBuffer, usb_2020_bin, usb_2020_bin_len);
+				 reverseFpgaBits(*bitReverseBuffer, usb_2020_bin_len);
+
+				 *fpgaImage = *bitReverseBuffer;
+				 *size = usb_2020_bin_len;
+			 }
+			 else
+				std::cout << "**** insufficient memory to reverse the fpga image bits" << std::endl;
+
+		break;
+		default:
+			std::cout << "undefined FPGA device" << std::endl;
+
 	}
 }
 

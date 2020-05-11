@@ -20,6 +20,32 @@ DaqDeviceConfig::~DaqDeviceConfig()
 
 }
 
+void DaqDeviceConfig::setConnectionCode(long long code)
+{
+	mDaqDevice.setCfg_ConnectionCode(code);
+}
+
+long long DaqDeviceConfig::getConnectionCode()
+{
+	return mDaqDevice.getCfg_ConnectionCode();
+}
+
+void DaqDeviceConfig::setMemUnlockCode(long long code)
+{
+	mDaqDevice.setCfg_MemUnlockCode(code);
+}
+
+long long DaqDeviceConfig::getMemUnlockCode()
+{
+	return mDaqDevice.getCfg_MemUnlockCode();
+}
+
+void DaqDeviceConfig::reset()
+{
+	mDaqDevice.setCfg_Reset();
+}
+
+
 void DaqDeviceConfig::getVersionStr(DevVersionType verType, char* verStr, unsigned int* maxStrLen)
 {
 	switch(verType)
@@ -44,6 +70,15 @@ void DaqDeviceConfig::getVersionStr(DevVersionType verType, char* verStr, unsign
 bool DaqDeviceConfig::hasExp()
 {
 	return mDaqDevice.hasExp();
+}
+
+void DaqDeviceConfig::getIpAddressStr(char* address, unsigned int* maxStrLen)
+{
+	mDaqDevice.getCfg_IpAddress(address, maxStrLen);
+}
+void DaqDeviceConfig::getNetIfcNameStr(char* ifcName, unsigned int* maxStrLen)
+{
+	mDaqDevice.getCfg_NetIfcName(ifcName, maxStrLen);
 }
 
 } /* namespace ul */

@@ -1,6 +1,23 @@
 # Changelog
 All notable changes to the UL for Linux project will be documented in this file.
 
+## [1.2.0] - May 11, 2020
+### Added
+* support for the following DAQ devices
+  * E-1608
+  * E-TC
+  * E-DIO24
+  * TC32
+
+* RemoteNetDiscovery example
+  
+### Changed
+- The FPGA folder and its content have been removed. The FPGA images have been embedded in the library file.
+- To address the libusb fork operation issue which is explained [here](http://libusb.sourceforge.net/api-1.0/libusb_caveats.html), libusb will no longer be initialized when the uldaq library is loaded. Instead, libusb is initialized when the first uldaq function is invoked. This change allows users to initialize libusb in the child process by invoking the first uldaq function after a fork() call. 
+
+### Removed
+- none
+
 ## [1.1.2] - November 22, 2019
 ### Added
 * support for the following DAQ devices

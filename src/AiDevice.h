@@ -82,6 +82,18 @@ public:
 	virtual void setCfg_ChanOpenTcDetectionMode(int channel, OtdMode mode);
 	virtual OtdMode getCfg_ChanOpenTcDetectionMode(int channel) const;
 
+	virtual void setCfg_OpenTcDetectionMode(int dev, OtdMode mode);
+	virtual OtdMode getCfg_OpenTcDetectionMode(int dev) const;
+
+	virtual void setCfg_CalTableType(int dev, AiCalTableType calTableType);
+	virtual AiCalTableType getCfg_CalTableType(int dev) const;
+
+	virtual void setCfg_RejectFreqType(int dev, AiRejectFreqType calTableType);
+	virtual AiRejectFreqType getCfg_RejectFreqType(int dev) const;
+
+	virtual unsigned long long getCfg_ExpCalDate(int calTableIndex);
+	virtual void getCfg_ExpCalDateStr(int calTableIndex, char* calDate, unsigned int* maxStrLen);
+
 protected:
 	virtual void loadAdcCoefficients() = 0;
 	virtual int getCalCoefIndex(int channel, AiInputMode inputMode, Range range) const = 0;

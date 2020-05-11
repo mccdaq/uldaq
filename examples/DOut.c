@@ -68,7 +68,10 @@ int main(void)
 
 	printf("Found %d DAQ device(s)\n", numDevs);
 	for (i = 0; i < (int) numDevs; i++)
-		printf("  %s: (%s)\n", devDescriptors[i].productName, devDescriptors[i].uniqueId);
+		printf("  [%d] %s: (%s)\n", i, devDescriptors[i].productName, devDescriptors[i].uniqueId);
+
+	if(numDevs > 1)
+		descriptorIndex = selectDAQDevice(numDevs);
 
 	// get a handle to the DAQ device associated with the first descriptor
 	daqDeviceHandle = ulCreateDaqDevice(devDescriptors[descriptorIndex]);

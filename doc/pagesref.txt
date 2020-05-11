@@ -18,31 +18,31 @@
  <h3 class="subsystem" ID="hwlist"><b>Hardware supported by UL for Linux software</b></h3>
  <table class="hwdoxtable">
 	<tr><td colspan="4"><b>Measurement Computing</b></td></tr>
-	<tr><td><a href="sc1608g.html">SC-1608-USB</a><br><a href="sc1608g.html">SC-1608-2AO-USB</a><br><a href="sc1608g.html">SC-1608X-USB</a>
-	<br><a href="1024ls.html">USB-1024HLS</a><br><a href="1024ls.html">USB-1024LS</a>
-	<br><a href="1208fsplus.html">USB-1208FS-Plus</a><br><a href="1208hs.html">USB-1208HS-2AO</a><br><a href="1208hs.html">USB-1208HS-4AO</a>
-	<br><a href="1208hs.html">USB-1208HS</a><br><a href="1408fsplus.html">USB-1408FS-Plus</a><br><a href="1608fsplus.html">USB-1608FS-Plus</a>
-	<br><a href="1608g.html">USB-1608G</a><br><a href="1608g.html">USB-1608GX</a><br><a href="1608g.html">USB-1608GX-2AO</a>
-	<br><a href="1608hs.html">USB-1608HS</a></td>
+	<tr><td><a href="e1608.html">E-1608</a><br><a href="edio24.html">E-DIO24</a><br><a href="etc.html">E-TC</a>
+	<br><a href="sc1608g.html">SC-1608-USB</a><br><a href="sc1608g.html">SC-1608-2AO-USB</a><br><a href="sc1608g.html">SC-1608X-USB</a>
+	<br><a href="tc32.html">TC-32</a><br><a href="1024ls.html">USB-1024HLS</a>
+	<br><a href="1024ls.html">USB-1024LS</a><br><a href="1208fsplus.html">USB-1208FS-Plus</a><br><a href="1208hs.html">USB-1208HS-2AO</a>
+	<br><a href="1208hs.html">USB-1208HS-4AO</a><br><a href="1208hs.html">USB-1208HS</a><br><a href="1408fsplus.html">USB-1408FS-Plus</a>
+	<br><a href="1608fsplus.html">USB-1608FS-Plus</a><br><a href="1608g.html">USB-1608G</a></td>
 	
-	<td><a href="1608hs.html">USB-1608HS-2AO</a><br><a href="1808.html">USB-1808</a><br><a href="1808.html">USB-1808X</a>
-	<br><a href="2001tc.html">USB-2001-TC</a><br><a href="200.html">USB-201</a><br><a href="200.html">USB-202</a><br><a href="2020.html">USB-2020</a>
-	<br><a href="200.html">USB-204</a><br><a href="200.html">USB-205</a><br><a href="2408.html">USB-2408</a>
-	<br><a href="2408.html">USB-2408-2AO</a><br><a href="2416.html">USB-2416</a><br><a href="2416.html">USB-2416-4AO</a>
-	<br><a href="2600.html">USB-2623</a><br><a href="2600.html">USB-2627</a></td>
+	<td><a href="1608g.html">USB-1608GX</a><br><a href="1608g.html">USB-1608GX-2AO</a>
+	<br><a href="1608hs.html">USB-1608HS</a><br><a href="1608hs.html">USB-1608HS-2AO</a><br><a href="1808.html">USB-1808</a>
+	<br><a href="1808.html">USB-1808X</a><br><a href="2001tc.html">USB-2001-TC</a><br><a href="200.html">USB-201</a>
+	<br><a href="200.html">USB-202</a><br><a href="2020.html">USB-2020</a><br><a href="200.html">USB-204</a><br><a href="200.html">USB-205</a>
+	<br><a href="2408.html">USB-2408</a><br><a href="2408.html">USB-2408-2AO</a><br><a href="2416.html">USB-2416</a><br><a href="2416.html">USB-2416-4AO</a></td>
 	
-	<td><a href="2600.html">USB-2633</a><br><a href="2600.html">USB-2637</a><br><a href="310x.html">USB-3101</a>
-	<br><a href="310x.html">USB-3102</a><br><a href="310x.html">USB-3103</a><br><a href="310x.html">USB-3104</a>
-	<br><a href="310x.html">USB-3105</a><br><a href="310x.html">USB-3106</a><br><a href="310x.html">USB-3110</a>
-	<br><a href="310x.html">USB-3112</a><br><a href="310x.html">USB-3114</a><br><a href="ctr0x.html">USB-CTR04</a>
-	<br><a href="ctr0x.html">USB-CTR08</a><br><a href="dio24.html">USB-DIO24/37</a><br><a href="dio24.html">USB-DIO24H/37</a></td>
+	<td><a href="2600.html">USB-2623</a><br><a href="2600.html">USB-2627</a>
+	<br><a href="2600.html">USB-2633</a><br><a href="2600.html">USB-2637</a><br><a href="310x.html">USB-3101</a><br><a href="310x.html">USB-3102</a>
+	<br><a href="310x.html">USB-3103</a><br><a href="310x.html">USB-3104</a><br><a href="310x.html">USB-3105</a><br><a href="310x.html">USB-3106</a>
+	<br><a href="310x.html">USB-3110</a><br><a href="310x.html">USB-3112</a><br><a href="310x.html">USB-3114</a>
+	<br><a href="ctr0x.html">USB-CTR04</a><br><a href="ctr0x.html">USB-CTR08</a><br><a href="dio24.html">USB-DIO24/37</a></td>
 	
-	<td><a href="dio32hs.html">USB-DIO32HS</a><br><a href="dio96h.html">USB-DIO96H</a><br><a href="dio96h.html">USB-DIO96H/50</a>
-	<br><a href="erb.html">USB-ERB08</a>
+	<td><a href="dio24.html">USB-DIO24H/37</a>
+	<br><a href="dio32hs.html">USB-DIO32HS</a><br><a href="dio96h.html">USB-DIO96H</a><br><a href="dio96h.html">USB-DIO96H/50</a><br><a href="erb.html">USB-ERB08</a>
 	<br><a href="erb.html">USB-ERB24</a><br><a href="pdiso8.html">USB-PDISO8</a><br><a href="pdiso8.html">USB-PDISO8/40</a>
 	<br><a href="quad08.html">USB-QUAD08</a><br><a href="ssr.html">USB-SSR08</a><br><a href="ssr.html">USB-SSR24</a>
 	<br><a href="tc.html">USB-TC</a><br><a href="tcai.html">USB-TC-AI</a><br><a href="temp.html">USB-TEMP</a>
-	<br><a href="tempai.html">USB-TEMP-AI</a></td></tr>
+	<br><a href="tempai.html">USB-TEMP-AI</a></td></td></td></tr>
 	
 	<tr><td colspan="4"><b>Data Translation</b></td></tr>
 	<tr><td rowspan="4"><a href="dt9837.html">DT9837A</a><br><a href="dt9837.html">DT9837B</a>
@@ -1522,6 +1522,312 @@ Refer to the <a href="1608g.html">USB-1608 Series</a> topic for supporting UL fo
 to the SC-1608G Series.
 */
 
+<!-- E-1608 ==================================================================================================-->
+/* E-1608 */
+/** \page e1608 E-1608
+*
+The E-1608 supports the following UL for Linux capabilities. Unless otherwise indicated, the OEM version supports the same 
+capabilities as the standard version.
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 7</td></tr>
+<tr><td>Input modes:</td><td>::AI_DIFFERENTIAL, ::AI_SINGLE_ENDED</td></tr>
+<tr><td>Ranges:</td><td>::BIP10VOLTS, ::BIP5VOLTS, ::BIP2VOLTS, ::BIP1VOLTS</td></tr>
+<tr><td>Scan options:</td><td>::SO_DEFAULTIO, ::SO_BLOCKIO, ::SO_CONTINUOUS,
+	::SO_EXTCLOCK, ::SO_EXTTRIGGER</td></tr>
+<tr><td>Scan rates:</td><td>0.01863 to 250,000 S/s</td></tr>
+<tr><td>Trigger types:</td><td>::TRIG_HIGH, ::TRIG_LOW, ::TRIG_POS_EDGE, ::TRIG_NEG_EDGE</td></tr>
+<tr><td>Functions:</td><td>ulAIn(), ulAInScan(), ulAInLoadQueue(), ulAInScanStatus(), ulAInScanStop(),
+	ulAInScanWait(), ulAInSetTrigger()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- AO ==================================================================================-->
+<h2 class="subsystem">Analog Output</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 1</td></tr>
+<tr><td>Ranges:</td><td> ::BIP10VOLTS</td></tr>
+<tr><td>Functions:</td><td>ulAOut()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 7 </td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), 
+	ulDIOGetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Events ==================================================================================-->
+<h2 class="subsystem">Events</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Event types:</td><td>::DE_ON_DATA_AVAILABLE, ::DE_ON_END_OF_INPUT_SCAN, ::DE_ON_INPUT_SCAN_ERROR</td></tr>
+<tr><td>Functions:</td><td>ulEnableEvent(), ulDisableEvent()</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed(), ulMemRead(), ulMemWrite(), ulDevSetConfig(), ulDevGetConfig(), ulDevGetConfigStr()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get/Set): ::DEV_CFG_CONNECTION_CODE<br>
+    Config Item (Get): ::DEV_CFG_IP_ADDR_STR, ::DEV_CFG_NET_IFC_STR</td></tr>
+</table>
+
+<h4>Settings memory map</h4>
+The settings memory map is provided for advanced applications which require device configuration.
+<br>Note that default device settings are acceptable for most applications. If you need to change a device setting, 
+however, the preferred method to use is InstaCal.
+
+<table class="doxtable" width="80%">
+<tr><td width="20%"><strong>Address</strong></td><td width="60%"><strong>Value</strong></td><td><strong>DefauleValue</strong></td></tr>
+<tr><td>0x000-0x001</td><td>Network options:
+	<br>&nbsp;&nbsp;&nbsp;Bit 0: 0 = DHCP enabled, 1 = DHCP disabled
+	<br>&nbsp;&nbsp;&nbsp;Bit 1: 0 = Auto IP enabled, 1 = Auto IP disabled
+	<br>&nbsp;&nbsp;&nbsp;Bit 2-15: reserved</td><td>0x0000</td></tr>
+<tr><td>0x002-0x005</td><td>Default IPv4 address</td><td>192.168.0.101</td></tr>
+<tr><td>0x006-0x009</td><td>Default IPv4 subnet mask</td><td>255.255.255.0</td></tr>
+<tr><td>0x00A-0x00D</td><td>Default IPv4 gateway address</td><td>192.168.0.1</td></tr>
+<tr><td>0x00E-0x00F</td><td>Reserved</td><td>&nbsp;</td></tr>
+<tr><td>0x010-0x011</td><td>Reserved</td><td>&nbsp;</td></tr>
+<tr><td>0x012-0x015</td><td>Connection code, 4 bytes</td><td>0x00000000</td></tr>
+<tr><td>0x016</td><td>DOut connection mode. This determines the DOut value 
+	when the connection status changes.
+	<br>&nbsp;&nbsp;&nbsp;0 = no change<br>&nbsp;&nbsp;&nbsp;1 = apply specified tristate / latch values</td><td>0</td></tr>
+<tr><td>0x017</td><td>DOut tristate mask for connection / disconnection 
+	(bits set to 0 are outputs, bits set to 1 are no change).</td><td>0xFF</td></tr>
+<tr><td>0x018</td><td>Reserved</td><td>&nbsp;</td></tr>
+<tr><td>0x019</td><td>DOut latch value when host is connected.</td><td>0x00</td></tr>
+<tr><td>0x01A</td><td>DOut latch value when host is disconnected.</td><td>0x00</td></tr>
+<tr><td>0x01B</td><td>AOut channel 0 connection mode. This determines the AOut value 
+	when the connection status changes.
+	<br>&nbsp;&nbsp;&nbsp;0 = no change
+	<br>&nbsp;&nbsp;&nbsp;1 = apply specified values to channel 0</td><td>0</td></tr>
+<tr><td>0x01C-0x01D</td><td>AOut channel 0 value when host is connected.</td><td>32768</td></tr>
+<tr><td>0x01E-0x01F</td><td>AOut channel 0 value when host is disconnected.</td><td>32768</td></tr>
+<tr><td>0x020</td><td>AOut channel 1 connection mode. This determines the AOut value 
+	when the connection status changes.
+	<br>&nbsp;&nbsp;&nbsp;0 = no change
+	<br>&nbsp;&nbsp;&nbsp;1 = apply specified values to channel 1</td><td>0</td></tr>
+<tr><td>0x021-0x022</td><td>AOut channel 1 value when host is connected.</td><td>32768</td></tr>
+<tr><td>0x023-0x024</td><td>AOut channel 1 value when host is disconnected.</td><td>32768</td></tr>
+<tr><td>0x025-0x1FF</td><td>Reserved</td><td>&nbsp;</td></tr>
+</table>
+Note: The settings do not take effect until after the device is reset or power cycled.
+
+If you are unable to communicate with the device after changing the settings section of memory,
+refer to the <em>Restoring factory default settings</em> section of the device user's manual.
+*/
+
+<!— E-dio24 ==================================================================================-->
+/* E-DIO24 */
+/** \page edio24 E-DIO24
+*
+The E-DIO24 supports the following UL for Linux capabilities. Unless otherwise indicated, the OEM version supports the same 
+capabilities as the standard version.
+
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td> ::AUXPORT0, ::AUXPORT1, ::AUXPORT2</td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td> ulDIn(), ulDInArray(), ulDOut(), ulDOutArray(), ulDBitIn(), ulDBitOut(),
+	ulDConfigPort(), ulDIOGetConfig()<td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK 
+	<br>Config Item (Set): ::DIO_CFG_PORT_INITIAL_OUTPUT_VAL</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed(), ulMemRead(), ulMemWrite(), ulDevSetConfig(), ulDevGetConfig(), ulDevGetConfigStr()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get/Set): ::DEV_CFG_CONNECTION_CODE<br>
+    Config Item (Get): ::DEV_CFG_IP_ADDR_STR, ::DEV_CFG_NET_IFC_STR</td></tr>
+</table>
+
+<h4>Settings memory map</h4>
+The settings memory map is provided for advanced applications which require device configuration.
+<br>Note that default device settings are acceptable for most applications. If you need to change a device setting, 
+however, the preferred method to use is InstaCal.
+
+<table class="doxtable" width="80%">
+<tr><td width="20%"><strong>Address</strong></td><td width="60%"><strong>Value</strong></td><td><strong>DefauleValue</strong></td></tr>
+<tr><td>0x000-0x001</td><td>Network options:
+	<br>&nbsp;&nbsp;&nbsp;Bit 0: 0 = DHCP enabled, 1 = DHCP disabled
+	<br>&nbsp;&nbsp;&nbsp;Bit 1: 0 = Auto IP enabled, 1 = Auto IP disabled
+	<br>&nbsp;&nbsp;&nbsp;Bit 2-15: reserved</td><td>0x0000</td></tr>
+<tr><td>0x002-0x005</td><td>Default IPv4 address</td><td>192.168.0.101</td></tr>
+<tr><td>0x006-0x009</td><td>Default IPv4 subnet mask</td><td>255.255.255.0</td></tr>
+<tr><td>0x00A-0x00D</td><td>Default IPv4 gateway address</td><td>192.168.0.1</td></tr>
+<tr><td>0x00E-0x00F</td><td>Reserved</td><td>&nbsp;</td></tr>
+<tr><td>0x010-0x011</td><td>Reserved</td><td>&nbsp;</td></tr>
+<tr><td>0x012-0x015</td><td>Connection code, 4 bytes</td><td>0x00000000</td></tr>
+<tr><td>0x016</td><td>DOut connection mode. This determines the DOut value 
+	when the connection status changes.
+	<br>&nbsp;&nbsp;&nbsp;0 = no change<br>&nbsp;&nbsp;&nbsp;1 = apply specified tristate / latch values</td><td>0</td></tr>
+<tr><td>0x017</td><td>Reserved</td><td>&nbsp;</td></tr>
+<tr><td>0x018</td><td>DOut port 0 tristate mask for connection / disconnection 
+	(bits set to 0 are outputs, bits set to 1 are no change).</td><td>0xFF</td></tr>
+<tr><td>0x019</td><td>DOut port 1 tristate mask for connection / disconnection 
+	(bits set to 0 are outputs, bits set to 1 are no change).</td><td>0xFF</td></tr>
+<tr><td>0x01A</td><td>DOut port 2 tristate mask for connection / disconnection 
+	(bits set to 0 are outputs, bits set to 1 are no change).</td><td>0xFF</td></tr>
+<tr><td>0x01B</td><td>Reserved</td><td>&nbsp;</td></tr>
+<tr><td>0x01C</td><td>DOut port 0 latch value when host is connected.</td><td>0x00</td></tr>
+<tr><td>0x01D</td><td>DOut port 1 latch value when host is connected.</td><td>0x00</td></tr>
+<tr><td>0x01E</td><td>DOut port 2 latch value when host is connected.</td><td>0x00</td></tr>
+<tr><td>0x01F</td><td>Reserved</td><td>&nbsp;</td></tr>
+<tr><td>0x020</td><td>DOut port 0 latch value when host is disconnected.</td><td>0x00</td></tr>
+<tr><td>0x021</td><td>DOut port 1 latch value when host is disconnected.</td><td>0x00</td></tr>
+<tr><td>0x022</td><td>DOut port 2 latch value when host is disconnected.</td><td>0x00</td></tr>
+<tr><td>0x023-0x0FF</td><td>Reserved</td><td>&nbsp;</td></tr>
+</table>
+Note: The settings do not take effect until after the device is reset or power cycled.
+
+If you are unable to communicate with the device after changing the settings section of memory,
+refer to the <em>Restoring factory default settings</em> section of the device user's manual.
+*/
+
+<!— E-TC ==================================================================================================-->
+/* E-TC */
+/** \page etc E-TC
+*
+The E-TC supports the following UL for Linux capabilities. 
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 7</td></tr>
+<tr><td>TIn flags:</td><td> ::TIN_FF_DEFAULT, ::TIN_FF_WAIT_FOR_NEW_DATA</td></tr>
+<tr><td>TInArray Flags:</td><td> ::TINARRAY_FF_DEFAULT, ::TINARRAY_FF_WAIT_FOR_NEW_DATA</td></tr>
+<tr><td>Functions:</td><td> ulTIn(), ulTInArray(), ulAIGetConfig(), ulAISetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get/Set): ::AI_CFG_CHAN_TC_TYPE, ::AI_CFG_CHAN_TYPE, 
+    ::AI_CFG_CHAN_OTD_MODE, ::AI_CFG_CAL_TABLE_TYPE</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::AUXPORT</td></tr>
+<tr><td>Bits:</td><td>0 to 7</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDConfigPort(), ulDConfigBit(), 
+    ulDIOGetConfig(), ulDClearAlarm()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+<!-- CTR ==================================================================================-->
+<h2 class="subsystem">Counter</h2>
+<table class="hwdoxtable">
+<tr><td td width="20%">Counter argument:</td><td>0</td></tr>
+<tr><td>Functions:</td><td>ulCIn(), ulCRead(), ulCLoad(), ulCClear()</td></tr>
+<tr><td>Configuration:</td><td>none</td></tr>
+</table>
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed(), ulMemRead(), ulMemWrite(), ulDevSetConfig(), ulDevGetConfig(), ulDevGetConfigStr()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get/Set): ::DEV_CFG_CONNECTION_CODE<br>
+    Config Item (Get): ::DEV_CFG_IP_ADDR_STR, ::DEV_CFG_NET_IFC_STR</td></tr>
+</table>
+
+<h4>Settings memory map</h4>
+The settings memory map is provided for advanced applications which require device configuration.
+<br>Note that default device settings are acceptable for most applications. If you need to change a device setting, 
+however, the preferred method to use is InstaCal.
+
+<table class="doxtable" width="80%">
+<tr><td width="20%"><strong>Address</strong></td><td width="60%"><strong>Value</strong></td><td><strong>DefauleValue</strong></td></tr>
+<tr><td>0x00-0x01</td><td>Network options:
+	<br>&nbsp;&nbsp;&nbsp;Bit 0: 0 = DHCP enabled, 1 = DHCP disabled
+	<br>&nbsp;&nbsp;&nbsp;Bit 1: 0 = Auto IP enabled, 1 = Auto IP disabled
+	<br>&nbsp;&nbsp;&nbsp;Bit 2-15: reserved</td><td>0x0000</td></tr>
+<tr><td>0x02-0x05</td><td>Default IPv4 address</td><td>192.168.0.101</td></tr>
+<tr><td>0x06-0x09</td><td>Default IPv4 subnet mask</td><td>255.255.255.0</td></tr>
+<tr><td>0x0A-0x0D</td><td>Default IPv4 gateway address</td><td>192.168.0.1</td></tr>
+<tr><td>0x0E-0x0F</td><td>Reserved</td><td>&nbsp;</td></tr>
+<tr><td>0x10-0x11</td><td>Reserved</td><td>&nbsp;</td></tr>
+<tr><td>0x12-0x15</td><td>Connection code, 4 bytes</td><td>0x00000000</td></tr>
+<tr><td>0x16-0x1F</td><td>Reserved</td><td>&nbsp;</td></tr>
+</table>
+Note: The settings do not take effect until after the device is reset or power cycled.
+
+If you are unable to communicate with the device after changing the settings section of memory,
+refer to the <em>Restoring factory default settings</em> section of the device user's manual.
+*/
+
+<!— TC-32 ==================================================================================================-->
+/* TC-32  */
+/** \page tc32 TC-32
+*
+The TC-32 supports the following UL for Linux capabilities. 
+
+<!-- AI ==================================================================================-->
+<h3 class="subsystem">Analog Input</h3>
+<table class="hwdoxtable">
+<tr><td width="20%">Channels:</td><td>0 to 31
+	<br>0 to 63 if the TC-32-EXP is attached - see ulDevGetConfig()/::DEV_CFG_HAS_EXP below</td></tr>
+<tr><td>TIn flags:</td><td> ::TIN_FF_DEFAULT, ::TIN_FF_WAIT_FOR_NEW_DATA</td></tr>
+<tr><td>TInArray Flags:</td><td> ::TINARRAY_FF_DEFAULT, ::TINARRAY_FF_WAIT_FOR_NEW_DATA</td></tr>
+<tr><td>Functions:</td><td> ulTIn(), ulTInArray(), ulAIGetConfig(), ulAISetConfig()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get/Set): ::AI_CFG_CHAN_TC_TYPE, ::AI_CFG_CHAN_TYPE, 
+    ::AI_CFG_OTD_MODE, ::AI_CFG_REJECT_FREQ_TYPE, ::AI_CFG_CAL_TABLE_TYPE 
+    <br>Config Item (Get): ::AI_CFG_CAL_DATE_STR, ::AI_CFG_EXP_CAL_DATE_STR</td></tr>
+</table>
+<!-- DIO ==================================================================================-->
+<h2 class="subsystem">Digital I/O</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Ports:</td><td>::FIRSTPORTA, ::FIRSTPORTB
+	<br>::SECONDPORTA, ::SECONDPORTB if the TC-32-EXP is attached - see ulDevGetConfig()/::DEV_CFG_HAS_EXP below</td></tr>
+<tr><td>Bits:</td><td>FIRSTPORTA: 0 to 7 <br>FIRSTPORTB: 0 to 31 <br>SECONDPORTA: 0 to 7 <br>SECONDPORTB: 0 to 31</td></tr>
+<tr><td>Functions:</td><td>ulDIn(), ulDOut(), ulDBitIn(), ulDBitOut(), ulDIOGetConfig(), ulDClearAlarm()
+	<br>Call ulDevGetConfig() with the ::DEV_CFG_HAS_EXP \p configItem to determine the number of valid digital ports.</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get): ::DIO_CFG_PORT_DIRECTION_MASK</td></tr>
+</table>
+
+<!-- Device ==================================================================================-->
+<h2 class="subsystem">Device</h2>
+<table class="hwdoxtable">
+<tr><td width="20%">Functions:</td><td>ulFlashLed(), ulMemRead(), ulMemWrite(), ulDevSetConfig(), ulDevGetConfig(), ulDevGetConfigStr()</td></tr>
+<tr><td>Configuration:</td><td>Config Item (Get/Set): ::DEV_CFG_CONNECTION_CODE<br>
+    Config Item (Get): ::DEV_CFG_IP_ADDR_STR, ::DEV_CFG_NET_IFC_STR, ::DEV_CFG_HAS_EXP</td></tr>
+</table>
+
+<h4>Settings memory map</h4>
+The settings memory map is provided for advanced applications which require device configuration.
+<br>Note that default device settings are acceptable for most applications. If you need to change a device setting, 
+however, the preferred method to use is InstaCal.
+
+<table class="doxtable" width="80%">
+<tr><td width="20%"><strong>Address</strong></td><td width="60%"><strong>Value</strong></td><td><strong>DefauleValue</strong></td></tr>
+<tr><td>0x00-0x01</td><td>Network options:
+	<br>&nbsp;&nbsp;&nbsp;Bit 0: 0 = DHCP enabled, 1 = DHCP disabled
+	<br>&nbsp;&nbsp;&nbsp;Bit 1: 0 = Auto IP enabled, 1 = Auto IP disabled
+	<br>&nbsp;&nbsp;&nbsp;Bit 2-15: reserved</td><td>0x0000</td></tr>
+<tr><td>0x02-0x05</td><td>Default IPv4 address</td><td>192.168.0.101</td></tr>
+<tr><td>0x06-0x09</td><td>Default IPv4 subnet mask</td><td>255.255.255.0</td></tr>
+<tr><td>0x0A-0x0D</td><td>Default IPv4 gateway address</td><td>192.168.0.1</td></tr>
+<tr><td>0x0E-0x0F</td><td>Reserved</td><td>&nbsp;</td></tr>
+<tr><td>0x10-0x11</td><td>Reserved</td><td>&nbsp;</td></tr>
+<tr><td>0x12-0x15</td><td>Connection code, 4 bytes</td><td>0x00000000</td></tr>
+<tr><td>0x16-0x1F</td><td>Reserved</td><td>&nbsp;</td></tr>
+</table>
+Note: The settings do not take effect until after the device is reset or power cycled.
+
+If you are unable to communicate with the device after changing the settings section of memory,
+refer to the <em>Restoring factory default settings</em> section of the device user's manual.
+*/
+
 <!—dt9837 ==================================================================================================-->
 /* DT9837 Series */
 /** \page dt9837 DT9837A, DT9837B, DT9837C
@@ -1676,7 +1982,7 @@ Functions:</td><td>ulDaqInScan(), ulDaqInScanStatus(), ulDaqInScanStop(), ulDaqI
  /** \page examples Example Projects
 UL for Linux includes example projects you can run with MCC hardware.
 
-UL for Linux example projects are installed into into an &quot;examples&quot; 
+UL for Linux example projects are installed into an &quot;examples&quot; 
 folder as part of the project make and are ready to run.<br>
 Connect a supported Measurement Computing DAQ device to your system before running an example.
 Perform the following steps to run a UL for Linux example from a terminal window:
@@ -1710,12 +2016,12 @@ Demonstrates the use of ulAOutScan() and ulAOutScanStop().</td></tr>
 <tr><td>CIn</td><td>Sets the initial value of a counter and counts events. Demonstrates the use of ulCIn() and ulCClear().</td></tr>
 <tr><td>CInScan</td><td>Scans a range of counter channels. Demonstrates the use of ulCInScan() and ulCInScanStop().</td></tr>
 <tr><td>CInScanWithEncoder</td><td>Scans a range of encoder channels. Demonstrates the use of ulCInScan(), ulCConfigScan(), and ulCInScanStop().</td></tr>
-<tr><td>DaqInScan</td><td>Simultaneously acquires analog, digital, and counter data. Demonstrates the use of ulDaqInScan() and
+<tr><td>DaqInScan</td><td>Simultaneously acquires analog, digital, and counter data. Demonstrates the use of ulDaqInScan(), ulDaqInScanStatus, and
 ulDaqInScanStop().</td></tr>
 <tr><td>DaqInScanWithTrigger</td><td>Sets up a trigger function, and simultaneously acquires analog, digital, and counter data when the
 trigger is received. Demonstrates the use of ulDaqInScan() and ulDaqInScanStop().</td></tr>
-<tr><td>DaqOutScan</td><td>Simultaneously outputs analog and digital data.
-Demonstrates the use of ulDaqOutScan().</td></tr>
+<tr><td>DaqOutScan</td><td>Simultaneously outputs analog and digital data. Demonstrates the use of ulDaqOutScan(), 
+ulDaqOutScanStatus, and ulDaqOutScanStop().</td></tr>
 <tr><td>DBitIn</td><td>Configures multiple digital bits for input and reads the bit values. Demonstrates the use of ulDConfigBit() and
 ulDBitIn().</td></tr>
 <tr><td>DBitOut</td><td>Writes a specified value to multiple digital output bits. Demonstrates the use of ulDConfigBit() and ulDBitOut().</td></tr>
@@ -1724,6 +2030,8 @@ ulDBitIn().</td></tr>
 ulDInScanStop().</td></tr>
 <tr><td>DOut</td><td>Configures a port for output and writes a specified value. Demonstrates the use of ulDConfigPort() and ulDOut().</td></tr>
 <tr><td>DOutScan</td><td>Configures the port direction and outputs digital data. Demonstrates the use of ulDConfigPort(), ulDOutScan(), and ulDOutScanStop().</td></tr>
+<tr><td>RemoteNetDiscovery</td><td>Discovers remote Ethernet DAQ devices. Demonstrates the use of ulGetNetDaqDeviceDescriptor() 
+and ulFlashLed().</td></tr>
 <tr><td>TIn</td><td>Reads a temperature input channel. Demonstrates the use of ulTIn().</td></tr>
 <tr><td>TmrPulseOut</td><td>Generates an output pulse at a specified duty cycle and frequency. Demonstrates the use of ulTmrPulseOutStart() and ulTmrPulseOutStop().</td></tr>
 </table>

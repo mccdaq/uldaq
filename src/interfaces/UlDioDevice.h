@@ -37,6 +37,7 @@ public:
 	virtual UlError dOutGetStatus(ScanStatus* status, TransferStatus* xferStatus) = 0;
 	virtual void dInStopBackground() = 0;
 	virtual void dOutStopBackground() = 0;
+	virtual void dClearAlarm(DigitalPortType portType, unsigned long long mask) = 0;
 };
 
 } /* namespace ul */

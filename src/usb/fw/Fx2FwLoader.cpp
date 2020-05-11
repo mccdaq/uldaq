@@ -49,7 +49,12 @@ void Fx2FwLoader::prepareHardware()
 	int ret = 0;
 	bool fwloaded = false;
 
-	int numDevs = libusb_get_device_list (NULL, &devs);
+	const libusb_context* ctx = UsbDaqDevice::getLibUsbContext();
+
+	if(ctx == NULL)
+		std::cout << "libusb_context is not initialized" << std::endl;
+
+	int numDevs = libusb_get_device_list ((libusb_context*)ctx, &devs);
 
 	if(numDevs > 0)
 	{
@@ -105,7 +110,7 @@ void Fx2FwLoader::prepareHardware()
 	{
 		sleep(5);
 
-		numDevs = libusb_get_device_list (NULL, &devs);
+		numDevs = libusb_get_device_list ((libusb_context*)ctx, &devs);
 
 		if(numDevs > 0)
 		{

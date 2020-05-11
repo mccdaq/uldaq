@@ -62,6 +62,7 @@ public:
 	virtual UlError dOutGetStatus(ScanStatus* status, TransferStatus* xferStatus);
 	virtual void dInStopBackground();
 	virtual void dOutStopBackground();
+	virtual void dClearAlarm(DigitalPortType portType, unsigned long long mask);
 
 	//////////////////////          Configuration functions          /////////////////////////////////
 	virtual unsigned long long getCfg_PortDirectionMask(unsigned int portNum) const;

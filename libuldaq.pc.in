@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: libuldaq
 Description: Universal Library for Linux
 Version: @VERSION@
-Libs: -L${libdir} -libuldaq
+Libs: -L${libdir} -luldaq
 Libs.private: @LIBS@
 Cflags: -I${includedir}

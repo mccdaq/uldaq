@@ -169,6 +169,11 @@ void DioDevice::dOutStopBackground()
 	stopBackground(SD_OUTPUT);
 }
 
+void DioDevice::dClearAlarm(DigitalPortType portType, unsigned long long mask)
+{
+	throw UlException(ERR_BAD_DEV_TYPE);
+}
+
 
 void DioDevice::initPortsDirectionMask()
 {
@@ -254,7 +259,7 @@ void DioDevice::check_DOut_Args(DigitalPortType portType, unsigned long long dat
 			throw UlException(ERR_WRONG_DIG_CONFIG);
 	}
 
-	unsigned long maxVal = (1 << bitCount) - 1;
+	unsigned long long maxVal = (1ULL << bitCount) - 1;
 
 	if(data > maxVal)
 		throw UlException(ERR_BAD_PORT_VAL);

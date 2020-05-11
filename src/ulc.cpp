@@ -18,11 +18,19 @@
 #include "./DaqEventHandler.h"
 #include "./utility/ErrorMap.h"
 #include "./usb/UsbDaqDevice.h"
+#include "./hid/HidDaqDevice.h"
 #include "uldaq.h"
 #include "UlDaqDeviceManager.h"
 #include "UlException.h"
 
 using namespace ul;
+
+UlError ulInit()
+{
+	UlError err = UlDaqDeviceManager::init();
+
+	return err;
+}
 
 UlError ulGetDaqDeviceInventory(DaqDeviceInterface interfaceTypes, DaqDeviceDescriptor daqDevDescriptors[], unsigned int* numDescriptors )
 {
@@ -47,6 +55,30 @@ UlError ulGetDaqDeviceInventory(DaqDeviceInterface interfaceTypes, DaqDeviceDesc
 	UL_LOG("ulGetDaqDeviceInventory() ---->");
 
 	return err;
+}
+
+UlError ulGetNetDaqDeviceDescriptor(const char* host, unsigned short port, const char* ifcName, DaqDeviceDescriptor* daqDevDescriptor, double timeout)
+{
+	UL_LOG("ulGetNetDaqDeviceDescriptor() <----");
+
+	UlError error = ERR_NO_ERROR;
+
+	try
+	{
+		*daqDevDescriptor = UlDaqDeviceManager::getNetDaqDeviceDescriptor(host, port, ifcName, timeout);
+	}
+	catch(UlException& e)
+	{
+		error = e.getError();
+	}
+	catch(...)
+	{
+		error = ERR_UNHANDLED_EXCEPTION;
+	}
+
+	UL_LOG("ulGetNetDaqDeviceDescriptor() ---->");
+
+	return error;
 }
 
 // coverity[pass_by_value]
@@ -211,6 +243,33 @@ UlError ulIsDaqDeviceConnected(DaqDeviceHandle daqDeviceHandle, int* connected)
 	return error;
 }
 
+UlError ulDaqDeviceConnectionCode(DaqDeviceHandle daqDeviceHandle, long long code)
+{
+	UlError error = ERR_NO_ERROR;
+
+	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
+
+	if(pDaqDevice)
+	{
+		try
+		{
+			pDaqDevice->connectionCode(code);
+		}
+		catch(UlException& e)
+		{
+			error = e.getError();
+		}
+		catch(...)
+		{
+			error = ERR_UNHANDLED_EXCEPTION;
+		}
+	}
+	else
+		error = ERR_BAD_DEV_HANDLE;
+
+	return error;
+}
+
 UlError ulReleaseDaqDevice(DaqDeviceHandle daqDeviceHandle)
 {
 	UL_LOG("ulReleaseDaqDevice() <----");
@@ -250,8 +309,6 @@ UlError ulFlashLed(DaqDeviceHandle daqDeviceHandle, int flashCount)
 
 	if(pDaqDevice)
 	{
-		//DaqDevice* pDaqDevice = (DaqDevice*)daqDeviceHandle;
-
 		try
 		{
 			pDaqDevice->flashLed(flashCount);
@@ -351,7 +408,7 @@ UlError ulAInScan(DaqDeviceHandle daqDeviceHandle, int lowChan, int highChan, Ai
 
 UlError ulAInScanStatus(DaqDeviceHandle daqDeviceHandle, ScanStatus* status, TransferStatus* xferStatus)
 {
-	FnLog log("UlGetAInScanStatus()");
+	//FnLog log("UlGetAInScanStatus()");
 
 	UlError error = ERR_NO_ERROR;
 
@@ -1480,6 +1537,40 @@ UlError ulDOutSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int 
 	return error;
 }
 
+UlError ulDClearAlarm(DaqDeviceHandle daqDeviceHandle, DigitalPortType portType, unsigned long long mask)
+{
+	FnLog log("ulDOut()");
+
+	UlError error = ERR_NO_ERROR;
+
+	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
+
+	if(pDaqDevice)
+	{
+		try
+		{
+			DioDevice* dioDev = pDaqDevice->dioDevice();
+
+			if(dioDev)
+				dioDev->dClearAlarm(portType, mask);
+			else
+				error = ERR_BAD_DEV_TYPE;
+		}
+		catch(UlException& e)
+		{
+			error = e.getError();
+		}
+		catch(...)
+		{
+			error = ERR_UNHANDLED_EXCEPTION;
+		}
+	}
+	else
+		error = ERR_BAD_DEV_HANDLE;
+
+	return error;
+}
+
 UlError ulCIn(DaqDeviceHandle daqDeviceHandle, int counterNum, unsigned long long* data)
 {
 	FnLog log("ulCIn()");
@@ -2481,6 +2572,8 @@ UlError ulGetInfoStr(UlInfoItemStr infoItem, unsigned int index, char* infoStr, 
 
 	UlError error = ERR_NO_ERROR;
 
+	ulInit();
+
 	try
 	{
 		switch(infoItem)
@@ -2529,6 +2622,8 @@ UlError ulSetConfig(UlConfigItem configItem, unsigned int index, long long confi
 
 	UlError error = ERR_NO_ERROR;
 
+	ulInit();
+
 	try
 	{
 		switch(configItem)
@@ -2558,6 +2653,8 @@ UlError ulGetConfig(UlConfigItem configItem, unsigned int index, long long* conf
 	FnLog log("ulGetConfig()");
 
 	UlError error = ERR_NO_ERROR;
+
+	ulInit();
 
 	try
 	{
@@ -2651,6 +2748,51 @@ UlError ulDevGetInfo(DaqDeviceHandle daqDeviceHandle, DevInfoItem infoItem, unsi
 	return error;
 }
 
+UlError ulDevSetConfig(DaqDeviceHandle daqDeviceHandle, DevConfigItem configItem, unsigned int index, long long configValue)
+{
+	FnLog log("ulDevSetConfig()");
+
+	UlError error = ERR_NO_ERROR;
+
+	DaqDevice* pDaqDevice = DaqDeviceManager::getActualDeviceHandle(daqDeviceHandle);
+
+	if(pDaqDevice)
+	{
+		try
+		{
+			UlDaqDeviceConfig& devConfig = pDaqDevice->getDevConfig();
+
+			switch(configItem)
+			{
+			case DEV_CFG_CONNECTION_CODE:
+				devConfig.setConnectionCode(configValue);
+				break;
+			case DEV_CFG_MEM_UNLOCK_CODE:
+				devConfig.setMemUnlockCode(configValue);
+				break;
+			case DEV_CFG_RESET:
+				devConfig.reset();
+				break;
+
+			default:
+				error = ERR_BAD_CONFIG_ITEM;
+			}
+		}
+		catch(UlException& e)
+		{
+			error = e.getError();
+		}
+		catch(...)
+		{
+			error = ERR_UNHANDLED_EXCEPTION;
+		}
+	}
+	else
+		error = ERR_BAD_DEV_HANDLE;
+
+	return error;
+}
+
 UlError ulDevGetConfig(DaqDeviceHandle daqDeviceHandle, DevConfigItem configItem, unsigned int index, long long* configValue)
 {
 	FnLog log("ulDevGetConfig()");
@@ -2669,6 +2811,12 @@ UlError ulDevGetConfig(DaqDeviceHandle daqDeviceHandle, DevConfigItem configItem
 			{
 			case DEV_CFG_HAS_EXP:
 				*configValue = devConfig.hasExp() ? 1 : 0;
+				break;
+			case DEV_CFG_CONNECTION_CODE:
+				*configValue = devConfig.getConnectionCode();
+				break;
+			case DEV_CFG_MEM_UNLOCK_CODE:
+				*configValue = devConfig.getMemUnlockCode();
 				break;
 
 			default:
@@ -2708,6 +2856,12 @@ UlError ulDevGetConfigStr(DaqDeviceHandle daqDeviceHandle, DevConfigItemStr conf
 			{
 			case DEV_CFG_VER_STR:
 				devConfig.getVersionStr((DevVersionType) index, configStr, maxConfigLen);
+				break;
+			case DEV_CFG_IP_ADDR_STR:
+				devConfig.getIpAddressStr(configStr, maxConfigLen);
+				break;
+			case DEV_CFG_NET_IFC_STR:
+				devConfig.getNetIfcNameStr(configStr, maxConfigLen);
 				break;
 
 			default:
@@ -2775,6 +2929,15 @@ UlError ulAISetConfig(DaqDeviceHandle daqDeviceHandle, AiConfigItem configItem, 
 					break;
 				case AI_CFG_CHAN_OTD_MODE:
 					aiConfig.setChanOpenTcDetectionMode(index, (OtdMode) configValue);
+					break;
+				case AI_CFG_OTD_MODE:
+					aiConfig.setOpenTcDetectionMode(index, (OtdMode) configValue);
+					break;
+				case AI_CFG_CAL_TABLE_TYPE:
+					aiConfig.setCalTableType(index, (AiCalTableType) configValue);
+					break;
+				case AI_CFG_REJECT_FREQ_TYPE:
+					aiConfig.setRejectFreqType(index, (AiRejectFreqType) configValue);
 					break;
 
 				default:
@@ -2853,6 +3016,18 @@ UlError ulAIGetConfig(DaqDeviceHandle daqDeviceHandle, AiConfigItem configItem, 
 						break;
 					case AI_CFG_CHAN_OTD_MODE:
 						*configValue = aiConfig.getChanOpenTcDetectionMode(index);
+						break;
+					case AI_CFG_OTD_MODE:
+						*configValue = aiConfig.getOpenTcDetectionMode(index);
+						break;
+					case AI_CFG_CAL_TABLE_TYPE:
+						*configValue = aiConfig.getCalTableType(index);
+						break;
+					case AI_CFG_REJECT_FREQ_TYPE:
+						*configValue = aiConfig.getRejectFreqType(index);
+						break;
+					case AI_CFG_EXP_CAL_DATE:
+						*configValue = aiConfig.getExpCalDate(index);
 						break;
 
 					default:
@@ -3022,6 +3197,9 @@ UlError ulAIGetConfigStr(DaqDeviceHandle daqDeviceHandle, AiConfigItemStr config
 					break;
 				case AI_CFG_CHAN_COEFS_STR:
 					aiConfig.getChanCoefsStr(index, configStr, maxConfigLen);
+					break;
+				case AI_CFG_EXP_CAL_DATE_STR:
+					aiConfig.getExpCalDateStr(index, configStr, maxConfigLen);
 					break;
 
 				default:

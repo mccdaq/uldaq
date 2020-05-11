@@ -759,5 +759,41 @@ OtdMode  AiDevice::getCfg_ChanOpenTcDetectionMode(int channel) const
 	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
 }
 
+void  AiDevice::setCfg_OpenTcDetectionMode(int dev, OtdMode mode)
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+OtdMode  AiDevice::getCfg_OpenTcDetectionMode(int dev) const
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+
+void AiDevice::setCfg_CalTableType(int dev, AiCalTableType calTableType)
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+AiCalTableType AiDevice::getCfg_CalTableType(int dev) const
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+
+void AiDevice::setCfg_RejectFreqType(int dev, AiRejectFreqType rejectFreqType)
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+AiRejectFreqType AiDevice::getCfg_RejectFreqType(int dev) const
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+
+unsigned long long AiDevice::getCfg_ExpCalDate(int calTableIndex)
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
+
+void AiDevice::getCfg_ExpCalDateStr(int calTableIndex, char* calDate, unsigned int* maxStrLen)
+{
+	throw UlException(ERR_CONFIG_NOT_SUPPORTED);
+}
 
 } /* namespace ul */
