@@ -179,24 +179,26 @@ unsigned char DaqOUsb1808::getOptionsCode(FunctionType functionType, ScanOption 
 
 void DaqOUsb1808::loadScanConfigs(DaqOutChanDescriptor chanDescriptors[], int numChans) const
 {
-	unsigned char scanQueue[3];
+   if(numChans <= 3)
+   {
+		unsigned char scanQueue[3];
 
-	memset(scanQueue, 0, sizeof(scanQueue));
+		memset(scanQueue, 0, sizeof(scanQueue));
 
+		int idx = 0;
 
-	int idx = 0;
-
-	for(idx = 0; idx < numChans; idx++)
-	{
-		if(chanDescriptors[idx].type == DAQO_ANALOG)
+		for(idx = 0; idx < numChans; idx++)
 		{
-			scanQueue[idx] = chanDescriptors[idx].channel;
+			if(chanDescriptors[idx].type == DAQO_ANALOG)
+			{
+				scanQueue[idx] = chanDescriptors[idx].channel;
+			}
+			else if (chanDescriptors[idx].type == DAQO_DIGITAL)
+				scanQueue[idx] = 2;
 		}
-		else if (chanDescriptors[idx].type == DAQO_DIGITAL)
-			scanQueue[idx] = 2;
-	}
 
-	daqDev().sendCmd(CMD_OUT_SCAN_CONFIG, 0, idx - 1, (unsigned char*) &scanQueue, sizeof(scanQueue));
+		daqDev().sendCmd(CMD_OUT_SCAN_CONFIG, 0, idx - 1, (unsigned char*) &scanQueue, sizeof(scanQueue));
+	}
 }
 
 

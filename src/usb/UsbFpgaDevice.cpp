@@ -14,29 +14,29 @@
 #include "UsbFpgaDevice.h"
 #include "../utility/UlLock.h"
 
-extern unsigned char USB_1208HS_rbf[];
-extern unsigned int USB_1208HS_rbf_len;
+extern const unsigned char USB_1208HS_rbf[];
+extern const unsigned int USB_1208HS_rbf_len;
 
-extern unsigned char USB_1608G_rbf[];
-extern unsigned int USB_1608G_rbf_len;
+extern const unsigned char USB_1608G_rbf[];
+extern const unsigned int USB_1608G_rbf_len;
 
-extern unsigned char USB_1608G_2_rbf[];
-extern unsigned int USB_1608G_2_rbf_len;
+extern const unsigned char USB_1608G_2_rbf[];
+extern const unsigned int USB_1608G_2_rbf_len;
 
-extern unsigned char USB_1808_bin[];
-extern unsigned int USB_1808_bin_len;
+extern const unsigned char USB_1808_bin[];
+extern const unsigned int USB_1808_bin_len;
 
-extern unsigned char usb_2020_bin[];
-extern unsigned int usb_2020_bin_len;
+extern const unsigned char usb_2020_bin[];
+extern const unsigned int usb_2020_bin_len;
 
-extern unsigned char USB_26xx_rbf[];
-extern unsigned int USB_26xx_rbf_len;
+extern const unsigned char USB_26xx_rbf[];
+extern const unsigned int USB_26xx_rbf_len;
 
-extern unsigned char USB_CTR_bin[];
-extern unsigned int USB_CTR_bin_len;
+extern const unsigned char USB_CTR_bin[];
+extern const unsigned int USB_CTR_bin_len;
 
-extern unsigned char USB_DIO32HS_bin[];
-extern unsigned int USB_DIO32HS_bin_len;
+extern const unsigned char USB_DIO32HS_bin[];
+extern const unsigned int USB_DIO32HS_bin_len;
 
 
 //#define FPGA_FILES_PATH		"/etc/uldaq/fpga/"
@@ -207,7 +207,7 @@ void UsbFpgaDevice::loadFpga() const
 	UlError __attribute__((unused)) error = ERR_NO_ERROR;
 
 	unsigned int size = 0;
-	unsigned char* fpgaImage = NULL;
+	const unsigned char* fpgaImage = NULL;
 	unsigned char* bitReverseBuffer = NULL;
 
 	getFpgaImage(&fpgaImage, &size, &bitReverseBuffer);
@@ -224,7 +224,7 @@ void UsbFpgaDevice::loadFpga() const
 
 			// transfer data
 			int remaining = size;
-			unsigned char* ptr = fpgaImage;
+			const unsigned char* ptr = fpgaImage;
 			do
 			{
 				if(remaining > 64)
@@ -232,7 +232,7 @@ void UsbFpgaDevice::loadFpga() const
 				else
 					num_bytes = remaining;
 
-				UsbDaqDevice::sendCmd(CMD_FPGA_DATA, 0, 0, ptr, num_bytes);
+				UsbDaqDevice::sendCmd(CMD_FPGA_DATA, 0, 0, const_cast<unsigned char*>(ptr), num_bytes);
 
 				ptr += num_bytes;
 				remaining -= num_bytes;
@@ -265,7 +265,7 @@ void UsbFpgaDevice::loadFpga() const
 		std::cout << "**** the fpga image not included" << std::endl;
 }
 
-void UsbFpgaDevice::getFpgaImage(unsigned char** fpgaImage, unsigned int* size, unsigned char** bitReverseBuffer) const
+void UsbFpgaDevice::getFpgaImage(const unsigned char** fpgaImage, unsigned int* size, unsigned char** bitReverseBuffer) const
 {
 	unsigned int devType = getDeviceType();
 	switch(devType)

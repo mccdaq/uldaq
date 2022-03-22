@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to the UL for Linux project will be documented in this file.
 
+## [1.2.1] - March 21, 2022
+### Added
+- none
+
+### Changed
+- The FPGA image of the USB-2020 series upgraded to version 0.92. This update addresses the digital output update issue.
+- Removed compile warnings.
+- Updated the FPGA loader.
+
+### Removed
+- none
+
 ## [1.2.0] - May 11, 2020
 ### Added
 * support for the following DAQ devices

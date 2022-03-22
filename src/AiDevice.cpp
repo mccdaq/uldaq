@@ -708,7 +708,7 @@ void AiDevice::getCfg_CalDateStr(int calTableIndex, char* calDate, unsigned int*
 {
 	mDaqDevice.checkConnection();
 
-	long int calDateSec = getCfg_CalDate(calTableIndex);
+	time_t calDateSec = getCfg_CalDate(calTableIndex);
 
 	// convert seconds to string
 	struct tm *timeinfo;

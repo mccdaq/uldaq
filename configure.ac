@@ -1,6 +1,6 @@
 m4_define([LIBUL_MAJOR],   1)
 m4_define([LIBUL_MINOR],   2)
-m4_define([LIBUL_MICRO], 0)
+m4_define([LIBUL_MICRO], 1)
 m4_define([LIBUL_RC],)
 
 AC_INIT([libuldaq],[LIBUL_MAJOR[.]LIBUL_MINOR[.]LIBUL_MICRO[]LIBUL_RC],[info@mccdaq.com],[libuldaq],[http://www.mccdaq.com])
@@ -10,7 +10,7 @@ AC_INIT([libuldaq],[LIBUL_MAJOR[.]LIBUL_MINOR[.]LIBUL_MICRO[]LIBUL_RC],[info@mcc
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
 # http://sourceware.org/autobook/autobook/autobook_91.html
 lt_current=3
-lt_revision=0
+lt_revision=1
 lt_age=2
 LTLDFLAGS="-version-info ${lt_current}:${lt_revision}:${lt_age}"
 
@@ -98,6 +98,9 @@ if test "$os" = "linux"; then
 fi
 
 AC_SUBST(LTLDFLAGS)
+
+# Silence warning: ar: 'u' modifier ignored since 'D' is the default
+AC_SUBST(AR_FLAGS, [cr])
 
 AC_CONFIG_FILES([libuldaq.pc])
 AC_CONFIG_FILES([Makefile])
