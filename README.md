@@ -12,7 +12,7 @@ The **uldaq** package contains programming libraries and components for developi
 ---------------
 Building the **uldaq** package requires C/C++ compilers, make tool, and the development package for libusb. The following describes how these prerequisites can be installed on different Linux distributions and macOS.
   
-  - Debian-based Linux distributions such as Ubuntu, Raspbian
+  - Debian-based Linux distributions such as Ubuntu, Raspberry Pi OS
   
   ```
      $ sudo apt-get install gcc g++ make
