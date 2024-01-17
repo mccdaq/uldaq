@@ -361,7 +361,7 @@ void ConvertRangeToMinMax(Range range, double* min, double* max)
 		break;
 	case(UNIPT01VOLTS):
 		*min = 0.0;
-		*max = 0.1;
+		*max = 0.01;
 		break;
 	case(UNIPT005VOLTS):
 		*min = 0.0;
