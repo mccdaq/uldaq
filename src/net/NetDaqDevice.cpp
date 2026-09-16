@@ -585,7 +585,6 @@ UlError NetDaqDevice::receiveFrame(unsigned char cmd, unsigned char frameId, uns
 	{
 		unsigned char frameBuf[MAX_SEND_FRAME_SIZE];
 		NetFrame* frame = (NetFrame*) frameBuf;
-		//unsigned int frameBufLen = sizeof(frameBuf);
 		int frameSize = 0;
 
 		if(bytesReceived)
@@ -606,56 +605,64 @@ UlError NetDaqDevice::receiveFrame(unsigned char cmd, unsigned char frameId, uns
 		if(received == sizeof(frameHeader))
 		{
 			frameSize = frameHeader.count + sizeof(NetFrame);
-
-			received = recv(mSockets.tcpCmd, frameBuf, frameSize, MSG_WAITALL);
-
-			if(received == frameSize)
+			
+			if(frameSize <= MAX_SEND_FRAME_SIZE)
 			{
-				unsigned char chksum = std::accumulate(&frameBuf[0], &frameBuf[received], 0);
+			    received = recv(mSockets.tcpCmd, frameBuf, frameSize, MSG_WAITALL);
 
-				if(chksum != 0xff)
-				{
-					UL_LOG("Invalid frame checksum!!!!");
-					err = ERR_BAD_NET_FRAME;
-				}
-				else if(frame->command != (cmd | 0x80))
-				{
-					UL_LOG("Invalid frame command!!!!");
-					err = ERR_BAD_NET_FRAME;
-				}
-				else if(frame->frameId != frameId)
-				{
-					UL_LOG("Invalid frame ID!!!!");
-					err = ERR_BAD_NET_FRAME;
-				}
-				else if (frame->count > dataBufLen)
-				{
-					UL_LOG("Invalid buffer size!!!!");
-					err = ERR_BAD_BUFFER_SIZE;
-				}
-				else
-				{
-					if(dataBuf)
-					{
-						memcpy(dataBuf, frame->data, frame->count);
+			    if(received == frameSize)
+			    {
+				    unsigned char chksum = std::accumulate(&frameBuf[0], &frameBuf[received], 0);
 
-						if(bytesReceived) // if the pointer is not null set its value
-							*bytesReceived = frame->count;
-					}
+				    if(chksum != 0xff)
+				    {
+					    UL_LOG("Invalid frame checksum!!!!");
+					    err = ERR_BAD_NET_FRAME;
+				    }
+				    else if(frame->command != (cmd | 0x80))
+				    {
+					    UL_LOG("Invalid frame command!!!!");
+					    err = ERR_BAD_NET_FRAME;
+				    }
+				    else if(frame->frameId != frameId)
+				    {
+					    UL_LOG("Invalid frame ID!!!!");
+					    err = ERR_BAD_NET_FRAME;
+				    }
+				    else if (frame->count > dataBufLen)
+				    {
+					    UL_LOG("Invalid buffer size!!!!");
+					    err = ERR_BAD_BUFFER_SIZE;
+				    }
+				    else
+				    {
+					    if(dataBuf)
+					    {
+						    memcpy(dataBuf, frame->data, frame->count);
 
-					if(status)
-						*status = frame->status;
+						    if(bytesReceived) // if the pointer is not null set its value
+							    *bytesReceived = frame->count;
+					    }
 
-					if(frame->status)
-						UL_LOG("receiveFrame failed, frame status: " << frame->status);
-				}
+					    if(status)
+						    *status = frame->status;
+
+					    if(frame->status)
+						    UL_LOG("receiveFrame failed, frame status: " << frame->status);
+				    }
+			    }
+			    else
+			    {
+				    err = ERR_DEAD_DEV;
+
+				    if(received == -1)
+					    UL_LOG("receiveFrame failed, recv() error: " << strerror(errno));
+			    }
 			}
 			else
 			{
-				err = ERR_DEAD_DEV;
-
-				if(received == -1)
-					UL_LOG("receiveFrame failed, recv() error: " << strerror(errno));
+				UL_LOG("Invalid frame byte count!!!!");
+				err = ERR_BAD_NET_FRAME;
 			}
 		}
 		else
