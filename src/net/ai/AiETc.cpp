@@ -132,7 +132,7 @@ void AiETc::tInArray(int lowChan, int highChan, TempScale scale, TInArrayFlag fl
 void AiETc::enableAllChannels()
 {
 	bool chanEnabled = false;
-	unsigned char chanTcTypes[8];
+	unsigned char chanTcTypes[8] = {0};
 
 	daqDev().queryCmd(CMD_TIN_CONFIG_R, NULL, 0, chanTcTypes, sizeof(chanTcTypes));
 
@@ -163,7 +163,7 @@ void AiETc::setMeasureMode(int mode)
 
 void AiETc::readCalDate()
 {
-	unsigned char calDateBuf[6];
+	unsigned char calDateBuf[6] = {0};
 
 	if(getScanState() == SS_IDLE)
 	{
@@ -247,7 +247,7 @@ void AiETc::setCfg_ChanType(int channel, AiChanType chanType)
 	if(!(chanType & (AI_TC | AI_DISABLED)))
 		throw UlException(ERR_BAD_AI_CHAN_TYPE);
 
-	unsigned char chanTcTypes[8];
+	unsigned char chanTcTypes[8] = {0};
 
 	daqDev().queryCmd(CMD_TIN_CONFIG_R, NULL, 0, chanTcTypes, sizeof(chanTcTypes));
 
@@ -270,7 +270,7 @@ AiChanType AiETc::getCfg_ChanType(int channel) const
 	if(channel < 0 || channel >= mAiInfo.getNumChans())
 		throw UlException(ERR_BAD_AI_CHAN);
 
-	unsigned char chanTcTypes[8];
+	unsigned char chanTcTypes[8] = {0};
 
 	daqDev().queryCmd(CMD_TIN_CONFIG_R, NULL, 0, chanTcTypes, sizeof(chanTcTypes));
 
@@ -287,7 +287,7 @@ void AiETc::setCfg_ChanTcType(int channel, TcType tcType)
 	if(tcType < TC_J || tcType > TC_N)
 		throw UlException(ERR_BAD_TC_TYPE);
 
-	unsigned char chanTcTypes[8];
+	unsigned char chanTcTypes[8] = {0};
 
 	daqDev().queryCmd(CMD_TIN_CONFIG_R, NULL, 0, chanTcTypes, sizeof(chanTcTypes));
 
@@ -303,7 +303,7 @@ TcType AiETc::getCfg_ChanTcType(int channel) const
 	if(channel < 0 || channel >= mAiInfo.getNumChans())
 		throw UlException(ERR_BAD_AI_CHAN);
 
-	unsigned char chanTcTypes[8];
+	unsigned char chanTcTypes[8] = {0};
 
 	daqDev().queryCmd(CMD_TIN_CONFIG_R, NULL, 0, chanTcTypes, sizeof(chanTcTypes));
 
@@ -326,11 +326,13 @@ void  AiETc::setCfg_OpenTcDetectionMode(int dev, OtdMode mode)
 
 	daqDev().queryCmd(CMD_MEASURE_CONFIG_W, (unsigned char*)&config, sizeof(config));
 }
+
 OtdMode  AiETc::getCfg_OpenTcDetectionMode(int dev) const
 {
 	OtdMode mode = OTD_ENABLED;
 
 	TMEASURE_CFG config;
+	memset(&config, 0, sizeof(config));
 
 	daqDev().queryCmd(CMD_MEASURE_CONFIG_R, NULL, 0, (unsigned char*)&config, sizeof(config));
 
@@ -358,6 +360,7 @@ AiCalTableType AiETc::getCfg_CalTableType(int dev) const
 {
 	AiCalTableType type = AI_CTT_FACTORY;
 	TMEASURE_CFG config;
+	memset(&config, 0, sizeof(config));
 
 	daqDev().queryCmd(CMD_MEASURE_CONFIG_R, NULL, 0, (unsigned char*)&config, sizeof(config));
 

@@ -215,7 +215,7 @@ void AiETc32::check_TInArray_Args(int lowChan, int highChan, TempScale scale, TI
 void AiETc32::enableAllChannels()
 {
 	bool chanEnabled = false;
-	unsigned char chanTcTypes[64];
+	unsigned char chanTcTypes[64] = {0};
 
 	daqDev().queryCmd(CMD_TIN_CONFIG_R, NULL, 0, chanTcTypes, sizeof(chanTcTypes));
 
@@ -355,7 +355,7 @@ void AiETc32::setCfg_ChanType(int channel, AiChanType chanType)
 	if(!(chanType & (AI_TC | AI_DISABLED)))
 		throw UlException(ERR_BAD_AI_CHAN_TYPE);
 
-	unsigned char chanTcTypes[64];
+	unsigned char chanTcTypes[64] = {0};
 
 	daqDev().queryCmd(CMD_TIN_CONFIG_R, NULL, 0, chanTcTypes, sizeof(chanTcTypes));
 
@@ -378,7 +378,7 @@ AiChanType AiETc32::getCfg_ChanType(int channel) const
 	if(channel < 0 || channel >= mActualChanCount)
 		throw UlException(ERR_BAD_AI_CHAN);
 
-	unsigned char chanTcTypes[64];
+	unsigned char chanTcTypes[64] = {0};
 
 	daqDev().queryCmd(CMD_TIN_CONFIG_R, NULL, 0, chanTcTypes, sizeof(chanTcTypes));
 
@@ -395,7 +395,7 @@ void AiETc32::setCfg_ChanTcType(int channel, TcType tcType)
 	if(tcType < TC_J || tcType > TC_N)
 		throw UlException(ERR_BAD_TC_TYPE);
 
-	unsigned char chanTcTypes[64];
+	unsigned char chanTcTypes[64] = {0};
 
 	daqDev().queryCmd(CMD_TIN_CONFIG_R, NULL, 0, chanTcTypes, sizeof(chanTcTypes));
 
@@ -411,7 +411,7 @@ TcType AiETc32::getCfg_ChanTcType(int channel) const
 	if(channel < 0 || channel >= mActualChanCount)
 		throw UlException(ERR_BAD_AI_CHAN);
 
-	unsigned char chanTcTypes[64];
+	unsigned char chanTcTypes[64] = {0};
 
 	daqDev().queryCmd(CMD_TIN_CONFIG_R, NULL, 0, chanTcTypes, sizeof(chanTcTypes));
 
@@ -444,6 +444,7 @@ OtdMode  AiETc32::getCfg_OpenTcDetectionMode(int dev) const
 	if(dev >= 0 && dev < 2)
 	{
 		TMEASURE_CFG config[2];
+		memset(config, 0, sizeof(config));
 
 		daqDev().queryCmd(CMD_MEASURE_CONFIG_R, NULL, 0, (unsigned char*)&config, sizeof(config));
 
@@ -478,6 +479,7 @@ AiCalTableType AiETc32::getCfg_CalTableType(int dev) const
 	if(dev >= 0 && dev < 2)
 	{
 		TMEASURE_CFG config[2];
+		memset(config, 0, sizeof(config));
 
 		daqDev().queryCmd(CMD_MEASURE_CONFIG_R, NULL, 0, (unsigned char*)&config, sizeof(config));
 
@@ -511,6 +513,7 @@ AiRejectFreqType AiETc32::getCfg_RejectFreqType(int dev) const
 	if(dev >= 0 && dev < 2)
 	{
 		TMEASURE_CFG config[2];
+		memset(config, 0, sizeof(config));
 
 		daqDev().queryCmd(CMD_MEASURE_CONFIG_R, NULL, 0, (unsigned char*)&config, sizeof(config));
 

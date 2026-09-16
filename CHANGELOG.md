@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to the UL for Linux project will be documented in this file.
 
+## [1.2.2] - Sep 16, 2026
+### Added
+- none
+
+### Changed
+- Added a check to verify network packet size to prevent buffer overflows prior to processing. (CVE-2026-19477)
+- Initialized omitted local buffers to zero.
+- Removed compile warnings.
+
+### Removed
+- none
+
 ## [1.2.1] - March 21, 2022
 ### Added
 - none

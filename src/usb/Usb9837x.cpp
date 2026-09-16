@@ -935,6 +935,10 @@ void Usb9837x::Cmd_ReadSingleValue (Usb9837xDefs::pREAD_SINGLE_VALUE_INFO pReadS
 		throw UlException(err);
 }
 
+#if defined(__GNUC__) && !defined(__clang__) && (__GNUC__ >= 7)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
 
 void Usb9837x::Cmd_ReadDevMultipleRegs( unsigned char DevAddress, unsigned char NumRegs, unsigned char *pRegisters, unsigned char *pData ) const
 {
@@ -979,6 +983,10 @@ void Usb9837x::Cmd_ReadDevMultipleRegs( unsigned char DevAddress, unsigned char 
 	if(err)
 		throw UlException(err);
 }
+
+#if defined(__GNUC__) && !defined(__clang__) && (__GNUC__ >= 7)
+#pragma GCC diagnostic pop
+#endif
 
 void Usb9837x::Cmd_WriteDevMultipleRegs( unsigned char DevAddress, unsigned char NumRegs, unsigned char *pRegisters, unsigned char *pData ) const
 {
