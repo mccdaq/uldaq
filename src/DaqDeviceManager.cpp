@@ -262,8 +262,8 @@ void DaqDeviceManager::releaseDevices()
 		else
 			UL_LOG("No lingering device found");
 
-		for(unsigned int i = 0; i < mCreatedDevicesMap.size(); i++)
-			createdDevList.push_back(mCreatedDevicesMap[i]);
+		for(std::map<long long, DaqDevice*>::iterator itr = mCreatedDevicesMap.begin(); itr != mCreatedDevicesMap.end(); itr++)
+			createdDevList.push_back(itr->second);
 
 		mCreatedDevicesMap.clear();
 	}
