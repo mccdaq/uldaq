@@ -15,9 +15,10 @@
 namespace ul
 {
 
-std::map<int, std::string> DaqDeviceManager::mSupportedDevices;
-std::map<int, std::string> DaqDeviceManager::mSupportedDtDevices;
-std::map<long long, DaqDevice*> DaqDeviceManager::mCreatedDevicesMap;
+// never freed, so they are still valid when lib_unload runs after static destructors (as it does when loaded with dlopen)
+std::map<int, std::string>& DaqDeviceManager::mSupportedDevices = *new std::map<int, std::string>;
+std::map<int, std::string>& DaqDeviceManager::mSupportedDtDevices = *new std::map<int, std::string>;
+std::map<long long, DaqDevice*>& DaqDeviceManager::mCreatedDevicesMap = *new std::map<long long, DaqDevice*>;
 pthread_mutex_t DaqDeviceManager::mCreatedDevicesMutex = PTHREAD_MUTEX_INITIALIZER;
 
 DaqDeviceManager::DaqDeviceManager()
