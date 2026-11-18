@@ -76,20 +76,17 @@ UlError UlDaqDeviceManager::init()
 {
 	UlError err = ERR_NO_ERROR;
 
+	UlLock lock(mInitMutex);
+
 	if(!mInitialized)
 	{
-		pthread_mutex_lock(&mInitMutex);
+		DaqDeviceManager::addSupportedDaqDevice();
 
-		if(!mInitialized)
-		{
-			UsbDaqDevice::usb_init();
-			HidDaqDevice::hidapi_init();
-			SuspendMonitor::init();
+		UsbDaqDevice::usb_init();
+		HidDaqDevice::hidapi_init();
+		SuspendMonitor::init();
 
-			mInitialized = true;
-		}
-
-		pthread_mutex_unlock(&mInitMutex);
+		mInitialized = true;
 	}
 
 	return err;

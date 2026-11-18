@@ -122,9 +122,6 @@ bool DaqDeviceManager::isDaqDeviceSupported(int productId, int vendorId)
 {
 	bool supported = false;
 
-	if(mSupportedDevices.empty())
-		addSupportedDaqDevice();
-
 	if(vendorId == UsbDaqDevice::DT_USB_VID)
 	{
 		std::map<int, std::basic_string<char> >::iterator itr = mSupportedDtDevices.find(productId);
