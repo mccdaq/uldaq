@@ -39,6 +39,7 @@ private:
 	static std::map<int, std::string> mSupportedDevices;
 	static std::map<int, std::string> mSupportedDtDevices;
 	static std::map<long long, DaqDevice*> mCreatedDevicesMap;
+	static pthread_mutex_t mCreatedDevicesMutex;
 };
 
 } /* namespace ul */
