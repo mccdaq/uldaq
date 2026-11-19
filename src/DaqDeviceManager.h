@@ -31,14 +31,13 @@ public:
 	static void releaseDevices();
 	static DaqDevice* getActualDeviceHandle(long long deviceNumber);
 	static DaqDevice* getDaqDevice(const DaqDeviceDescriptor& daqDeviceDescriptor);
-
-private:
 	static void addSupportedDaqDevice();
 
 private:
-	static std::map<int, std::string> mSupportedDevices;
-	static std::map<int, std::string> mSupportedDtDevices;
-	static std::map<long long, DaqDevice*> mCreatedDevicesMap;
+	static std::map<int, std::string>& mSupportedDevices;
+	static std::map<int, std::string>& mSupportedDtDevices;
+	static std::map<long long, DaqDevice*>& mCreatedDevicesMap;
+	static pthread_mutex_t mCreatedDevicesMutex;
 };
 
 } /* namespace ul */

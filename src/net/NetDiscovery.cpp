@@ -291,6 +291,8 @@ bool NetDiscovery::detectNetDevice(int sockfd, NetDiscoveryInfo& netDiscoveryInf
 
 NetDiscovery::NetDiscoveryInfo NetDiscovery::getDiscoveryInfo(std::string macAddr)
 {
+	UlLock lock(mDiscoveryMutex);
+
 	NetDiscoveryInfo discoveryInfo;
 	discoveryInfo.clear();
 

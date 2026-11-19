@@ -6,6 +6,7 @@
 
 #include "DaqDeviceManager.h"
 #include "./utility/FnLog.h"
+#include "./utility/UlLock.h"
 #include "./usb/UsbDaqDevice.h"
 
 #include <algorithm>
@@ -14,9 +15,11 @@
 namespace ul
 {
 
-std::map<int, std::string> DaqDeviceManager::mSupportedDevices;
-std::map<int, std::string> DaqDeviceManager::mSupportedDtDevices;
-std::map<long long, DaqDevice*> DaqDeviceManager::mCreatedDevicesMap;
+// never freed, so they are still valid when lib_unload runs after static destructors (as it does when loaded with dlopen)
+std::map<int, std::string>& DaqDeviceManager::mSupportedDevices = *new std::map<int, std::string>;
+std::map<int, std::string>& DaqDeviceManager::mSupportedDtDevices = *new std::map<int, std::string>;
+std::map<long long, DaqDevice*>& DaqDeviceManager::mCreatedDevicesMap = *new std::map<long long, DaqDevice*>;
+pthread_mutex_t DaqDeviceManager::mCreatedDevicesMutex = PTHREAD_MUTEX_INITIALIZER;
 
 DaqDeviceManager::DaqDeviceManager()
 {
@@ -120,9 +123,6 @@ bool DaqDeviceManager::isDaqDeviceSupported(int productId, int vendorId)
 {
 	bool supported = false;
 
-	if(mSupportedDevices.empty())
-		addSupportedDaqDevice();
-
 	if(vendorId == UsbDaqDevice::DT_USB_VID)
 	{
 		std::map<int, std::basic_string<char> >::iterator itr = mSupportedDtDevices.find(productId);
@@ -166,12 +166,16 @@ void DaqDeviceManager::addToCreatedList(DaqDevice* daqDevice)
 {
 	FnLog log("DaqDeviceManager::addToCreatedList");
 
+	UlLock lock(mCreatedDevicesMutex);
+
 	mCreatedDevicesMap.insert(std::pair<long long, DaqDevice*>(daqDevice->getDeviceNumber(), daqDevice));
 }
 
 void DaqDeviceManager::removeFromCreatedList(long long deviceNumber)//DaqDevice* daqDevice)
 {
 	FnLog log("DaqDeviceManager::removeFromCreatedList");
+
+	UlLock lock(mCreatedDevicesMutex);
 
 	std::map<long long, DaqDevice*>::iterator itr = mCreatedDevicesMap.find(deviceNumber);
 	if(itr != mCreatedDevicesMap.end())
@@ -184,15 +188,22 @@ void DaqDeviceManager::releaseDevice(long long deviceNumber)
 {
 	FnLog log("DaqDeviceManager::releaseDevice");
 
-	std::map<long long, DaqDevice*>::iterator itr = mCreatedDevicesMap.find(deviceNumber);
-	if(itr != mCreatedDevicesMap.end())
+	DaqDevice* daqDevice = NULL;
+
 	{
-		delete (itr->second);
+		UlLock lock(mCreatedDevicesMutex);
+
+		std::map<long long, DaqDevice*>::iterator itr = mCreatedDevicesMap.find(deviceNumber);
+		if(itr != mCreatedDevicesMap.end())
+		{
+			daqDevice = itr->second;
+			mCreatedDevicesMap.erase(itr);
+		}
 	}
 
-	// when a device object is deleted, it removes itself from mCreatedDevices list in the DaqDevice destructor
-	// so there is no need to removed it from the list here. This approach prevents deleting the device again if the users used delete
-	// instead of DaqDeviceManager::releaseDaqDevice to free DaqDevice objects.
+	// the destructor joins the device threads, whose callbacks can call into the library, so delete outside the lock
+	if(daqDevice != NULL)
+		delete daqDevice;
 }
 
 DaqDevice* DaqDeviceManager::getActualDeviceHandle(long long deviceNumber)
@@ -200,6 +211,8 @@ DaqDevice* DaqDeviceManager::getActualDeviceHandle(long long deviceNumber)
 	//FnLog log("DaqDeviceManager::getActualDeviceHandle");
 
 	DaqDevice* daqDevice = NULL;
+
+	UlLock lock(mCreatedDevicesMutex);
 
 	std::map<long long, DaqDevice*>::iterator itr = mCreatedDevicesMap.find(deviceNumber);
 	if(itr != mCreatedDevicesMap.end())
@@ -213,6 +226,8 @@ DaqDevice* DaqDeviceManager::getDaqDevice(const DaqDeviceDescriptor& daqDeviceDe
 
 	DaqDevice *daqDevice = NULL;
 	DaqDeviceDescriptor desc;
+
+	UlLock lock(mCreatedDevicesMutex);
 
 	for(std::map<long long, DaqDevice*>::iterator itr = mCreatedDevicesMap.begin(); itr != mCreatedDevicesMap.end(); itr++)
 	{
@@ -235,20 +250,21 @@ void DaqDeviceManager::releaseDevices()
 {
 	FnLog log("DaqDeviceManager::releaseDevices");
 
-	if(mCreatedDevicesMap.size())
-		UL_LOG("#### " << mCreatedDevicesMap.size() << " lingering device(s) being released: ");
-	else
-		UL_LOG("No lingering device found");
-
 	std::vector<DaqDevice*> createdDevList;
 
-	// Do not delete the device objects in the following loop, because when a device object is deleted, it removes itself
-	// from mCreatedDevicesMap in the DaqDevice destructor which results in changing the size of mCreatedDevicesMap.
-	// To avoid this problem copy the device pointers to a temporary list
-	// and removed them later
+	{
+		UlLock lock(mCreatedDevicesMutex);
 
-	for(unsigned int i = 0; i < mCreatedDevicesMap.size(); i++)
-		createdDevList.push_back(mCreatedDevicesMap[i]);
+		if(mCreatedDevicesMap.size())
+			UL_LOG("#### " << mCreatedDevicesMap.size() << " lingering device(s) being released: ");
+		else
+			UL_LOG("No lingering device found");
+
+		for(std::map<long long, DaqDevice*>::iterator itr = mCreatedDevicesMap.begin(); itr != mCreatedDevicesMap.end(); itr++)
+			createdDevList.push_back(itr->second);
+
+		mCreatedDevicesMap.clear();
+	}
 
 	for(unsigned int i = 0; i < createdDevList.size(); i++)
 		delete createdDevList[i];

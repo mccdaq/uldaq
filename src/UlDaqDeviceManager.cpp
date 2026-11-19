@@ -48,6 +48,8 @@
 
 #include "./net/E1808.h"
 
+#include "./utility/UlLock.h"
+
 #include <iostream>
 #include <cstring>
 #include <vector>
@@ -57,6 +59,7 @@ namespace ul
 {
 
 static pthread_mutex_t mInitMutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t mCreateMutex = PTHREAD_MUTEX_INITIALIZER;
 static bool mInitialized = false;
 
 UlDaqDeviceManager::UlDaqDeviceManager()
@@ -73,20 +76,17 @@ UlError UlDaqDeviceManager::init()
 {
 	UlError err = ERR_NO_ERROR;
 
+	UlLock lock(mInitMutex);
+
 	if(!mInitialized)
 	{
-		pthread_mutex_lock(&mInitMutex);
+		DaqDeviceManager::addSupportedDaqDevice();
 
-		if(!mInitialized)
-		{
-			UsbDaqDevice::usb_init();
-			HidDaqDevice::hidapi_init();
-			SuspendMonitor::init();
+		UsbDaqDevice::usb_init();
+		HidDaqDevice::hidapi_init();
+		SuspendMonitor::init();
 
-			mInitialized = true;
-		}
-
-		pthread_mutex_unlock(&mInitMutex);
+		mInitialized = true;
 	}
 
 	return err;
@@ -155,6 +155,8 @@ DaqDeviceDescriptor UlDaqDeviceManager::getNetDaqDeviceDescriptor(const char* ho
 UlDaqDevice& UlDaqDeviceManager::createDaqDevice(const DaqDeviceDescriptor& daqDevDescriptor)
 {
 	init();
+
+	UlLock lock(mCreateMutex);
 
 	DaqDevice* daqDev = DaqDeviceManager::getDaqDevice(daqDevDescriptor); // Don't recreate a new DaqDevice object if it already exists for the specified descriptor
 
